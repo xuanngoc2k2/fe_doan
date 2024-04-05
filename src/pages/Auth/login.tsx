@@ -1,4 +1,4 @@
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, RightCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Space } from "antd";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ function Login() {
                     bordered
                     title={<div className="txt-login">Đăng nhập</div>}
                     style={{
-                        width: 350,
+                        width: 400,
                         marginTop: 100,
                         borderTop: '4px solid #0cacea'
                     }}
@@ -64,7 +64,7 @@ function Login() {
                                 Đăng nhập
                             </Button>
                         </Form.Item>
-                        <Link to={'#'}>Đăng kí tài khoản</Link>
+                        <Link to={'/register'}>Đăng kí tài khoản <RightCircleOutlined /></Link>
                     </Form>
                 </Card>
             </Space>

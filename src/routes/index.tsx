@@ -3,6 +3,7 @@ import Login from '../pages/Auth/login';
 import Home from '../pages/Home';
 import Course from '../pages/Course';
 import NotSidebarLayout from '../layouts/NotSidebarLayout';
+import Register from '../pages/Auth/register';
 
 interface Route {
   path: string;
@@ -20,6 +21,11 @@ const publicRoutes: Route[] = [
   {
     path: '/login',
     component: Login,
+    layout: NotSidebarLayout // Đặt layout là null cho trường hợp này
+  },
+  {
+    path: '/register',
+    component: Register,
     layout: NotSidebarLayout // Đặt layout là null cho trường hợp này
   },
   {
