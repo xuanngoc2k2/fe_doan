@@ -20,7 +20,7 @@ const publicRoutes: Route[] = [
   {
     path: '/login',
     component: Login,
-    layout: null // Đặt layout là null cho trường hợp này
+    layout: NotSidebarLayout // Đặt layout là null cho trường hợp này
   },
   {
     path: '/course',

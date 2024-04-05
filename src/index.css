@@ -1,5 +1,26 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.txt-login {
+    text-align: center;
+    color: #4c6379;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 22px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.input-login {
+    border-radius: 120px;
+}
+.login-form-button {
+    text-transform: uppercase;
+    border-radius: 120px;
+    font-size: 18px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+    line-height: 0;
 }
