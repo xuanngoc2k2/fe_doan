@@ -48,7 +48,7 @@ function Login() {
                             name="password"
                             rules={[{ required: true, message: 'Please input your Password!' }]}
                         >
-                            <Input
+                            <Input.Password
                                 size="large"
                                 className="input-login"
                                 prefix={<LockOutlined className="site-form-item-icon" />}

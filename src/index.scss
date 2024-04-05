@@ -3,6 +3,31 @@
     padding: 0;
     box-sizing: border-box;
 }
+/* HEADER */
+
+.header-container {
+    padding-top: 18px;
+    display: flex;
+    align-items: center;
+}
+.header-logo,
+.header-avatar-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.header-menu {
+    display: flex;
+    justify-content: center;
+    border-bottom: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    li {
+        margin: 20px;
+    }
+}
+/*END HEADER*/
 .txt-login {
     text-align: center;
     color: #4c6379;
