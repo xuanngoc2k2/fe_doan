@@ -35,25 +35,25 @@ function Login() {
                     >
                         <Form.Item
                             name="username"
-                            rules={[{ required: true, message: 'Please input your Username!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
                         >
                             <Input
                                 size="large"
                                 className="input-login"
                                 prefix={<UserOutlined className="site-form-item-icon" />}
-                                placeholder="Username"
+                                placeholder="Tên đăng nhập"
                             />
                         </Form.Item>
                         <Form.Item
                             name="password"
-                            rules={[{ required: true, message: 'Please input your Password!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
                         >
                             <Input.Password
                                 size="large"
                                 className="input-login"
                                 prefix={<LockOutlined className="site-form-item-icon" />}
                                 type="password"
-                                placeholder="Password"
+                                placeholder="Mật khẩu"
                             />
                         </Form.Item>
                         <Form.Item >

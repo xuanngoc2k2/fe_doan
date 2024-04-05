@@ -27,6 +27,9 @@
         margin: 20px;
     }
 }
+.header-profile::after {
+    border-bottom: none !important; /* Sử dụng !important ở đây */
+}
 /*END HEADER*/
 .txt-login {
     text-align: center;
