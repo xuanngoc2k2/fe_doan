@@ -31,6 +31,26 @@
     border-bottom: none !important; /* Sử dụng !important ở đây */
 }
 /*END HEADER*/
+/*--------------HOME----------------*/
+.home-container {
+    background-color: #f2f2f2;
+}
+.home-carousel {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.home-carousel-dot {
+    li {
+        width: 10px !important;
+    }
+    button {
+        height: 5px !important;
+        background-color: #1677ff !important;
+    }
+}
+//card
+/*--------------END HOME-----------*/
+
 .txt-login {
     text-align: center;
     color: #4c6379;
