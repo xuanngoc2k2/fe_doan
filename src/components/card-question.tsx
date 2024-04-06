@@ -20,7 +20,7 @@ const CardQuestion: React.FC<CardQuestionProps> = ({ title, answer, isQuestion, 
         <div className={`flip-card ${flipped ? 'isFlip' : ''}`}>
             <div className="flip-card-inner">
                 <div className="flip-card-front">
-                    <Card title={isQuestion ? 'Quiz Time' : 'News'} bordered={false} style={{ textAlign: 'center', height: 260 }}>
+                    <Card title={isQuestion ? 'Quiz Time' : 'Thông báo mới'} bordered={false} style={{ textAlign: 'center', height: 260 }}>
                         <div className='flip-question'>{title}</div>
                         {isQuestion ? <Button type='primary' onClick={flipCard}>Check Answer</Button> : <p>{description}</p>}
                     </Card>

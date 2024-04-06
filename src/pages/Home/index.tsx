@@ -1,5 +1,7 @@
-import { Carousel, Col, Row } from "antd";
+import { Carousel, Col, Divider, Row } from "antd";
 import CardQuestion from "../../components/card-question";
+import './home.scss'
+import CardCourse from "../../components/card-course";
 
 const fakeQuestion = [
     {
@@ -22,6 +24,20 @@ const fakeQuestion = [
         isQuestion: true
     },
 ]
+const fakeCourse = [
+    {
+        name: 'Sơ cấp 1',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Sơ cấp 1',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Sơ cấp 1',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    }
+]
 function Home() {
     return (
         <><div className="home-container">
@@ -35,11 +51,28 @@ function Home() {
                         autoplay
                         draggable
                     >
-                        {fakeQuestion.map((question) => {
-                            return <CardQuestion isQuestion={question.isQuestion} title={question.title} description={question.description} answer={question.answer} />
+                        {fakeQuestion.map((question, index) => {
+                            return <CardQuestion key={index} isQuestion={question.isQuestion} title={question.title} description={question.description} answer={question.answer} />
                         })}
                     </Carousel>
                 </Col>
+            </Row>
+            <Divider />
+            <Row>
+                <Col span={2} offset={4}>
+                    <div className="home-course-title">Khóa học</div>
+                </Col>
+            </Row>
+            <Row
+                style={{ marginLeft: 120 }}
+            >
+                {fakeCourse.map((course, index) => {
+                    return <>
+                        <Col style={{ marginBottom: 20 }} span={8} offset={2}>
+                            <CardCourse key={index} />
+                        </Col>
+                    </>
+                })}
             </Row>
         </div></>);
 }

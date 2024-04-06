@@ -1,0 +1,32 @@
+.card-course {
+    border: 1px solid #cbcbcb;
+    border-radius: 18px;
+    padding: 10px;
+}
+.ant-card-cover img {
+    object-fit: cover;
+    height: 280px;
+}
+.course-info {
+    display: flex;
+    justify-content: space-between;
+}
+.course-name {
+    width: 80%;
+    margin-top: -13px;
+}
+.course-time {
+    font-size: 16px;
+}
+.course-progress {
+    p {
+        font-weight: 500;
+        color: #047ecf;
+    }
+}
+.course-people {
+    font-size: 15px;
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+}
