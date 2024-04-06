@@ -24,7 +24,7 @@ const CardCourse: React.FC = () => {
                 <Card
                     // style={{ position: 'relative' }}
                     hoverable
-                    cover={<img alt="example" src="https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg" />}
+                    cover={<img style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }} alt="example" src="https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg" />}
                 >
                     <div className='course-info'>
                         <div className='course-name'>
