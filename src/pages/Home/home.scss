@@ -1,10 +1,36 @@
 .home-course {
     margin-top: 10px;
 }
-.home-course-title {
+.home-header {
+    background-image: url('../../assets/images/bg-home-header2.png');
+    position: relative;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.4); /* Màu đen với độ mờ 0.5 */
+        // background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ mờ 0.5 */
+    }
+}
+.home-title {
     font-weight: bold;
     font-size: 30px;
     margin-top: 10px;
     margin-bottom: 10px;
     color: #4d4d4d;
+}
+.home-exam {
+    display: flex;
+    // justify-content: center;
+    flex-wrap: wrap;
+    width: 60%;
+    margin-left: 10%;
+}
+.home-exam-ranking {
+    display: flex;
+    justify-content: center;
+    width: 30%;
 }

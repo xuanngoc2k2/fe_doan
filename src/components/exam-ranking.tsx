@@ -9,7 +9,7 @@ interface CardQuestionProps {
     description?: string;
 }
 
-const CardQuestion: React.FC<CardQuestionProps> = ({ title, answer, isQuestion, description }) => {
+const ExamRanking: React.FC<CardQuestionProps> = ({ title, answer, isQuestion, description }) => {
     const [flipped, setFlipped] = useState<boolean>(false);
 
     const flipCard = () => {
@@ -37,4 +37,4 @@ const CardQuestion: React.FC<CardQuestionProps> = ({ title, answer, isQuestion, 
     );
 };
 
-export default CardQuestion;
+export default ExamRanking;

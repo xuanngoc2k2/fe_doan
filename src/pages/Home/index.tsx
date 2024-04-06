@@ -2,6 +2,8 @@ import { Carousel, Col, Divider, Row } from "antd";
 import CardQuestion from "../../components/card-question";
 import './home.scss'
 import CardCourse from "../../components/card-course";
+import CardExam from "../../components/card-exam";
+import ExamRanking from "../../components/exam-ranking";
 
 const fakeQuestion = [
     {
@@ -30,51 +32,180 @@ const fakeCourse = [
         descriptions: 'Kiến thức nhập môn tiếng Hàn'
     },
     {
+        name: 'Sơ cấp 2',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    // {
+    //     name: 'Trung cấp 3',
+    //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    // },
+    // {
+    //     name: 'Trung cấp 4',
+    //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    // }
+]
+const fakeExam = [
+    {
         name: 'Sơ cấp 1',
         descriptions: 'Kiến thức nhập môn tiếng Hàn'
     },
     {
-        name: 'Sơ cấp 1',
+        name: 'Sơ cấp 2',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 3',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 4',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 3',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 4',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 3',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 4',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 4',
+        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+    },
+    {
+        name: 'Trung cấp 4',
         descriptions: 'Kiến thức nhập môn tiếng Hàn'
     }
 ]
+const fakeDataRanking = [
+    {
+        full_name: "Nguyễn Như Ý",
+        score: 98,
+        date: "April 4, 2024, 7:59 p.m"
+    },
+    {
+        full_name: "pham thi oanh",
+        score: 97,
+        date: "April 5, 2024, 10:10 a.m"
+    }, {
+        full_name: "thu hang",
+        score: 90,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "HO VAN THAI",
+        score: 86,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+    {
+        full_name: "tien",
+        score: 85,
+        date: "April 1, 2024, 9:58 p.m."
+    },
+]
 function Home() {
     return (
-        <><div className="home-container">
-            <Row>
-                <Col className="home-carousel" span={10} offset={7}>
-                    <Carousel
-                        dots={{ "className": "home-carousel-dot" }}
-                        style={{ overflow: "hidden", borderRadius: 10 }}
-                        pauseOnHover={true}
-                        pauseOnDotsHover={true}
-                        autoplay
-                        draggable
-                    >
-                        {fakeQuestion.map((question, index) => {
-                            return <CardQuestion key={index} isQuestion={question.isQuestion} title={question.title} description={question.description} answer={question.answer} />
+        <>
+            <div className="home-container">
+                <Row className="home-header">
+                    <Col className="home-carousel" span={10} offset={7}>
+                        <Carousel
+                            dots={{ "className": "home-carousel-dot" }}
+                            style={{ overflow: "hidden", borderRadius: 10 }}
+                            pauseOnHover={true}
+                            pauseOnDotsHover={true}
+                            autoplay
+                            draggable
+                        >
+                            {fakeQuestion.map((question, index) => {
+                                return <CardQuestion key={index} isQuestion={question.isQuestion} title={question.title} description={question.description} answer={question.answer} />
+                            })}
+                        </Carousel>
+                    </Col>
+                </Row>
+                {/* <Divider /> */}
+                <Row
+                    style={{ marginTop: 20 }}
+                >
+                    <Col span={2} offset={4}>
+                        <div className="home-title">Khóa học</div>
+                    </Col>
+                </Row>
+                <Row
+                    style={{ marginLeft: 120 }}
+                >
+                    {fakeCourse.map((course, index) => {
+                        return <>
+                            <Col style={{ marginBottom: 20 }} span={8} offset={2}>
+                                <CardCourse key={index} />
+                            </Col>
+                        </>
+                    })}
+                </Row>
+                <Divider />
+                <Row>
+                    <Col span={2} offset={4}>
+                        <div className="home-title">Đề thi</div>
+                    </Col>
+                </Row>
+                <Row >
+                    <Row className="home-exam">
+                        {fakeExam.map(() => {
+                            return <>
+                                <Col>
+                                    <CardExam />
+                                </Col>
+                            </>
                         })}
-                    </Carousel>
-                </Col>
-            </Row>
-            <Divider />
-            <Row>
-                <Col span={2} offset={4}>
-                    <div className="home-course-title">Khóa học</div>
-                </Col>
-            </Row>
-            <Row
-                style={{ marginLeft: 120 }}
-            >
-                {fakeCourse.map((course, index) => {
-                    return <>
-                        <Col style={{ marginBottom: 20 }} span={8} offset={2}>
-                            <CardCourse key={index} />
-                        </Col>
-                    </>
-                })}
-            </Row>
-        </div></>);
+                    </Row >
+                    <Row className="home-exam-ranking">
+                        <h3>
+                            Bảng xếp hạng
+                        </h3>
+                        <ExamRanking data={fakeDataRanking} />
+                    </Row >
+                </Row>
+                <Divider />
+            </div></>);
 }
 
 export default Home;
