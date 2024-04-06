@@ -90,7 +90,8 @@ const fakeDataRanking = [
     {
         full_name: "Nguyễn Như Ý",
         score: 98,
-        date: "April 4, 2024, 7:59 p.m"
+        date: "April 4, 2024, 7:59 p.m",
+        image: "https://onthitopik.vn/media/images/default.png"
     },
     {
         full_name: "pham thi oanh",
@@ -124,12 +125,7 @@ const fakeDataRanking = [
     {
         full_name: "tien",
         score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
+        date: "April 1, 2024, 9:58 p.m.qqqqqqqqqqqqq"
     },
     {
         full_name: "tien",
@@ -198,9 +194,6 @@ function Home() {
                         })}
                     </Row >
                     <Row className="home-exam-ranking">
-                        <h3>
-                            Bảng xếp hạng
-                        </h3>
                         <ExamRanking data={fakeDataRanking} />
                     </Row >
                 </Row>

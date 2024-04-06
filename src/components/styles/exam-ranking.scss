@@ -1,0 +1,17 @@
+.exam-ranking-card {
+    // margin-bottom: 'auto' !important;
+}
+.exam-ranking-table {
+    font-size: 12px !important;
+    margin-top: -15px;
+    thead,
+    tbody {
+        tr {
+            th,
+            td {
+                text-align: center !important;
+                padding: 3px 1px !important;
+            }
+        }
+    }
+}
