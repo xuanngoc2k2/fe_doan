@@ -62,6 +62,7 @@ function News() {
                 }} className='new-model-button-close' />
             </div>}
             open={open}
+            onCancel={() => setOpen(false)}
             width={1000}
             className='new-model-detail'
             footer={<></>}
