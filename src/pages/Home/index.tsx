@@ -1,9 +1,16 @@
-import { Carousel, Col, Divider, Row } from "antd";
+import {
+    Carousel, Col, Divider, Input,
+    // message,
+    Row
+} from "antd";
 import CardQuestion from "../../components/card-question";
 import './home.scss'
 import CardCourse from "../../components/card-course";
 import CardExam from "../../components/card-exam";
 import ExamRanking from "../../components/exam-ranking";
+import { SearchProps } from "antd/es/input";
+import WordInfo from "../../components/word-info";
+import { useState } from "react";
 
 const fakeQuestion = [
     {
@@ -138,9 +145,40 @@ const fakeDataRanking = [
         date: "April 1, 2024, 9:58 p.m."
     },
 ]
+
+// function isKorean(text: string) {
+//     const koreanRegex = /[\uac00-\ud7a3]/;
+//     return koreanRegex.test(text);
+// }
 function Home() {
+    // const [messageApi, contextHolder] = message.useMessage();
+    const [word, setWord] = useState('');
+    const [search, setSearch] = useState(false);
+
+    // const error = (message: string) => {
+    //     messageApi.open({
+    //         type: 'error',
+    //         content: message,
+    //         style: {
+    //             marginTop: '20vh',
+    //         },
+    //     });
+    // };
+    const onSearch: SearchProps['onSearch'] = (value) => {
+        //     if (value === '' && search) {
+        //         error('Không được để trống !')
+        //     }
+        //     else if (!isKorean(value) && search) {
+        //         error('Ngôn ngữ nhập vào phải là Tiếng hàn')
+        //     }
+        //     else {
+        console.log(value)
+        setSearch(true)
+        //     }
+    };
     return (
         <>
+            {/* {contextHolder} */}
             <div className="home-container">
                 <Row className="home-header">
                     <Col className="home-carousel" span={10} offset={7}>
@@ -196,6 +234,27 @@ function Home() {
                     <Row className="home-exam-ranking">
                         <ExamRanking data={fakeDataRanking} />
                     </Row >
+                </Row>
+                <Divider />
+                <Row>
+                    <Col span={2} offset={4}>
+                        <div className="home-title">Từ vựng</div>
+                    </Col>
+                </Row>
+                <Row style={{ alignItems: 'center', flexFlow: 'column' }}>
+                    <Col className="home-search">
+                        <Input.Search
+                            placeholder="Nhập từ mới"
+                            size="large"
+                            allowClear
+                            onChange={(e) => { setWord(e.target.value); setSearch(false) }}
+                            className="home-search-input"
+                            onSearch={onSearch}
+                            value={word}
+                        />
+                    </Col>
+                    <br />
+                    {search && <div className="home-seach-word-info"><WordInfo word={word} /></div>}
                 </Row>
                 <Divider />
             </div></>);

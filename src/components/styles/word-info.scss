@@ -1,0 +1,57 @@
+.word-info {
+    border: 4px dashed #1677ff;
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+}
+.word-info-title {
+    font-weight: 500;
+}
+.word-info-part-of-speech {
+    font-style: italic;
+    font-weight: 500;
+    color: #013a89;
+}
+.word-info-pronunciation {
+    position: relative;
+    margin-bottom: 20px;
+    &::before {
+        position: absolute;
+        content: '';
+        bottom: -10px;
+        width: 100%;
+        height: 2px;
+        background-color: rgb(255, 174, 0);
+    }
+}
+.word-info-meaning {
+    font-weight: 500;
+    font-size: 20px;
+}
+.word-info-example {
+    margin-left: 40px;
+    margin-top: 5px;
+    position: relative;
+    &::before {
+        position: absolute;
+        content: '';
+        bottom: 8px;
+        left: -10px;
+        width: 5px;
+        height: 5px;
+        background-color: black;
+        border-radius: 50%;
+    }
+}
+.word-info-example-meaning {
+    margin-left: 40px;
+}
+.add-to-my-vocab {
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+    font-size: 25px;
+    &:active {
+        opacity: 0.7;
+    }
+}

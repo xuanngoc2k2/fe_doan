@@ -29,6 +29,29 @@
     width: 60%;
     margin-left: 10%;
 }
+
 .home-exam-ranking {
     width: 30%;
+}
+.home-search {
+    width: 50%;
+}
+.home-search-input {
+    .ant-input-outlined {
+        // padding-left: 20px;
+        padding: 10px 10px 10px 20px;
+        border-radius: 130px 0px 0px 130px !important;
+        border: 1px solid #1677ff;
+    }
+    button {
+        border-radius: 0px 130px 130px 0px !important;
+        padding: 22px !important;
+        border: 1px solid #1677ff;
+        span {
+            padding-right: 2px;
+        }
+    }
+}
+.home-seach-word-info {
+    width: 40%;
 }
