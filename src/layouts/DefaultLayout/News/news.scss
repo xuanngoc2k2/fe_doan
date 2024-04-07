@@ -1,0 +1,53 @@
+.news-model {
+    position: fixed; // Sử dụng fixed thay vì absolute để nó luôn nằm ở góc dưới màn hình
+    left: 40px; // Đặt cố định ở góc trái
+    bottom: 30px;
+}
+
+.new-model-icon {
+    border: 2px solid #1677ff;
+    border-radius: 50%;
+    padding: 10px 12px 10px 10px;
+    transform: rotate(-25deg);
+    &:hover {
+        cursor: pointer;
+    }
+    &:active {
+        opacity: 0.6;
+    }
+}
+.new-model-detail {
+    .ant-modal-content {
+        padding: 0px 0px 24px 0px;
+        border-radius: 20px !important;
+        max-height: 80vh;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 0;
+        }
+    }
+    .ant-modal-header {
+        position: sticky; /* Đảm bảo header luôn ở trên cùng */
+        top: 0; /* Đặt header ở đỉnh cửa sổ */
+        z-index: 1; /* Đảm bảo header hiển thị trên các nội dung khác */
+    }
+    .ant-modal-close {
+        display: none;
+    }
+    .ant-modal-title {
+        padding-top: 5px;
+        font-size: 23px;
+        font-weight: 700;
+        text-align: center;
+
+        .new-model-button-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+    }
+    .ant-modal-body {
+        padding: 0px 24px;
+    }
+}
