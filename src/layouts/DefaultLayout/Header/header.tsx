@@ -23,16 +23,22 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                         className="header-menu"
                         mode="horizontal"
                     >
-                        <Menu.Item icon={<BookOutlined />}>Khóa học</Menu.Item>
+                        {/* <Menu.Item key={'home'} style={{ display: '' }}><Link to={'/'}>Home</Link></Menu.Item> */}
+                        <Menu.Item key={'course'} icon={<BookOutlined />}><Link to={'/course'}>Khóa học</Link></Menu.Item>
                         <Menu.SubMenu
                             style={{ marginRight: 30, marginLeft: 30 }}
                             icon={<HighlightOutlined />}
-                            title={<>Ôn thi <span><CaretDownOutlined /></span></>}
+                            title=
+                            {
+                                <>
+                                    Ôn thi <span><CaretDownOutlined /></span>
+                                </>
+                            }
                         >
                             <Menu.Item key="topikI">LÀM ĐỀ TOPIK I</Menu.Item>
                             <Menu.Item key="topikII">LÀM ĐỀ TOPIK II</Menu.Item>
                         </Menu.SubMenu>
-                        <Menu.Item icon={<FontColorsOutlined />}>Từ vựng</Menu.Item>
+                        <Menu.Item key='vocabulary' icon={<FontColorsOutlined />}>Từ vựng</Menu.Item>
                     </Menu>
                 </Col>
                 <Col span={6} className="header-avatar-profile">

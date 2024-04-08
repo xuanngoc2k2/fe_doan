@@ -35,12 +35,20 @@ const fakeQuestion = [
 ]
 const fakeCourse = [
     {
-        name: 'Sơ cấp 1',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        course_name: 'Sơ cấp 1',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
+        progress: 50,
+        time: 30,
+        count: 502
     },
     {
-        name: 'Sơ cấp 2',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        course_name: 'Sơ cấp 2',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
+        progress: 50,
+        time: 30,
+        count: 502
     },
     // {
     //     name: 'Trung cấp 3',
@@ -210,7 +218,7 @@ function Home() {
                     {fakeCourse.map((course, index) => {
                         return <>
                             <Col style={{ marginBottom: 20 }} span={8} offset={2}>
-                                <CardCourse key={index} />
+                                <CardCourse course={course} key={index} />
                             </Col>
                         </>
                     })}

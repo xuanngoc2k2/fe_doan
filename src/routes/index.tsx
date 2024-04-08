@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import Course from '../pages/Course';
 import NotSidebarLayout from '../layouts/NotSidebarLayout';
 import Register from '../pages/Auth/register';
+import Exam from '../pages/Exam';
 
 interface Route {
   path: string;
@@ -30,8 +31,11 @@ const publicRoutes: Route[] = [
   },
   {
     path: '/course',
-    component: Course,
-    layout: NotSidebarLayout
+    component: Course
+  },
+  {
+    path: '/exam',
+    component: Exam
   }
 ];
 
