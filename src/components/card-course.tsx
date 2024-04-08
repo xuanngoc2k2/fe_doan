@@ -14,6 +14,7 @@ interface CourseProps {
         progress?: number;
         time: number;
         count: number;
+        id?: number;
     }
 }
 
@@ -24,7 +25,7 @@ const twoColors: ProgressProps['strokeColor'] = {
 const CardCourse: React.FC<CourseProps> = ({ course }) => {
     return (
         <div className='card-course' style={{ marginBottom: 20 }}>
-            <Link to="/">
+            <Link to={course.id ? `/course/${course.id}` : '/'}>
                 <Card
                     // style={{ position: 'relative' }}
                     hoverable

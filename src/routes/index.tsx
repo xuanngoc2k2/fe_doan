@@ -5,6 +5,7 @@ import Course from '../pages/Course';
 import NotSidebarLayout from '../layouts/NotSidebarLayout';
 import Register from '../pages/Auth/register';
 import Exam from '../pages/Exam';
+import CourseDetail from '../components/course-detail';
 
 interface Route {
   path: string;
@@ -36,6 +37,10 @@ const publicRoutes: Route[] = [
   {
     path: '/exam',
     component: Exam
+  },
+  {
+    path: '/course/:id',
+    component: CourseDetail
   }
 ];
 

@@ -1,0 +1,31 @@
+.list-lesson {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: column;
+    .ant-space-item {
+        width: 100%;
+    }
+}
+.item-lesson-detail {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+.item-lesson-index,
+.item-lesson-title {
+    font-size: 16px;
+}
+.item-lesson-title {
+    margin-left: 5px;
+}
+.item-lesson-icon {
+    margin-right: 5px;
+    color: #047ecf;
+}
+.item-lesson-duration {
+}
+.item-lesson-isComplete {
+}

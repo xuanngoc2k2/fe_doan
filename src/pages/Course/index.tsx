@@ -9,7 +9,8 @@ const fakeCourse = [
         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 1
     },
     {
         course_name: 'Sơ cấp 2',
@@ -17,7 +18,8 @@ const fakeCourse = [
         images: 'https://korealink.edu.vn/cms/static/site/korealink/uploads/ckeditor/images.thumb.f8ecd972-1eca-410e-8000-98675b00bc88.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 2
     },
     {
         course_name: 'Trung cấp 3',
@@ -25,7 +27,8 @@ const fakeCourse = [
         images: 'https://korealink.edu.vn/cms/static/site/korealink/uploads/ckeditor/images.thumb.a6e32547-7cc3-4319-83a7-dd0aafe7c0b0.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 3
     },
     {
         course_name: 'Trung cấp 4',
@@ -33,7 +36,8 @@ const fakeCourse = [
         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 4
     },
     {
         course_name: 'Sơ cấp 1',
@@ -41,7 +45,8 @@ const fakeCourse = [
         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 5
     },
     {
         course_name: 'Sơ cấp 2',
@@ -49,7 +54,8 @@ const fakeCourse = [
         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
         progress: 50,
         time: 30,
-        count: 502
+        count: 502,
+        id: 6
     },
     {
         course_name: 'Trung cấp 3',
