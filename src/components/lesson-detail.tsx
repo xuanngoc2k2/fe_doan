@@ -4,9 +4,9 @@ import './styles/lesson-detail.scss'
 // import { Divider } from "antd";
 
 import video from "./testmp4.mp4"
-import { Avatar, Button, Drawer, Input, message, Space } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { PlusOutlined, WechatOutlined } from "@ant-design/icons";
+import { Avatar, Button, Drawer, Input, message, Space, Tag } from "antd";
+import { useRef, useState } from "react";
+import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
 import ReactQuill from "react-quill";
 const course = {
@@ -184,54 +184,63 @@ const lesson =
 };
 const listComment = [
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2023',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '4:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '4/9/2024',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
-        comment: 'vps là j nó có phải sever k ạ',
+        commentAt: '6:00',
+        comment: 'Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá',
         createAt: '4/7/2024',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '7:15',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2002',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2002',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2002',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2002',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/17/2002',
         userName: 'Nguyễn Xuân Ngọc',
         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
     },
     {
+        commentAt: '2:00',
         comment: 'vps là j nó có phải sever k ạ',
         createAt: '11/1/2002',
         userName: 'Nguyễn Xuân Ngọc',
@@ -271,22 +280,37 @@ function calculateDistanceToNow(dateString: string) {
 
     return resultString;
 }
+function timeStringToSeconds(timeString: string) {
+    // Tách giờ và phút từ chuỗi thời gian
+    const [minutes, seconds] = timeString.split(':').map(Number);
+
+    // Chuyển đổi giờ và phút thành số giây
+    const totalSeconds = minutes * 60 + seconds;
+
+    return totalSeconds;
+
+}
+
 function LessonDetail() {
     const { courseId } = useParams();
 
     const [currentTime, setCurrentTime] = useState('');
     const [showAddNote, setShowAddNote] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const [openComment, setOpenComment] = useState(false);
+    const [openCommentDrawer, setOpenCommentDrawer] = useState(false);
+    const [openNoteDrawer, setOpenNoteDrawer] = useState(false);
     const [comment, setComment] = useState('');
     const [showInputComment, setShowInputComment] = useState(false);
-    const showDrawer = () => {
-        setOpenComment(true);
+    const showDrawerComment = () => {
+        setOpenCommentDrawer(true);
     };
 
-    const onCloseDrawer = () => {
-        setOpenComment(false);
+    const onCloseCommentDrawer = () => {
+        setOpenCommentDrawer(false);
     };
+    const onCloseNoteDrawer = () => {
+        setOpenNoteDrawer(false);
+    }
     const handleAddNote = () => {
         if (currentTime !== '') {
             setShowAddNote(true);
@@ -307,13 +331,14 @@ function LessonDetail() {
 
     const handelCancel = () => {
         setShowAddNote(false);
-        setOpenComment(false)
+        setOpenCommentDrawer(false)
         if (videoRef.current) {
             videoRef.current.play(); // Resume video when AddNote is closed
         }
     }
     const handelComment = () => {
         listComment.push({
+            commentAt: '2:00',
             comment: comment,
             createAt: '11/17/2002',
             userName: 'Nguyễn Xuân Ngọc',
@@ -322,10 +347,16 @@ function LessonDetail() {
         })
         console.log(comment);
     }
-    useEffect(() => {
-        // Xử lý logic khi có sự thay đổi trong listComment
-    }, [listComment])
 
+    const handleShowNote = () => {
+        setOpenNoteDrawer(true);
+    }
+
+    const handelEditNote = (currentTime: string) => {
+        //khả năng phải sửa thêm giống comment
+        //dài vcl
+        console.log(currentTime);
+    }
     return (
         <>
             <div className="lesson-detail-container">
@@ -353,15 +384,17 @@ function LessonDetail() {
                         </div>
                     </>
                 </div>
-                <Button className="button-comments" onClick={showDrawer}><WechatOutlined /> Trao đổi</Button>
+                {/* Button trao đổi */}
+                <Button className="button-comments" onClick={showDrawerComment}><WechatOutlined /> Trao đổi</Button>
                 <div className="comment-component">
                     {showAddNote && <AddNode handelCancel={handelCancel} time={currentTime} />}
                 </div>
+                {/* Drawer bình luận */}
                 <Drawer
                     title=""
                     width={700}
-                    onClose={onCloseDrawer}
-                    open={openComment}
+                    onClose={onCloseCommentDrawer}
+                    open={openCommentDrawer}
                 >
                     <Space size={20} style={{ width: '100%' }} direction="vertical">
                         <div>
@@ -398,6 +431,43 @@ function LessonDetail() {
                         })}
                     </Space>
                 </Drawer>
+                <Drawer
+                    placement="left"
+                    title="Ghi chú"
+                    width={700}
+                    onClose={onCloseNoteDrawer}
+                    open={openNoteDrawer}
+                >
+                    <Space size={20} style={{ width: '100%' }} direction="vertical">
+                        {listComment.map((comment) => {
+                            return (
+                                <div className="block-note">
+                                    <div className="block-note-title">
+                                        <a style={{
+                                            color: '#cf1f2f'
+                                        }} href="#" onClick={() => {
+                                            if (videoRef.current?.currentTime) {
+                                                console.log(timeStringToSeconds(comment.commentAt))
+                                                videoRef.current.currentTime = timeStringToSeconds(comment.commentAt);
+                                            }
+                                        }}><Tag style={{ fontSize: 21, borderRadius: '20px', padding: '3px 10px' }} color="red">
+                                                {comment.commentAt}
+                                            </Tag>
+                                            {lesson.lesson_name}
+                                        </a>
+                                        <div>
+                                            <EditOutlined onClick={() => handelEditNote(comment.commentAt)} className="block-note-title-btn" />
+                                            <DeleteOutlined className="block-note-title-btn" />
+                                        </div>
+                                    </div>
+                                    <div className="block-note-content">
+                                        <p className="comment-content">{comment.comment}</p>
+                                    </div>
+                                </div>)
+                        })}
+                    </Space>
+                </Drawer>
+                <Button className="button-note" onClick={handleShowNote}><WechatOutlined /> Ghi chú</Button>
             </div >
             {/* <Divider /> */}
         </>);
