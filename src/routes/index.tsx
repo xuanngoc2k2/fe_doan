@@ -6,6 +6,8 @@ import NotSidebarLayout from '../layouts/NotSidebarLayout';
 import Register from '../pages/Auth/register';
 import Exam from '../pages/Exam';
 import CourseDetail from '../components/course-detail';
+import LessonDetail from '../components/lesson-detail';
+import NotNewsLayout from '../layouts/NotNewsLayout';
 
 interface Route {
   path: string;
@@ -41,6 +43,11 @@ const publicRoutes: Route[] = [
   {
     path: '/course/:id',
     component: CourseDetail
+  },
+  {
+    path: '/lesson/:courseId/:lessonId',
+    component: LessonDetail,
+    layout: NotNewsLayout
   }
 ];
 

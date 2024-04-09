@@ -11,7 +11,7 @@ const course = {
     progress: 50,
     time: 30,
     count: 502,
-    id: 5,
+    id: 1,
     lesson: [
         {
             isVideo: true,
@@ -164,7 +164,7 @@ function CourseDetail() {
         <>
             <div className="course-detail">
                 <Card className="course-detail-lesson" title={course.course_name + id}>
-                    <ListLesson lessons={course.lesson} />
+                    <ListLesson courseId={course.id} lessons={course.lesson} />
                 </Card>
                 <Card className="course-detail-demo">
                     <div className="course-detail-demo-des">

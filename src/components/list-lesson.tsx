@@ -9,16 +9,15 @@ interface ILesson {
     isVideo: boolean;
     id: number;
 }
-function ListLesson({ lessons }: { lessons: ILesson[] }) {
+function ListLesson({ lessons, courseId }: { lessons: ILesson[], courseId: number }) {
     return (<>
-        <Space className="list-lesson" size={30}>
+        <Space style={{ fontFamily: 'Segoe UI' }} className="list-lesson" size={30}>
             {lessons.map((lesson, index) => {
-                return <Link style={{ color: 'black' }} to={`/lesson/${lesson.id}`}><div key={index} className="item-lesson-detail">
-                    <div style={{ display: 'flex' }}>
-                        <p className="item-lesson-index">Lesson {index}:</p>
-                        <p className="item-lesson-title">{lesson.lesson_name}</p>
+                return <Link style={{ color: 'black' }} to={`/lesson/${courseId}/${lesson.id}`}><div key={index} className="item-lesson-detail">
+                    <div style={{ display: 'flex', width: '80%' }}>
+                        <p className="item-lesson-title">Lesson {index}: {lesson.lesson_name}</p>
                     </div>
-                    <div style={{ display: 'flex', marginRight: 4 }}>
+                    <div style={{ display: 'flex', marginRight: 4, width: '20%', justifyContent: 'flex-end' }}>
                         <p className="item-lesson-duration">{lesson.isVideo ? <PlayCircleOutlined className="item-lesson-icon" /> : <BookOutlined className="item-lesson-icon" />}{lesson.duration}</p>
                         <p className="item-lesson-isComplete">{lesson.isComplete && <CheckCircleFilled style={{ color: 'green', marginLeft: 10, marginRight: 2 }} />}</p>
                     </div>

@@ -1,0 +1,66 @@
+.lesson-detail-container {
+    display: flex;
+    // margin-top: 20px;
+}
+.lesson-detail-list-lesson {
+    padding-top: 30px;
+    width: 25%;
+    margin-left: 20px;
+    margin-right: 10px;
+    height: 78vh;
+    overflow-y: scroll;
+    // border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+// .lesson-detail-list-lesson,
+.lesson-detail-content {
+    height: 82vh;
+    overflow-y: scroll;
+}
+.lesson-detail-content {
+    // display: flex;
+    // flex-flow: column;
+    width: 75%;
+    .lesson-detail-main-content,
+    .lesson-detail-main-des {
+        position: relative;
+        top: 0;
+        left: 5%;
+        width: 90%;
+    }
+}
+.lesson-detail-main-des {
+    font-family: 'Segoe UI';
+    position: relative;
+    .lesson-detail-name {
+        font-size: 30px;
+        font-weight: 600;
+        margin: 20px;
+    }
+    .button-add-note {
+        background-color: #ccc;
+        position: absolute;
+        top: 5px;
+        right: 0;
+    }
+}
+.button-comments {
+    position: absolute;
+    right: 25px;
+    bottom: 15px;
+    box-shadow: 2px 10px 45px 10px #047ecf7b;
+    border-radius: 30px;
+    color: rgb(224, 6, 6);
+    font-weight: 500;
+    &:hover {
+        color: rgb(224, 6, 6) !important;
+        border-color: rgb(224, 6, 6) !important;
+    }
+    // font-size: 16px;
+}
+.comment-component {
+    position: absolute;
+    width: 70%;
+    bottom: 0;
+    left: 27%;
+}

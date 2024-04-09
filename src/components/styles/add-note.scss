@@ -1,0 +1,21 @@
+.comment-app {
+    background-color: white !important;
+    height: 300px;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    padding: 10px;
+    h1 {
+        padding: 10px;
+    }
+    .comment-app-word {
+        .ql-container {
+            height: 130px;
+            overflow-y: scroll;
+        }
+    }
+    .comment-btn-cancel,
+    .comment-btn-add-note {
+        margin-top: 10px;
+        margin-right: 20px;
+    }
+}
