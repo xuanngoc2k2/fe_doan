@@ -21,50 +21,16 @@ interface Route {
 }
 
 const publicRoutes: Route[] = [
-  {
-    path: '/',
-    component: Home
-  },
-  {
-    path: '/login',
-    component: Login,
-    layout: NotSidebarLayout // Đặt layout là null cho trường hợp này
-  },
-  {
-    path: '/register',
-    component: Register,
-    layout: NotSidebarLayout // Đặt layout là null cho trường hợp này
-  },
-  {
-    path: '/course',
-    component: Course
-  },
-  {
-    path: '/exams',
-    component: Exam
-  },
-  {
-    path: '/course/:id',
-    component: CourseDetail
-  },
-  {
-    path: '/lesson/:courseId/:lessonId',
-    component: LessonDetail,
-    layout: NotNewsLayout
-  },
-  {
-    path: '/exams/:idTypeExam',
-    component: Exams
-  },
-  {
-    path: '/exam/:idExam',
-    component: ExamDetail
-  },
-  {
-    path: '/exam/questions/:idExam',
-    component: QuestionExam,
-    layout: NotNewsLayout
-  }
+  { path: '/', component: Home },
+  { path: '/login', component: Login, layout: NotSidebarLayout },
+  { path: '/register', component: Register, layout: NotSidebarLayout },
+  { path: '/course', component: Course },
+  { path: '/exams', component: Exam },
+  { path: '/course/:id', component: CourseDetail },
+  { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
+  { path: '/exams/:idTypeExam', component: Exams },
+  { path: '/exam/:idExam', component: ExamDetail },
+  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout }
 ];
 
 const privateRoutes: Route[] = [];
