@@ -4,10 +4,11 @@ import Home from '../pages/Home';
 import Course from '../pages/Course';
 import NotSidebarLayout from '../layouts/NotSidebarLayout';
 import Register from '../pages/Auth/register';
-import Exam from '../pages/Exam';
+import Exam from '../pages/Exams';
 import CourseDetail from '../components/course-detail';
 import LessonDetail from '../components/lesson-detail';
 import NotNewsLayout from '../layouts/NotNewsLayout';
+import Exams from '../pages/Exams';
 
 interface Route {
   path: string;
@@ -37,7 +38,7 @@ const publicRoutes: Route[] = [
     component: Course
   },
   {
-    path: '/exam',
+    path: '/exams',
     component: Exam
   },
   {
@@ -48,7 +49,11 @@ const publicRoutes: Route[] = [
     path: '/lesson/:courseId/:lessonId',
     component: LessonDetail,
     layout: NotNewsLayout
-  }
+  },
+  {
+    path: '/exams/:idTypeExam',
+    component: Exams
+  },
 ];
 
 const privateRoutes: Route[] = [];

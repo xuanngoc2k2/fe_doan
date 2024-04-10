@@ -35,8 +35,8 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                                 </>
                             }
                         >
-                            <Menu.Item key="topikI">LÀM ĐỀ TOPIK I</Menu.Item>
-                            <Menu.Item key="topikII">LÀM ĐỀ TOPIK II</Menu.Item>
+                            <Menu.Item key="topikI"><Link to={'/exams/1'}>LÀM ĐỀ TOPIK I</Link></Menu.Item>
+                            <Menu.Item key="topikII"><Link to={'/exams/2'}>LÀM ĐỀ TOPIK II</Link></Menu.Item>
                         </Menu.SubMenu>
                         <Menu.Item key='vocabulary' icon={<FontColorsOutlined />}>Từ vựng</Menu.Item>
                     </Menu>

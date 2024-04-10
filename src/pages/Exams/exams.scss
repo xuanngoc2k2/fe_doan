@@ -1,0 +1,13 @@
+.exams-container {
+    display: flex;
+    flex-wrap: wrap;
+    .exams-list {
+        display: flex;
+        flex-wrap: wrap;
+        width: 60%;
+        margin-left: 10%;
+    }
+    .exams-ranking {
+        width: 30%;
+    }
+}

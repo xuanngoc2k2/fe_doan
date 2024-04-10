@@ -61,46 +61,107 @@ const fakeCourse = [
 ]
 const fakeExam = [
     {
-        name: 'Sơ cấp 1',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        exam_name: 'Sơ cấp 1',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        id: 1,
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Sơ cấp 2',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        exam_name: 'Sơ cấp 2',
+        id: 1,
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 3',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        exam_name: 'Trung cấp 3',
+        id: 1,
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 4',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 1,
+        exam_name: 'Trung cấp 4',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 3',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 12,
+        exam_name: 'Trung cấp 3',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 4',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 3,
+        exam_name: 'Trung cấp 4',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 3',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 4,
+        exam_name: 'Trung cấp 3',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 4',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 5,
+        exam_name: 'Trung cấp 4',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 4',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 5,
+        exam_name: 'Trung cấp 4',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     },
     {
-        name: 'Trung cấp 4',
-        descriptions: 'Kiến thức nhập môn tiếng Hàn'
+        id: 6,
+        exam_name: 'Trung cấp 4',
+        description: 'Kiến thức nhập môn tiếng Hàn',
+        duration: 40,
+        countUser: 230,
+        countTypeQuestion: 10,
+        countQuestion: 200,
+        type: 'TOPIK I'
     }
 ]
+
 const fakeDataRanking = [
     {
         full_name: "Nguyễn Như Ý",
@@ -231,10 +292,10 @@ function Home() {
                 </Row>
                 <Row >
                     <Row className="home-exam">
-                        {fakeExam.map(() => {
+                        {fakeExam.map((exam, index) => {
                             return <>
-                                <Col>
-                                    <CardExam />
+                                <Col key={index}>
+                                    <CardExam exam={exam} />
                                 </Col>
                             </>
                         })}
