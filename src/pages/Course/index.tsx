@@ -1,4 +1,4 @@
-import { Col, Divider, Row } from "antd";
+import { Col, Row } from "antd";
 import CardCourse from "../../components/card-course";
 import './course.scss';
 
@@ -76,7 +76,7 @@ const fakeCourse = [
 ]
 function Course() {
     return (
-        <>
+        <div style={{ marginBottom: 20 }}>
             <Row>
                 <Col span={2} offset={4}>
                     <div className="home-title">Khóa học</div>
@@ -89,8 +89,7 @@ function Course() {
                     </Col>
                 })}
             </Row>
-            <Divider />
-        </>);
+        </div>);
 }
 
 export default Course;

@@ -9,6 +9,8 @@ import CourseDetail from '../components/course-detail';
 import LessonDetail from '../components/lesson-detail';
 import NotNewsLayout from '../layouts/NotNewsLayout';
 import Exams from '../pages/Exams';
+import ExamDetail from '../components/exam-detail';
+import QuestionExam from '../components/question-exam';
 
 interface Route {
   path: string;
@@ -54,6 +56,15 @@ const publicRoutes: Route[] = [
     path: '/exams/:idTypeExam',
     component: Exams
   },
+  {
+    path: '/exam/:idExam',
+    component: ExamDetail
+  },
+  {
+    path: '/exam/questions/:idExam',
+    component: QuestionExam,
+    layout: NotNewsLayout
+  }
 ];
 
 const privateRoutes: Route[] = [];

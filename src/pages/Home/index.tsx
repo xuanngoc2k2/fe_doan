@@ -325,7 +325,6 @@ function Home() {
                     <br />
                     {search && <div className="home-seach-word-info"><WordInfo word={word} /></div>}
                 </Row>
-                <Divider />
             </div></>);
 }
 

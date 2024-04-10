@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Tooltip } from "antd";
+import { Button, Card, Tooltip } from "antd";
 // import { useParams } from "react-router-dom";
 import './styles/course-detail.scss'
 import ListLesson from "./list-lesson";
@@ -173,8 +173,7 @@ function CourseDetail() {
                     </div>
                     <Button type="primary">Start Course</Button>
                 </Card>
-            </div>
-            <Divider /></>
+            </div></>
     );
 }
 

@@ -1,4 +1,4 @@
-import { Col, Divider, Row } from "antd";
+import { Col, Row } from "antd";
 import ExamRanking from "../../components/exam-ranking";
 import CardExam from "../../components/card-exam";
 import './exams.scss'
@@ -180,7 +180,6 @@ function Exams() {
                     <ExamRanking data={fakeDataRanking} />
                 </Row >
             </Row>
-            <Divider />
         </>
     );
 }

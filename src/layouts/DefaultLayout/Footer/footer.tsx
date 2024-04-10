@@ -1,9 +1,10 @@
-import { Col, Row } from "antd";
+import { Col, Divider, Row } from "antd";
 import { Link } from "react-router-dom";
 import './footer.scss'
 
 function Footer() {
     return (<>
+        <Divider className="footer-divider" />
         <Row className="footer-container">
             <Col span={8} className="footer-logo">
                 <Link to={'/'}>
