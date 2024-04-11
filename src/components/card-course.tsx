@@ -6,30 +6,25 @@ import {
     //  UsergroupAddOutlined 
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-interface CourseProps {
-    course: {
-        course_name: string;
-        description: string;
-        images?: string;
-        progress?: number;
-        time: number;
-        count: number;
-        id?: number;
-    }
-}
+import { ICourse } from '../custom/type';
+import { backEndUrl } from '../apis';
 
 const twoColors: ProgressProps['strokeColor'] = {
     '0%': '#108ee9',
     '100%': '#87d068',
 };
-const CardCourse: React.FC<CourseProps> = ({ course }) => {
+const CardCourse: React.FC<{ course: ICourse }> = ({ course }) => {
     return (
         <div className='card-course' style={{ marginBottom: 20 }}>
             <Link to={course.id ? `/course/${course.id}` : '/'}>
                 <Card
                     // style={{ position: 'relative' }}
                     hoverable
-                    cover={<img style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }} alt="example" src={course.images ? course.images : "https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg"} />}
+                    cover={
+                        <img
+                            style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
+                            alt="example"
+                            src={`${backEndUrl}/images/course/${course.image}`} />}
                 >
                     <div className='course-info'>
                         <div className='course-name'>
@@ -42,11 +37,11 @@ const CardCourse: React.FC<CourseProps> = ({ course }) => {
                         </div>
                     </div>
                     <div className='course-progress'>
-                        <Progress strokeColor={twoColors} percent={10} showInfo={false} />
-                        <p>{course.progress ? course.progress : 0}% Hoàn thành</p>
+                        <Progress strokeColor={twoColors} percent={course.progress || 0} showInfo={false} />
+                        <p>{course.progress || 0}% Hoàn thành</p>
                     </div>
                     <div className='course-people'>
-                        <UsergroupAddOutlined /> <span>{course.count}</span>
+                        <UsergroupAddOutlined /> <span>{course.countUser}</span>
                     </div>
                     {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
                 </Card>

@@ -1,5 +1,6 @@
 import {
     Carousel, Col, Divider, Input,
+    message,
     // message,
     Row
 } from "antd";
@@ -10,7 +11,8 @@ import CardExam from "../../components/card-exam";
 import ExamRanking from "../../components/exam-ranking";
 import { SearchProps } from "antd/es/input";
 import WordInfo from "../../components/word-info";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getListCourses } from "../../apis";
 
 const fakeQuestion = [
     {
@@ -33,32 +35,32 @@ const fakeQuestion = [
         isQuestion: true
     },
 ]
-const fakeCourse = [
-    {
-        course_name: 'Sơ cấp 1',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-        progress: 50,
-        time: 30,
-        count: 502
-    },
-    {
-        course_name: 'Sơ cấp 2',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-        progress: 50,
-        time: 30,
-        count: 502
-    },
-    // {
-    //     name: 'Trung cấp 3',
-    //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
-    // },
-    // {
-    //     name: 'Trung cấp 4',
-    //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
-    // }
-]
+// const fakeCourse = [
+//     {
+//         course_name: 'Sơ cấp 1',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
+//         progress: 50,
+//         time: 30,
+//         count: 502
+//     },
+//     {
+//         course_name: 'Sơ cấp 2',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
+//         progress: 50,
+//         time: 30,
+//         count: 502
+//     },
+//     // {
+//     //     name: 'Trung cấp 3',
+//     //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
+//     // },
+//     // {
+//     //     name: 'Trung cấp 4',
+//     //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
+//     // }
+// ]
 const fakeExam = [
     {
         exam_name: 'Sơ cấp 1',
@@ -223,7 +225,25 @@ function Home() {
     // const [messageApi, contextHolder] = message.useMessage();
     const [word, setWord] = useState('');
     const [search, setSearch] = useState(false);
+    const [listCourse, setListCourse] = useState([]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getListCourses();
+                if (response.data) {
+                    setListCourse(response.data.slice(0, 2));
+                }
+            }
+            catch {
+                message.open({
+                    type: 'error',
+                    content: 'Lỗi lấy data'
+                })
+            }
+        }
+        fetchData()
+    }, [])
     // const error = (message: string) => {
     //     messageApi.open({
     //         type: 'error',
@@ -276,7 +296,7 @@ function Home() {
                 <Row
                     style={{ marginLeft: 120 }}
                 >
-                    {fakeCourse.map((course, index) => {
+                    {listCourse.map((course, index) => {
                         return <>
                             <Col style={{ marginBottom: 20 }} span={8} offset={2}>
                                 <CardCourse course={course} key={index} />

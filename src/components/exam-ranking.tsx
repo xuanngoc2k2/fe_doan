@@ -37,7 +37,6 @@ const ExamRanking: React.FC<ExamListProps> = ({ data }) => {
                         title="Họ và tên"
                         key="full_name"
                         render={(record: { image?: string; full_name: string }) => {
-                            console.log(record.image)
                             return <div style={{ textAlign: 'left' }}>
                                 {record.image ? (
                                     <Avatar src={record.image} alt={record.full_name} size={32} />
