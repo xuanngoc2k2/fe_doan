@@ -12,7 +12,7 @@ import ExamRanking from "../../components/exam-ranking";
 import { SearchProps } from "antd/es/input";
 import WordInfo from "../../components/word-info";
 import { useEffect, useState } from "react";
-import { getListCourses } from "../../apis";
+import { getListCourses, getListExams } from "../../apis";
 
 const fakeQuestion = [
     {
@@ -35,134 +35,108 @@ const fakeQuestion = [
         isQuestion: true
     },
 ]
-// const fakeCourse = [
+// const fakeExam = [
 //     {
-//         course_name: 'Sơ cấp 1',
+//         exam_name: 'Sơ cấp 1',
 //         description: 'Kiến thức nhập môn tiếng Hàn',
-//         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-//         progress: 50,
-//         time: 30,
-//         count: 502
+//         id: 1,
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
 //     },
 //     {
-//         course_name: 'Sơ cấp 2',
+//         exam_name: 'Sơ cấp 2',
+//         id: 1,
 //         description: 'Kiến thức nhập môn tiếng Hàn',
-//         images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-//         progress: 50,
-//         time: 30,
-//         count: 502
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
 //     },
-//     // {
-//     //     name: 'Trung cấp 3',
-//     //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
-//     // },
-//     // {
-//     //     name: 'Trung cấp 4',
-//     //     descriptions: 'Kiến thức nhập môn tiếng Hàn'
-//     // }
+//     {
+//         exam_name: 'Trung cấp 3',
+//         id: 1,
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 1,
+//         exam_name: 'Trung cấp 4',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 12,
+//         exam_name: 'Trung cấp 3',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 3,
+//         exam_name: 'Trung cấp 4',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 4,
+//         exam_name: 'Trung cấp 3',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 5,
+//         exam_name: 'Trung cấp 4',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 5,
+//         exam_name: 'Trung cấp 4',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     },
+//     {
+//         id: 6,
+//         exam_name: 'Trung cấp 4',
+//         description: 'Kiến thức nhập môn tiếng Hàn',
+//         duration: 40,
+//         countUser: 230,
+//         countTypeQuestion: 10,
+//         countQuestion: 200,
+//         type: 'TOPIK I'
+//     }
 // ]
-const fakeExam = [
-    {
-        exam_name: 'Sơ cấp 1',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        id: 1,
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        exam_name: 'Sơ cấp 2',
-        id: 1,
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        exam_name: 'Trung cấp 3',
-        id: 1,
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 1,
-        exam_name: 'Trung cấp 4',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 12,
-        exam_name: 'Trung cấp 3',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 3,
-        exam_name: 'Trung cấp 4',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 4,
-        exam_name: 'Trung cấp 3',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 5,
-        exam_name: 'Trung cấp 4',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 5,
-        exam_name: 'Trung cấp 4',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    },
-    {
-        id: 6,
-        exam_name: 'Trung cấp 4',
-        description: 'Kiến thức nhập môn tiếng Hàn',
-        duration: 40,
-        countUser: 230,
-        countTypeQuestion: 10,
-        countQuestion: 200,
-        type: 'TOPIK I'
-    }
-]
 
 const fakeDataRanking = [
     {
@@ -226,6 +200,7 @@ function Home() {
     const [word, setWord] = useState('');
     const [search, setSearch] = useState(false);
     const [listCourse, setListCourse] = useState([]);
+    const [listExam, setListExam] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -233,6 +208,10 @@ function Home() {
                 const response = await getListCourses();
                 if (response.data) {
                     setListCourse(response.data.slice(0, 2));
+                }
+                const res = await getListExams();
+                if (res.data) {
+                    setListExam(res.data.slice(0, 8));
                 }
             }
             catch {
@@ -244,6 +223,7 @@ function Home() {
         }
         fetchData()
     }, [])
+    console.log(listExam)
     // const error = (message: string) => {
     //     messageApi.open({
     //         type: 'error',
@@ -312,7 +292,7 @@ function Home() {
                 </Row>
                 <Row >
                     <Row className="home-exam">
-                        {fakeExam.map((exam, index) => {
+                        {listExam.map((exam, index) => {
                             return <>
                                 <Col key={index}>
                                     <CardExam exam={exam} />

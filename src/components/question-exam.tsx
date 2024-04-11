@@ -1,5 +1,6 @@
 import { Button, Form, Radio } from 'antd';
 import './styles/question-exam.scss';
+// import { useParams } from 'react-router-dom';
 
 const listQuestion = [
     {
@@ -150,6 +151,8 @@ function QuestionExam() {
     const handleSubmit = (values: unknown) => {
         console.log('Submitted values:', values);
     }
+    // const { idExam } = useParams();
+
     return (
         <div>
             <Form className='question-exam-container' onFinish={handleSubmit}>
