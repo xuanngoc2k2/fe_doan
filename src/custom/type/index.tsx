@@ -17,3 +17,31 @@ export interface IExam {
     countQuestion: number,
     type: string
 }
+export interface IAnswer {
+    id: number;
+    answer: string;
+}
+
+export interface IQuestion {
+    id: number;
+    score: number;
+    type: string;
+    question: string;
+    answers: IAnswer[];
+}
+
+export interface IGroupQuestion {
+    content: string;
+    description: string;
+    image?: string;
+    id: number;
+    questions: IQuestion[];
+}
+
+// export interface IListQuestionItem {
+//     groupQuestion: IGroupQuestion[];
+// }
+export interface IExamGrQuestion {
+    groupQuestion: IGroupQuestion;
+    groupQuestionId: number
+}
