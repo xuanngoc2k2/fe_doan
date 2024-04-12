@@ -1,4 +1,4 @@
-import { Button, Divider, Form, FormInstance, Input, message, Radio } from 'antd';
+import { Button, Divider, Form, FormInstance, message, Radio } from 'antd';
 import './styles/question-exam.scss';
 import {
     useEffect,
@@ -6,8 +6,14 @@ import {
     useState
 } from 'react';
 import { IGroupQuestion, IQuestion } from '../custom/type';
-import { useParams } from 'react-router-dom';
-import { getListQuestionOfExam } from '../apis';
+import {
+    useNavigate,
+    useParams
+} from 'react-router-dom';
+import {
+    getListQuestionOfExam,
+    postResult
+} from '../apis';
 
 function QuestionExam() {
     const [listQuestion, setListQuestion] = useState<IGroupQuestion[]>([]);
@@ -18,8 +24,7 @@ function QuestionExam() {
     const [selectedQuestions, setSelectedQuestions] = useState<{ [key: number]: boolean }>({}); // Sử dụng đối tượng để lưu trữ trạng thái của các câu hỏi đã được chọn
     const [remainingTime, setRemainingTime] = useState(duration * 60); // Đổi đơn vị thời gian từ phút sang giây
     const [timeExpired, setTimeExpired] = useState(false);
-
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -37,7 +42,7 @@ function QuestionExam() {
             }
         };
         fetch();
-    }, [idExam]);
+    }, []);
 
     useEffect(() => {
         // Tính toán thời gian đếm ngược
@@ -58,13 +63,43 @@ function QuestionExam() {
         return total + groupQuestion.questions.length;
     }, 0);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setRemainingTime(0)
         setTimeExpired(true)
         if (formRef.current) {
-            const values = formRef.current?.getFieldsValue(); // Lấy giá trị của các trường trong Form
-            console.log('Submitted values:', values);
+            const values = formRef.current?.getFieldsValue() as { [key: string]: unknown };
+            // Lấy giá trị của các trường trong Form
+            const processedValues = [];
 
+            // Lặp qua các thuộc tính của giá trị
+            for (const key in values) {
+                if (Object.prototype.hasOwnProperty.call(values, key)) {
+                    const value = values[key];
+
+                    // Kiểm tra xem giá trị có tồn tại không
+                    const processedValue = value ? value : 0;
+
+                    // Thêm cặp key-value đã được xử lý vào mảng
+                    processedValues.push({
+                        [key]: processedValue
+                    });
+                }
+            }
+
+            const res = await postResult({ examId: Number(idExam), result: processedValues })
+            if (res.data) {
+                message.open({
+                    type: 'success',
+                    content: 'Đã thi xong'
+                })
+                navigate('/result/')
+            }
+            else {
+                message.open({
+                    type: 'error',
+                    content: 'Lỗi call API'
+                })
+            }
         }
         // Thực hiện các xử lý khác dựa trên giá trị của form ở đây
     };
@@ -99,9 +134,6 @@ function QuestionExam() {
     return (
         <div className='question-exam-container'>
             <Form ref={formRef} name='exam-result'>
-                <Form.Item name={'examId'}>
-                    <Input name='examId' value={idExam} style={{ display: 'none' }} />
-                </Form.Item>
                 <div className='list-question-content'>
                     {listQuestion.map((groupQuestion, groupIndex) => {
                         let num = 0;
@@ -126,9 +158,9 @@ function QuestionExam() {
                                                 </div>
                                                 {question.answers.length && (
                                                     <Form.Item name={`${question.id}`}>
-                                                        <Radio.Group onChange={() => { handleChecked(numberQuestion) }} key={`question-${question.id}`}>
+                                                        <Radio.Group defaultValue={'0'} onChange={() => { handleChecked(numberQuestion) }} key={`question-${question.id}`}>
                                                             {question.answers.map(a => {
-                                                                return <Radio value={a.id}>{a.answer}</Radio>;
+                                                                return <Radio disabled={timeExpired} value={a.id}>{a.answer}</Radio>;
                                                             })}
                                                         </Radio.Group>
                                                     </Form.Item>

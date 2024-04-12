@@ -1,0 +1,71 @@
+.result-container {
+    background: rgb(240, 240, 240);
+    display: flex;
+    border-radius: 40px;
+    margin-bottom: 10px;
+    padding: 5px;
+    .result-score {
+        width: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        p {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            &.red {
+                background: rgb(254, 0, 0);
+                background: linear-gradient(197deg, rgba(254, 0, 0, 1) 0%, rgba(255, 228, 228, 1) 100%);
+            }
+            &.green {
+                background: rgb(0, 254, 100);
+                background: linear-gradient(197deg, rgba(0, 254, 100, 1) 0%, rgba(147, 255, 190, 1) 100%);
+            }
+            width: 80%;
+            height: 80%;
+            background-color: aqua;
+        }
+    }
+    .result-info {
+        h1 {
+            text-transform: uppercase;
+        }
+        display: flex;
+        width: 90%;
+        justify-content: space-between;
+        .result-info-test {
+            width: 80%;
+        }
+        .result-view-detail {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            a {
+                margin-right: 3px;
+                border-radius: 100px;
+                text-align: center;
+                width: 100%;
+                background: rgb(0, 194, 254);
+                background: radial-gradient(circle, rgba(0, 194, 254, 1) 0%, rgba(160, 244, 255, 1) 0100%);
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                &:hover {
+                    cursor: pointer;
+                }
+                &:active {
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+}

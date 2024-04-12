@@ -1,0 +1,33 @@
+.list-question-content {
+    .da-true,
+    .need-true {
+        span {
+            color: green;
+            font-weight: 700;
+            border-bottom: 1px solid;
+        }
+    }
+    .need-true {
+        span {
+            border: none;
+        }
+    }
+    .da-false,
+    .not-do {
+        span {
+            color: red;
+            border-bottom: 1px solid;
+            font-weight: 700;
+        }
+    }
+}
+.list-question-btn {
+    .btn-da-true {
+        background: rgb(255, 255, 255);
+        background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(0, 255, 58, 0.8053535867471988) 100%);
+    }
+    .btn-da-false {
+        background: rgb(255, 255, 255);
+        background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 32, 23, 0.8977905615371149) 100%);
+    }
+}

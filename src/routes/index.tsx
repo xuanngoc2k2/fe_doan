@@ -11,6 +11,9 @@ import NotNewsLayout from '../layouts/NotNewsLayout';
 import Exams from '../pages/Exams';
 import ExamDetail from '../components/exam-detail';
 import QuestionExam from '../components/question-exam';
+import Result from '../pages/Result/result';
+import ResultDetail from '../pages/Result/result-detail';
+import Vocabulary from '../pages/Vocabulary';
 
 interface Route {
   path: string;
@@ -26,11 +29,14 @@ const publicRoutes: Route[] = [
   { path: '/register', component: Register, layout: NotSidebarLayout },
   { path: '/course', component: Course },
   { path: '/exams', component: Exam },
+  { path: '/vocab', component: Vocabulary },
   { path: '/course/:id', component: CourseDetail },
   { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
   { path: '/exams/:idTypeExam', component: Exams },
   { path: '/exam/:idExam', component: ExamDetail },
-  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout }
+  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
+  { path: '/result/', component: Result, },
+  { path: '/result-detail/:resultId', component: ResultDetail, }
 ];
 
 const privateRoutes: Route[] = [];

@@ -38,7 +38,7 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                             <Menu.Item key="topikI"><Link to={'/exams/1'}>LÀM ĐỀ TOPIK I</Link></Menu.Item>
                             <Menu.Item key="topikII"><Link to={'/exams/2'}>LÀM ĐỀ TOPIK II</Link></Menu.Item>
                         </Menu.SubMenu>
-                        <Menu.Item key='vocabulary' icon={<FontColorsOutlined />}>Từ vựng</Menu.Item>
+                        <Menu.Item key='vocabulary' icon={<FontColorsOutlined />}><Link to={'/vocab'}>Từ vựng</Link></Menu.Item>
                     </Menu>
                 </Col>
                 <Col span={6} className="header-avatar-profile">
@@ -54,7 +54,7 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                                 <Menu.Item key="ur-vocabulary"
                                     icon={<FontColorsOutlined />}
                                     className="header-profile-item">Từ vựng của tôi</Menu.Item>
-                                <Menu.Item key="ur-course" icon={<BookOutlined />} className="header-profile-item">Khóa học đã đăng kí</Menu.Item>
+                                <Menu.Item key="ur-course" icon={<BookOutlined />} className="header-profile-item"><Link to={'/result'}>Bài thi đã làm</Link></Menu.Item>
                                 <Menu.Item key="logout" icon={<LogoutOutlined />} className="header-profile-item">Đăng xuất</Menu.Item>
                             </Menu.SubMenu>
                         </Menu>

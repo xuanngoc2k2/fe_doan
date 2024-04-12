@@ -40,7 +40,6 @@ function ExamDetail() {
         }
         fetchData();
     }, [idExam])
-    console.log(exam)
     return (
         <>
             {exam &&
