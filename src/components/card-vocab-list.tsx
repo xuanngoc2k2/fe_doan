@@ -19,7 +19,7 @@ const CardVocabList: React.FC<CardVocabListProps> = ({ data }) => {
     return (
         <>
             {data ?
-                <Link className='card-vocab-list' to={`/vocab/${data.id}`}>
+                <Link className='card-vocab-list' to={`/vocab-detail/${data.id}`}>
                     <Card >
                         <h2 className='card-vocab-list-title'>
                             {data.name}

@@ -14,6 +14,7 @@ import QuestionExam from '../components/question-exam';
 import Result from '../pages/Result/result';
 import ResultDetail from '../pages/Result/result-detail';
 import Vocabulary from '../pages/Vocabulary';
+import VocabularyDetail from '../pages/Vocabulary/vocab-detail';
 
 interface Route {
   path: string;
@@ -30,6 +31,7 @@ const publicRoutes: Route[] = [
   { path: '/course', component: Course },
   { path: '/exams', component: Exam },
   { path: '/vocab', component: Vocabulary },
+  { path: '/vocab-detail/:idList', component: VocabularyDetail },
   { path: '/course/:id', component: CourseDetail },
   { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
   { path: '/exams/:idTypeExam', component: Exams },

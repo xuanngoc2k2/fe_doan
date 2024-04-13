@@ -68,7 +68,24 @@ export interface ISubmitExam {
     examId: number;
     result: []
 }
+export interface IVocabulary {
+    example: string;
+    id: number;
+    image: string;
+    level: number;
+    meaning: string;
+    partOfSpeech: string;
+    word: string;
+    spell: string;
+}
 export interface IListVocab {
     name: string;
     description?: string;
+}
+export interface IListVocabDetail {
+    name: string;
+    description?: string;
+    needRemember: number;
+    totalWords: number;
+    vocabs: IVocabulary[]
 }

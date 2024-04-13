@@ -1,0 +1,37 @@
+.vocab-detail-container {
+    .ant-card-body {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .btn-add-new-word {
+        height: 40px;
+        font-weight: bold;
+        margin-right: 20px;
+    }
+    .btn-do-flascards {
+        font-weight: bold;
+        height: 40px;
+        color: #1e2022;
+        background-color: #e8f2ff;
+        border-color: #35509a;
+        &:hover {
+            color: #fff !important;
+            background-color: #2e4687 !important;
+            border-color: #283c74 !important;
+        }
+    }
+}
+.card-item-vocab-detail {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 20px;
+    &:last-child {
+        color: red;
+    }
+    p {
+        font-size: 1rem;
+        color: #71869d;
+    }
+}
