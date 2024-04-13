@@ -21,6 +21,7 @@ export interface IAnswer {
     id: number;
     answer: string;
     is_true?: boolean;
+    isImage?: boolean;
 }
 export interface IResultDetail {
     resultId: number;
