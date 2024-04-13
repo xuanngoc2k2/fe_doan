@@ -1,0 +1,14 @@
+.vocab-container {
+    width: 72%;
+}
+.list-card {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.create-new-listVocab {
+    &:hover {
+        cursor: pointer;
+    }
+}

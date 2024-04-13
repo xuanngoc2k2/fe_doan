@@ -68,3 +68,7 @@ export interface ISubmitExam {
     examId: number;
     result: []
 }
+export interface IListVocab {
+    name: string;
+    description?: string;
+}

@@ -1,0 +1,58 @@
+a {
+    text-decoration: none !important;
+    .ant-card {
+        border: none;
+    }
+    border-radius: 10px;
+}
+.card-vocab-list {
+    margin-right: 20px;
+    margin-bottom: 50px;
+    height: 180px;
+    width: 160px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 0 0 rgba(143, 156, 173, 0.2);
+    &:hover {
+        box-shadow:
+            0 1px 2px 0 rgba(60, 64, 67, 0.2),
+            0 2px 6px 2px rgba(60, 64, 67, 0.15);
+        transform: translateY(-2px);
+        transition: all 0.4s;
+    }
+    .ant-card {
+        .ant-card-body {
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 0px;
+        }
+    }
+    .card-vocab-list-title {
+        margin-top: -5px;
+        text-transform: uppercase;
+    }
+    .card-vocab-list-detail {
+        .total-word {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    }
+    // .card-vocab-list-des {
+    //     margin-top: 5px;
+    //     color: #08979c;
+    //     padding: 3px 7px;
+    //     background: #e6fffb;
+    //     border: 1px solid #d9d9d9;
+    //     border-radius: 4px;
+    //     border-color: #87e8de;
+    //     font-size: 12px;
+    // }
+    .card-vocab-list-btn {
+        margin-top: 40px;
+    }
+}
+.btn-create-new-list {
+    height: 100%;
+    border: none;
+    font-size: 18px;
+}

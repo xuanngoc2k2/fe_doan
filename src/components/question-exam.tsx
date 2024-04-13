@@ -85,7 +85,6 @@ function QuestionExam() {
                     });
                 }
             }
-
             const res = await postResult({ examId: Number(idExam), result: processedValues })
             if (res.data) {
                 message.open({

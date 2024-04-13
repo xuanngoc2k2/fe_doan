@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { IListVocab } from '../custom/type';
 export const backEndUrl = 'http://localhost:3000';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjExLCJ1c2VybmFtZSI6Inh1YW5uZ29jMmsyIiwiZW1haWwiOiJuZ29hamRhbnNzQGdtYWwuY29tZCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzEyOTAxNjg4LCJleHAiOjE4MDEwMjk2ODh9.W-YfglC3P_9ktvMzqQv0BPH8kyAkjTxVreO8Buo_0u8';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
 const config = {
     headers: {
         'Authorization': `Bearer ${token}`,
@@ -60,4 +61,15 @@ export const getResultQuestionDetail = async (resultId: number) => {
     // const duration = data.data.duration;
     const listQuestion = data.data;
     return { listQuestion }
+}
+export const getAllListVocab = async () => {
+    const { data } = await axios.get(`${backEndUrl}/list-vocab`, config);
+    // const duration = data.data.duration;
+    return data
+}
+
+export const postNewList = async (value: IListVocab) => {
+    const { data } = await axios.post(`${backEndUrl}/list-vocab`, value, config);
+    // const duration = data.data.duration;
+    return { data }
 }

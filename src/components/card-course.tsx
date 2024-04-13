@@ -2,7 +2,7 @@ import { Card, Progress, ProgressProps } from 'antd';
 import './styles/card-course.scss';
 import {
     FieldTimeOutlined,
-    UsergroupAddOutlined,
+    TeamOutlined,
     //  UsergroupAddOutlined 
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ const CardCourse: React.FC<{ course: ICourse }> = ({ course }) => {
                         <p>{course.progress || 0}% Hoàn thành</p>
                     </div>
                     <div className='course-people'>
-                        <UsergroupAddOutlined /> <span>{course.countUser}</span>
+                        <TeamOutlined /> <span>{course.countUser}</span>
                     </div>
                     {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
                 </Card>
