@@ -1,5 +1,7 @@
 .flashcard-list-container {
     min-height: 600px;
+    // background-color: #f6f7fb;
+
     .flashcard-list-content {
         position: relative;
         margin-top: 10px;
@@ -43,5 +45,72 @@
     }
     .btn-reset {
         right: 26%;
+    }
+    .question-btn {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px !important;
+        margin: 10px 10%;
+    }
+    .question-list {
+        display: flex;
+        flex-flow: column;
+
+        .question-vocab-container {
+            height: 400px !important;
+            box-shadow: 0 0.25rem 1rem 0 #282e3e14;
+            background-color: #f6f7fb6c;
+            // background-color: #fff;
+            border-radius: 0.5rem;
+        }
+        .ant-space-item {
+            width: 45%;
+            .ant-card-body {
+                height: 100%;
+                display: flex;
+                flex-flow: column;
+                .question-vocab-title {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    h3 {
+                        color: #282e3e;
+                        font-size: 25px;
+                        font-weight: 500;
+                    }
+                    height: 30%;
+                }
+
+                p {
+                    font-weight: 600;
+                    font-size: 0.875rem;
+                    letter-spacing: normal;
+                    line-height: 1.4285714285714286;
+                    color: #939bb4;
+                    display: flex;
+                }
+                .question-vocab-ans {
+                    width: 40%;
+                    margin: 10px 5%;
+                    padding: 30px;
+                    font-size: 20px;
+                    line-height: 1.5;
+                    border-radius: 0.5rem;
+                    border: 0.125rem solid #edeff4;
+                    color: #2e3856;
+                    cursor: pointer;
+                    &:hover {
+                        border-color: #939bb4;
+                        outline: none;
+                    }
+                    &.selected {
+                        border-color: #4255ff;
+                        background-color: #edefff;
+                    }
+                }
+            }
+        }
     }
 }

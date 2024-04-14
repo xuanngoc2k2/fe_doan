@@ -73,8 +73,6 @@ function FlashCard({
                                     {word.image !== null ? <img style={{ width: '100%' }} src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}
                                 </div>
                             </div>
-                            {/* <div className='flip-question'>{word.image}</div> */}
-                            {/* {isQuestion && <Button type='primary' ghost onClick={flipCard}>Question</Button>} */}
                         </Card>
                     </div>
                 </div >

@@ -60,7 +60,7 @@ export interface IResult {
     count: number,
     createdAt: string
     exam: {
-        id: 1,
+        id: number,
         exam_name: string,
         type: string
     }
@@ -92,4 +92,14 @@ export interface IListVocabDetail {
         vocab: IVocabulary,
         isRemember: boolean
     }]
+}
+export interface IQuestionVocab {
+    meaning: {
+        id: number,
+        meaning: string,
+        spell: string,
+        partOfSpeech: string
+    },
+    ans: string[],
+    answer?: string
 }
