@@ -2,6 +2,7 @@ import { Tag } from "antd";
 import { IVocabulary } from "../custom/type";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import './styles/card-vocab-item.scss'
+import { backEndUrl } from "../apis";
 
 function CardVocabItem({ word }: { word: IVocabulary }) {
     const handleClick = () => {
@@ -23,6 +24,7 @@ function CardVocabItem({ word }: { word: IVocabulary }) {
                         <p className='vocab-example'>{word.example}</p></>)}
             </div>
             <div className='vocab-image'>
+                <img src={word.image !== null ? `${backEndUrl}/images/vocabulary/${word.image}` : "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="} />
             </div>
         </div>
     </>);

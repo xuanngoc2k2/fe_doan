@@ -70,14 +70,14 @@ export interface ISubmitExam {
     result: []
 }
 export interface IVocabulary {
-    example: string;
-    id: number;
-    image: string;
-    level: number;
-    meaning: string;
-    partOfSpeech: string;
-    word: string;
-    spell: string;
+    word?: string;
+    example?: string;
+    id?: number;
+    image?: string;
+    level?: number;
+    meaning?: string;
+    partOfSpeech?: string;
+    spell?: string;
 }
 export interface IListVocab {
     name: string;

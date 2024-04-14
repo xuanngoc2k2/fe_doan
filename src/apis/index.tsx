@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IListVocab } from '../custom/type';
+import { IListVocab, IVocabulary } from '../custom/type';
 // import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 export const backEndUrl = 'http://localhost:3000';
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
@@ -79,7 +79,33 @@ export const getVocabOfList = async (id: string) => {
     // const duration = data.data.duration;
     return data
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const callUploadSingleFile = async (file: any, folderType: string) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+        const res = await axios.post(`${backEndUrl}/file/upload`, bodyFormData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "folder_type": folderType
+            }
+        })
+        if (res.data) {
+            const { data } = res.data;
+            return data
+        }
+    }
+    catch (error) {
+        console.log(error)
+    }
+    return 'Lỗi';
+}
+export const creatNewVocabOfList = async (idList: number, vocab: IVocabulary) => {
+    const { data } = await axios.post(`${backEndUrl}/user-vocabulary/${idList}`, vocab, config);
+    // const duration = data.data.duration;
+    return data
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json
 // });
