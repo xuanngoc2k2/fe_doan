@@ -1,0 +1,40 @@
+.flashcard-list-container {
+    min-height: 600px;
+    .flashcard-list-content {
+        position: relative;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        .ant-carousel {
+            width: 50%;
+        }
+        .slick-dots {
+            display: none !important;
+        }
+    }
+    .flashcard-list-btn {
+        display: flex;
+        bottom: 0;
+    }
+    .flashcard-list-btn,
+    .btn-auto-play {
+        color: #586380;
+        padding: 10px;
+        font-size: 40px;
+        position: absolute;
+    }
+    span {
+        cursor: pointer;
+        &:active {
+            opacity: 0.8;
+        }
+    }
+    .btn-auto-play {
+        cursor: pointer;
+        bottom: 7px;
+        left: 026%;
+        &:active {
+            opacity: 0.8;
+        }
+    }
+}

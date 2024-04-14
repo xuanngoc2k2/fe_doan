@@ -1,8 +1,8 @@
 import { Button, Card, Col, Collapse, Form, Input, message, Modal, Row, Select, Space, Upload } from "antd";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
     callUploadSingleFile,
-    creatNewVocabOfList, getVocabOfList
+    creatNewVocabOfList, deleteVocabOfList, getVocabOfList
 } from "../../apis";
 import { useEffect, useState } from "react";
 import { IListVocabDetail, IVocabulary } from "../../custom/type";
@@ -88,7 +88,22 @@ function VocabularyDetail() {
             }
         }
     };
-
+    const handelRemove = async (idWord: number) => {
+        console.log(idWord)
+        try {
+            const res = await deleteVocabOfList(Number(idList), idWord);
+            if (res) {
+                message.success("Xóa thành công");
+                fetch();
+            }
+            else {
+                message.error("Xóa lỗi");
+            }
+        }
+        catch {
+            message.error("Lỗi API")
+        }
+    }
 
     return (
         <>
@@ -123,7 +138,7 @@ function VocabularyDetail() {
                             </Card>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
                                 <Button onClick={() => setShowModal(true)} className="btn-add-new-word" type='primary'><PlusOutlined /> Thêm từ mới</Button>
-                                <Button block className="btn-do-flascards">Luyện tập flascards</Button>
+                                <Link style={{ width: '100%' }} to={`/flashcards/${idList}`}><Button block className="btn-do-flascards">Luyện tập flascards</Button></Link>
                             </div>
                         </Col>
                     </Row>
@@ -132,7 +147,7 @@ function VocabularyDetail() {
                             {listVocabDetail?.vocabs.map((vocab) => {
                                 return (
                                     <Row>
-                                        <CardVocabItem word={vocab} />
+                                        <CardVocabItem handelRemove={handelRemove} word={vocab} />
                                     </Row>
                                 )
                             })}

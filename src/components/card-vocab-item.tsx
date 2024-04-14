@@ -1,10 +1,10 @@
-import { Tag } from "antd";
+import { Empty, Tag } from "antd";
 import { IVocabulary } from "../custom/type";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import './styles/card-vocab-item.scss'
 import { backEndUrl } from "../apis";
 
-function CardVocabItem({ word }: { word: IVocabulary }) {
+function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove: (id: number) => void }) {
     const handleClick = () => {
         console.log('xử lí phát âm thanh')
     }
@@ -21,10 +21,13 @@ function CardVocabItem({ word }: { word: IVocabulary }) {
                 <p className='vocab-meaning'>{word.meaning}</p>
                 {word.example && (
                     <><p>Example:</p>
-                        <p className='vocab-example'>{word.example}</p></>)}
+                        <p className='vocab-example'>{word.example.split('\n').map((ex) => <li>{ex}</li>)}</p></>)}
             </div>
             <div className='vocab-image'>
-                <img src={word.image !== null ? `${backEndUrl}/images/vocabulary/${word.image}` : "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="} />
+                {word.image !== null ? <img src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}
+            </div>
+            <div onClick={() => handelRemove(Number(word.id))} className='btn-delete-vob'>
+                <DeleteOutlined />
             </div>
         </div>
     </>);
