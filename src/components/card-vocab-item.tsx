@@ -4,7 +4,7 @@ import { DeleteOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import './styles/card-vocab-item.scss'
 import { backEndUrl } from "../apis";
 
-function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove: (id: number) => void }) {
+function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove?: (id: number) => void }) {
     const handleClick = () => {
         console.log('xử lí phát âm thanh')
     }
@@ -26,9 +26,9 @@ function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove
             <div className='vocab-image'>
                 {word.image !== null ? <img src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}
             </div>
-            <div onClick={() => handelRemove(Number(word.id))} className='btn-delete-vob'>
+            {handelRemove && <div onClick={() => handelRemove(Number(word.id))} className='btn-delete-vob'>
                 <DeleteOutlined />
-            </div>
+            </div>}
         </div>
     </>);
 }

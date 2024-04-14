@@ -88,5 +88,8 @@ export interface IListVocabDetail {
     description?: string;
     needRemember: number;
     totalWords: number;
-    vocabs: IVocabulary[]
+    vocabs: [{
+        vocab: IVocabulary,
+        isRemember: boolean
+    }]
 }

@@ -17,7 +17,8 @@
         bottom: 0;
     }
     .flashcard-list-btn,
-    .btn-auto-play {
+    .btn-auto-play,
+    .btn-reset {
         color: #586380;
         padding: 10px;
         font-size: 40px;
@@ -29,12 +30,18 @@
             opacity: 0.8;
         }
     }
-    .btn-auto-play {
+    .btn-auto-play,
+    .btn-reset {
         cursor: pointer;
-        bottom: 7px;
-        left: 026%;
+        bottom: 5px;
         &:active {
             opacity: 0.8;
         }
+    }
+    .btn-auto-play {
+        left: 26%;
+    }
+    .btn-reset {
+        right: 26%;
     }
 }

@@ -147,7 +147,7 @@ function VocabularyDetail() {
                             {listVocabDetail?.vocabs.map((vocab) => {
                                 return (
                                     <Row>
-                                        <CardVocabItem handelRemove={handelRemove} word={vocab} />
+                                        <CardVocabItem handelRemove={handelRemove} word={vocab.vocab} />
                                     </Row>
                                 )
                             })}

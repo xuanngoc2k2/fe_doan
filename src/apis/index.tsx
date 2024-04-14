@@ -109,6 +109,10 @@ export const deleteVocabOfList = async (idList: number, idVocab: number) => {
     const { data } = await axios.post(`${backEndUrl}/user-vocabulary/remove/${idVocab}/${idList}`, {}, config);
     return data;
 }
+export const updateRemember = async (idList: number, idVocab: number) => {
+    const { data } = await axios.post(`${backEndUrl}/user-vocabulary/updateRemember/${idVocab}/${idList}`, {}, config);
+    return data;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
