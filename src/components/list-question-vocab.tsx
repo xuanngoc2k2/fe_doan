@@ -1,27 +1,89 @@
-import { Card, Col, Row } from "antd";
+import { CheckOutlined, CloseOutlined, LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
+import QuestionVocab from './question-vocab';
 import { IQuestionVocab } from "../custom/type";
-import { useState } from "react";
+import { Button, Col, Row, Space } from "antd";
+import { useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-function QuestionVocab({ word, handelAnswer }: { word: IQuestionVocab, handelAnswer: (word: IQuestionVocab, answer: string) => void }) {
-    const [isSelected, setIsSelected] = useState('');
+function ListQuestionVocab({
+    result,
+    listQuestion,
+    handelSubmit,
+    handelBackToFlashCard,
+    handelAnswer
+}: {
+    result: IQuestionVocab[],
+    listQuestion: IQuestionVocab[],
+    handelSubmit: () => void,
+    handelBackToFlashCard: () => void,
+    handelAnswer: (word: IQuestionVocab, answer: string) => void
+}) {
+    const check: number[] = [];
+    const questionRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+    // Khởi tạo mảng check với giá trị null
+    result.forEach((rs) => {
+        if (rs.anTrue === rs.answer) {
+            check.push(1)
+        }
+        else {
+            check.push(0);
+        }
+    })
+    const scrollToQuestion = (index: number) => {
+        if (questionRefs.current[index]) {
+            questionRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+    const { idList } = useParams();
+    const navigator = useNavigate();
+    const handelBackToListFlashCard = () => {
+        navigator('/vocab-detail/' + idList)
+    }
     return (<>
-        <Card className="question-vocab-container" style={{ textAlign: 'center', height: 260 }}>
-            <div className='question-vocab-title'>
-                <p>Định nghĩa</p>
-                <h3>{word.meaning.meaning}</h3>
+        {result.length ?
+            <div style={{ position: 'sticky', top: 50 }}><div className="list-btn-question">
+                <h4>Câu hỏi</h4>
+                {check.map((_, index) => (
+                    <>
+                        <div key={index} onClick={() => scrollToQuestion(index)}>
+                            {check[index] ? <CheckOutlined style={{ color: "#59e8b5" }} /> : <CloseOutlined style={{ color: "#ff7873" }} />}
+                            {index + 1}
+                        </div>
+                    </>
+                ))}
+            </div> </div> : <></>}
+        <div className='question-btn'>
+            <div onClick={() => { handelBackToFlashCard() }} style={{ cursor: 'pointer' }}>
+                <LeftCircleOutlined /> Quay lại học
             </div>
-            <div style={{ height: '60%' }} className="question-vocab-detail">
-                <p>Chọn thuật ngữ đúng</p>
-                <Row>{word.ans.map((answer) => {
-                    return (
-                        <Col onClick={() => { handelAnswer(word, answer); setIsSelected(answer) }}
-                            className={`question-vocab-ans ${isSelected == answer ? 'selected' : ''}`}>{answer}</Col>
-                    )
-                })}
-                </Row>
+            <div onClick={handelBackToListFlashCard} style={{ cursor: 'pointer' }}>
+                Trở về trang list từ vựng <RightCircleOutlined style={{ marginLeft: 20 }} />
             </div>
-        </Card>
+        </div>
+        <div className='question-list'>
+            {result.length ?
+                <Space size={50} align='center' direction='vertical' >
+                    {result.map((result, index) => {
+                        return <div ref={el => (questionRefs.current[index] = el)}><QuestionVocab key={index} word={result} /></div>
+                    })}
+                </Space>
+                : listQuestion.length ?
+                    <Space size={50} align='center' direction='vertical' >
+                        {listQuestion.map((question) => {
+                            return <QuestionVocab handelAnswer={handelAnswer} word={question} />
+                        })}
+                    </Space> :
+                    <></>}
+            <Row style={{
+                margin: 40,
+                justifyContent: 'center'
+            }}>
+                {!result.length ? <Col style={{ padding: 10 }} span={4}>
+                    <Button onClick={handelSubmit} type='primary' style={{ fontSize: 20, width: '100%', height: '100%' }}>Gửi bài kiểm tra</Button>
+                </Col> : <></>}
+            </Row>
+        </div>
     </>);
 }
 
-export default QuestionVocab;
+export default ListQuestionVocab;

@@ -101,5 +101,6 @@ export interface IQuestionVocab {
         partOfSpeech: string
     },
     ans: string[],
-    answer?: string
+    answer?: string,
+    anTrue?: string
 }

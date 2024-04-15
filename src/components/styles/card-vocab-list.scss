@@ -2,6 +2,7 @@ a.card-vocab-list {
     text-decoration: none !important;
     .ant-card {
         border: none;
+        height: 100%;
     }
     border-radius: 10px;
 }
@@ -32,6 +33,7 @@ a.card-vocab-list {
         font-size: 15px !important;
     }
     .card-vocab-list-detail {
+        height: 60%;
         .total-word {
             position: absolute;
             top: 10px;
@@ -49,7 +51,10 @@ a.card-vocab-list {
     //     font-size: 12px;
     // }
     .card-vocab-list-btn {
-        margin-top: 40px;
+        position: absolute;
+        bottom: 10px;
+        width: 80%;
+        left: 10%;
     }
 }
 .btn-create-new-list {

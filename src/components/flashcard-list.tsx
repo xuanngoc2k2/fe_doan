@@ -1,26 +1,29 @@
-import { Button, Carousel, Col, message, Progress, Row, Space } from 'antd';
+import { Carousel, Col, message, Progress, Row } from 'antd';
 import FlashCard from './flashcard';
 import './styles/flashcard-list.scss'
 import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { IListVocabDetail, IQuestionVocab } from '../custom/type';
-import { getVocabOfList, renderQuestionVocab, updateRemember } from '../apis';
+import { getResultQuestionVocab, getVocabOfList, renderQuestionVocab, updateRemember } from '../apis';
 import { LeftCircleOutlined, PlayCircleOutlined, RightCircleOutlined, UndoOutlined } from '@ant-design/icons';
 import { CarouselRef } from 'antd/es/carousel';
-import QuestionVocab from './list-question-vocab';
+import ListQuestionVocab from './list-question-vocab';
 function FlashcardList() {
     const { idList } = useParams();
     const [listVocabDetail, setListVocabDetail] = useState<IListVocabDetail | null>(null);
-    const [listQuestion, setListQuestion] = useState<IQuestionVocab[] | []>([]);
     const [autoPlay, setAutoPlay] = useState(false);
     const [percent, setPercent] = useState<number>(0);
+    const [listQuestion, setListQuestion] = useState<IQuestionVocab[] | []>([]);
     const [answer, setAnswer] = useState<IQuestionVocab[] | []>([]);
+    const [result, setResult] = useState<IQuestionVocab[] | []>([]);
+
     const length = Number(listVocabDetail?.vocabs.length);
     // const [currentSlide, setCurrentSlide] = useState<number>(0);
-    const [showQuestion, setShowQuestion] = useState<boolean>(true);
+    const [showQuestion, setShowQuestion] = useState<boolean>(false);
     const crRef = useRef<CarouselRef | null>(null);
     const percentAdd = Number((100 / Number(listVocabDetail?.vocabs.length)).toFixed(2));
     const fetch = async () => {
+        setResult([]);
         try {
             const res = await getVocabOfList(String(idList));
             if (res.data) {
@@ -58,9 +61,6 @@ function FlashcardList() {
         crRef.current?.prev()
         setPercent((prev) => prev - percentAdd)
     }
-    // if (currentSlide == (Number(listVocabDetail?.vocabs.length) - 1)) {
-    //     console.log(currentSlide)
-    // }
     const handelClickNext = () => {
         if (percent == 100) {
             return
@@ -85,16 +85,7 @@ function FlashcardList() {
             setPercent((prev) => prev + percentAdd)
         }
     }
-    const handelAnswer = (word: IQuestionVocab, u_answer: string) => {
-        setAnswer((prev: IQuestionVocab[]) => {
-            return prev.map((q) => {
-                if (q.meaning.id === word.meaning.id) {
-                    return { ...q, answer: u_answer };
-                }
-                return q;
-            });
-        });
-    };
+
 
     const handelReset = () => {
         setPercent(0);
@@ -116,9 +107,34 @@ function FlashcardList() {
             message.error("Lỗi API")
         }
     }
-    const handelSubmit = () => {
-        console.log(answer)
+    const handelSubmit = async () => {
+        console.log(listQuestion)
+        try {
+            const result = await getResultQuestionVocab(answer);
+            if (result.data) {
+                console.log(result.data);
+                setResult(result.data);
+            }
+        }
+        catch {
+            message.error("Lỗi submit bài")
+        }
     }
+    const handelBackToFlashCard = () => {
+        setShowQuestion(false);
+        setPercent(0)
+    }
+    const handelAnswer = (
+        word: IQuestionVocab, u_answer: string) => {
+        setAnswer((prev: IQuestionVocab[]) => {
+            return prev.map((q) => {
+                if (q.meaning.id === word.meaning.id) {
+                    return { ...q, answer: u_answer };
+                }
+                return q;
+            });
+        });
+    };
     return (<div className="flashcard-list-container">
         <Row>
             <Col span={8} offset={4}>
@@ -142,32 +158,12 @@ function FlashcardList() {
                 <PlayCircleOutlined onClick={handelAutoPlay} className='btn-auto-play' />
                 <UndoOutlined onClick={handelReset} className='btn-reset' />
             </div>
-            : (<>
-                <div className='question-btn'>
-                    <div>
-                        <LeftCircleOutlined onClick={() => { setShowQuestion(false); setPercent(0) }} /> Quay lại học
-                    </div>
-                    <div>
-                        Trở về trang list từ vựng <RightCircleOutlined onClick={handelClickNext} style={{ marginLeft: 20 }} />
-                    </div>
-                </div>
-                <div className='question-list'>
-                    {listQuestion.length &&
-                        <Space size={50} align='center' direction='vertical' >
-                            {listQuestion.map((question) => {
-                                return <QuestionVocab handelAnswer={handelAnswer} word={question} />
-                            })}
-                        </Space>}
-                    <Row style={{
-                        margin: 40,
-                        justifyContent: 'center'
-                    }}>
-                        <Col style={{ padding: 10 }} span={4}>
-                            <Button onClick={handelSubmit} type='primary' style={{ fontSize: 20, width: '100%', height: '100%' }}>Gửi bài kiểm tra</Button>
-                        </Col>
-                    </Row>
-                </div>
-            </>)
+            : (<ListQuestionVocab
+                result={result}
+                handelAnswer={handelAnswer}
+                handelBackToFlashCard={handelBackToFlashCard}
+                listQuestion={listQuestion}
+                handelSubmit={handelSubmit} />)
         }
     </div >);
 }

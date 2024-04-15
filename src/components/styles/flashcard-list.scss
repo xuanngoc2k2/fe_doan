@@ -62,6 +62,9 @@
             background-color: #f6f7fb6c;
             // background-color: #fff;
             border-radius: 0.5rem;
+            // &.result {
+            //     height: 500px !important;
+            // }
         }
         .ant-space-item {
             width: 45%;
@@ -110,6 +113,63 @@
                         background-color: #edefff;
                     }
                 }
+                .question-vocab-ans.result:hover {
+                    border: 0.125rem solid #edeff4;
+                    color: #2e3856;
+                    // pointer-events: none;
+                }
+
+                .question-vocab-ans {
+                    &.result {
+                        &.da-true,
+                        &.must-true {
+                            border-color: #59e8b5;
+                            background: #e6fcf4;
+                            opacity: 1;
+                            pointer-events: none;
+                            font-weight: bold;
+                            span {
+                                color: '#59e8b5';
+                            }
+                        }
+                        &.da-false {
+                            border-color: #ff7873;
+                            opacity: 1;
+                            pointer-events: none;
+                            font-weight: bold;
+                            span {
+                                color: '#59e8b5';
+                            }
+                        }
+                        &.need-true {
+                            border-color: #939bb4;
+                            background-color: #edefff;
+                        }
+                        //         .question-vocab-ans:hover {
+                        //             border: 0.125rem solid #edeff4;
+                        //             color: #2e3856;
+                        //         }
+                    }
+                }
+            }
+        }
+    }
+    .list-btn-question {
+        position: absolute;
+        align-items: center;
+        top: 100px;
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        width: 60px;
+        div {
+            width: 60px;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            &:hover {
+                background-color: #ccc;
             }
         }
     }

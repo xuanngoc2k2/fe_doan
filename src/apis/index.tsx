@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IListVocab, IVocabulary } from '../custom/type';
+import { IListVocab, IQuestionVocab, IVocabulary } from '../custom/type';
 // import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 export const backEndUrl = 'http://localhost:3000';
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
@@ -115,6 +115,10 @@ export const updateRemember = async (idList: number, idVocab: number) => {
 }
 export const renderQuestionVocab = async (idList: number) => {
     const { data } = await axios.post(`${backEndUrl}/user-vocabulary/test/${idList}`, {}, config);
+    return data;
+}
+export const getResultQuestionVocab = async (listAnswer: IQuestionVocab[]) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/checkResult`, listAnswer, config);
     return data;
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
