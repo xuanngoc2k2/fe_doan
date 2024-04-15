@@ -1,7 +1,11 @@
 import { CheckOutlined, CloseOutlined, LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
 import QuestionVocab from './question-vocab';
 import { IQuestionVocab } from "../custom/type";
-import { Button, Col, Row, Space } from "antd";
+import {
+    Button, Col,
+    //  Progress,  Tag,
+    Row, Space,
+} from "antd";
 import { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -60,6 +64,19 @@ function ListQuestionVocab({
                 Trở về trang list từ vựng <RightCircleOutlined style={{ marginLeft: 20 }} />
             </div>
         </div>
+        {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Progress type="circle" percent={75} />
+            <div style={{ display: 'flex', flexFlow: 'column', alignItems: 'center' }}>
+                <div>
+                    <p>Đúng </p>
+                    <p>Sai </p>
+                </div>
+                <div>
+                    <Tag>30</Tag>
+                    <Tag>30</Tag>
+                </div>
+            </div>
+        </div> */}
         <div className='question-list'>
             {result.length ?
                 <Space size={50} align='center' direction='vertical' >

@@ -104,6 +104,9 @@
                     border: 0.125rem solid #edeff4;
                     color: #2e3856;
                     cursor: pointer;
+                    &.result {
+                        cursor: context-menu;
+                    }
                     &:hover {
                         border-color: #939bb4;
                         outline: none;
