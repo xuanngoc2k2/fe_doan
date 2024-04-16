@@ -104,3 +104,14 @@ export interface IQuestionVocab {
     answer?: string,
     anTrue?: string
 }
+export interface IUser {
+    id: number,
+    username: string,
+    email: string,
+    phone_number: string,
+    full_name: string,
+    image: string,
+    date_of_birth: Date,
+    level: number,
+    last_login: null
+}

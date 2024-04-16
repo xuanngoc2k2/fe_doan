@@ -16,6 +16,7 @@ import ResultDetail from '../pages/Result/result-detail';
 import Vocabulary from '../pages/Vocabulary';
 import VocabularyDetail from '../pages/Vocabulary/vocab-detail';
 import FlashcardList from '../components/flashcard-list';
+import Profile from '../pages/Profile';
 
 interface Route {
   path: string;
@@ -40,7 +41,8 @@ const publicRoutes: Route[] = [
   { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
   { path: '/result/', component: Result, },
   { path: '/result-detail/:resultId', component: ResultDetail, },
-  { path: '/flashcards/:idList', component: FlashcardList, }
+  { path: '/flashcards/:idList', component: FlashcardList, },
+  { path: '/user', component: Profile, }
 ];
 
 const privateRoutes: Route[] = [];

@@ -43,14 +43,14 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                 </Col>
                 <Col span={6} className="header-avatar-profile">
                     {user ? (
-                        <Menu mode="horizontal" style={{ borderBottom: 'none' }}>
+                        <Menu selectedKeys={[]} mode="horizontal" style={{ borderBottom: 'none' }}>
                             <Menu.SubMenu
                                 className="header-profile"
                                 title={<Avatar size={50}
                                     icon={<UserOutlined />}
                                 />}
                             >
-                                <Menu.Item key="profile" icon={<UserOutlined />} className="header-profile-item">Thông tin cá nhân</Menu.Item>
+                                <Menu.Item key="profile" icon={<UserOutlined />} className="header-profile-item"><Link to={'/user'}>Thông tin cá nhân</Link></Menu.Item>
                                 <Menu.Item key="ur-vocabulary"
                                     icon={<FontColorsOutlined />}
                                     className="header-profile-item">Từ vựng của tôi</Menu.Item>
