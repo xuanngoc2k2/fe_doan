@@ -90,6 +90,34 @@ function Profile() {
                                         >
                                             <Input style={{ width: 160 }} placeholder="Please input" />
                                         </Form.Item>
+                                        <Form.Item
+                                            name="username"
+                                            noStyle
+                                            rules={[{ required: true, message: 'Username is required' }]}
+                                        >
+                                            <Input style={{ width: 160 }} placeholder="Please input" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="username"
+                                            noStyle
+                                            rules={[{ required: true, message: 'Username is required' }]}
+                                        >
+                                            <Input style={{ width: 160 }} placeholder="Please input" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="username"
+                                            noStyle
+                                            rules={[{ required: true, message: 'Username is required' }]}
+                                        >
+                                            <Input style={{ width: 160 }} placeholder="Please input" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="username"
+                                            noStyle
+                                            rules={[{ required: true, message: 'Username is required' }]}
+                                        >
+                                            <Input style={{ width: 160 }} placeholder="Please input" />
+                                        </Form.Item>
                                     </Space>
                                 </Form.Item>
                             </Form>
