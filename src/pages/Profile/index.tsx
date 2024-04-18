@@ -1,4 +1,8 @@
-import { Avatar, Card, Carousel, Form, GetProp, Input, message, Space, UploadProps } from 'antd';
+import {
+    Avatar, Card, Carousel, Form,
+    // GetProp,     UploadProps 
+    Input, message, Space,
+} from 'antd';
 import './profile.scss'
 import { useEffect, useRef, useState } from 'react';
 import { CarouselRef } from 'antd/es/carousel';
@@ -91,21 +95,21 @@ function Profile() {
                                             <Input style={{ width: 160 }} placeholder="Please input" />
                                         </Form.Item>
                                         <Form.Item
-                                            name="username"
+                                            name="email"
                                             noStyle
                                             rules={[{ required: true, message: 'Username is required' }]}
                                         >
                                             <Input style={{ width: 160 }} placeholder="Please input" />
                                         </Form.Item>
                                         <Form.Item
-                                            name="username"
+                                            name="số điện thoại"
                                             noStyle
                                             rules={[{ required: true, message: 'Username is required' }]}
                                         >
                                             <Input style={{ width: 160 }} placeholder="Please input" />
                                         </Form.Item>
                                         <Form.Item
-                                            name="username"
+                                            name="ngày sinh"
                                             noStyle
                                             rules={[{ required: true, message: 'Username is required' }]}
                                         >
