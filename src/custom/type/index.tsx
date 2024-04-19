@@ -6,6 +6,19 @@ export interface ICourse {
     time: number,
     countUser: number,
     id: number
+    level_required: number,
+    lessons: ILesson[]
+}
+export interface ILesson {
+    id: number,
+    lesson_name: string,
+    content: string,
+    description: string,
+    order: 1,
+    duration: string,
+    isQuestion?: boolean,
+    isComplete?: boolean,
+    currentTime?: string
 }
 export interface IExam {
     id: 6,

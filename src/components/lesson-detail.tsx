@@ -1,187 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ListLesson from "./list-lesson";
 import './styles/lesson-detail.scss'
 // import { Divider } from "antd";
-
-import video from "./testmp4.mp4"
 import { Avatar, Button, Drawer, Input, message, Space, Tag } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
 import ReactQuill from "react-quill";
-const course = {
-    course_name: 'Tiếng hàn tổng hợp sơ cấp 1',
-    description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-    images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-    progress: 50,
-    time: 30,
-    count: 502,
-    id: 1,
-    lessons: [
-        {
-            isVideo: true,
-            lesson_name: "Tiếng hàn tổng hợp sơ cấp 1",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: true,
-            id: 1
-        },
-        {
-            isVideo: true,
-            lesson_name: "ScratchTiếng hàn tổng hợp sơ cấp 1Tiếng hàn tổng hợp sơ cấp 1Tiếng hàn tổng hợp sơ cấp 1Tiếng hàn tổng hợp sơ cấp 1",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            duration: "2:00",
-            isComplete: true,
-            id: 2
-
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: true,
-            id: 3
-
-        },
-        {
-            isVideo: false,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: true,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: true,
-            id: 5
-        },
-        {
-            isVideo: false,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            lesson_name: "Scratch",
-            duration: "2:00",
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            duration: "2:00",
-            isComplete: false,
-            id: 5
-        },
-        {
-            isVideo: true,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            isComplete: false,
-            id: 4
-        },
-        {
-            isVideo: false,
-            lesson_name: "Scratch",
-            duration: "2:00",
-            isComplete: false,
-            description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-            id: 5
-        }
-    ]
-}
-const lesson =
-{
-    isVideo: true,
-    lesson_name: "Tiếng hàn tổng hợp sơ cấp 1",
-    duration: "2:00",
-    description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-    isComplete: true,
-    id: 1
-};
+import { backEndUrl, getCourseDetail } from "../apis";
+import { ICourse, ILesson } from "../custom/type";
 const listComment = [
     {
         commentAt: '2:00',
@@ -292,8 +119,9 @@ function timeStringToSeconds(timeString: string) {
 }
 
 function LessonDetail() {
-    const { courseId } = useParams();
-
+    const { courseId, lessonId } = useParams();
+    const [course, setCourse] = useState<ICourse | null>();
+    const [lesson, setLesson] = useState<ILesson | null>();
     const [currentTime, setCurrentTime] = useState('');
     const [showAddNote, setShowAddNote] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -301,6 +129,43 @@ function LessonDetail() {
     const [openNoteDrawer, setOpenNoteDrawer] = useState(false);
     const [comment, setComment] = useState('');
     const [showInputComment, setShowInputComment] = useState(false);
+    const navigator = useNavigate();
+    const fetch = async () => {
+        try {
+            const res = await getCourseDetail(Number(courseId));
+            if (res.data) {
+                setCourse(res.data)
+                const lessons = res.data.lessons;
+                lessons.map((les: ILesson, index: number) => {
+                    if (les.id === Number(lessonId)) {
+                        if (index == 0) {
+                            setLesson(les);
+                        }
+                        else {
+                            if (lessons[index - 1].isComplete) {
+                                setLesson(les);
+                            }
+                            else {
+                                while (!lessons[index - 1].isComplete) {
+                                    index -= 1;
+                                }
+                                navigator(`/lesson/${courseId}/${index + 1}`)
+                            }
+                        }
+                    }
+                })
+            }
+            else {
+                message.error("Lỗi lấy data")
+            }
+        }
+        catch (error) {
+            message.error(String(error))
+        }
+    }
+    useEffect(() => {
+        fetch()
+    }, [lessonId])
     const showDrawerComment = () => {
         setOpenCommentDrawer(true);
     };
@@ -361,29 +226,30 @@ function LessonDetail() {
         <>
             <div className="lesson-detail-container">
                 <div className="lesson-detail-list-lesson">
-                    <ListLesson courseId={Number(courseId)} lessons={course.lessons} />
+                    <ListLesson courseId={Number(courseId)} lessons={course?.lessons} />
                 </div>
-                <div className="lesson-detail-content">
+                {lesson && <div className="lesson-detail-content">
                     <>
                         <video
+                            ref={videoRef}
                             className="lesson-detail-main-content"
                             controls
-                            ref={videoRef}
                             onTimeUpdate={(e) => {
                                 const Event = e.target as HTMLVideoElement;
                                 setCurrentTime(formatTimeFromSeconds(Math.floor(Event.currentTime)));
                             }}
                         >
-                            <source src={video} type="video/mp4" />
+                            {/* <ReactPlayer url={`${backEndUrl}/video/${lesson?.content}`} controls={true} /> */}
+                            <source src={`${backEndUrl}/video/${lesson?.content}`} type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                         <div className="lesson-detail-main-des">
-                            <p className="lesson-detail-name">{lesson.lesson_name}</p>
-                            <p className="lesson-detail-description">{lesson.description}</p>
+                            <p className="lesson-detail-name">Lesson {lesson?.order}: {lesson?.lesson_name}</p>
+                            <p className="lesson-detail-description">{lesson?.description}</p>
                             <Button className="button-add-note" onClick={handleAddNote}><PlusOutlined />Thêm ghi chú tại {currentTime != '' ? currentTime : '0:00'}</Button>
                         </div>
                     </>
-                </div>
+                </div>}
                 {/* Button trao đổi */}
                 <Button className="button-comments" onClick={showDrawerComment}><WechatOutlined /> Trao đổi</Button>
                 <div className="comment-component">
@@ -453,7 +319,7 @@ function LessonDetail() {
                                         }}><Tag style={{ fontSize: 21, borderRadius: '20px', padding: '3px 10px' }} color="red">
                                                 {comment.commentAt}
                                             </Tag>
-                                            {lesson.lesson_name}
+                                            {lesson?.lesson_name}
                                         </a>
                                         <div>
                                             <EditOutlined onClick={() => handelEditNote(comment.commentAt)} className="block-note-title-btn" />

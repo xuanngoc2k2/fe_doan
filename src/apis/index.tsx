@@ -2,8 +2,8 @@ import axios from 'axios';
 import { IListVocab, IQuestionVocab, IUser, IVocabulary } from '../custom/type';
 // import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 export const backEndUrl = 'http://localhost:3000';
-// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjQsInVzZXJuYW1lIjoieHVhbm5nb2NpIiwiZW1haWwiOiJuZ2Rhc29hamRhbnNzQGdtYWwuY28iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcxMzQ5NjA1MiwiZXhwIjoxODAxNjI0MDUyfQ.Q7WC-Fgih-NhGU4BLWRxBdwDKm7rmJjWicWUfb1UtDU';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
+// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjQsInVzZXJuYW1lIjoieHVhbm5nb2NpIiwiZW1haWwiOiJuZ2Rhc29hamRhbnNzQGdtYWwuY28iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcxMzQ5NjA1MiwiZXhwIjoxODAxNjI0MDUyfQ.Q7WC-Fgih-NhGU4BLWRxBdwDKm7rmJjWicWUfb1UtDU';
 const config = {
     headers: {
         'Authorization': `Bearer ${token}`,
@@ -132,6 +132,13 @@ export const updateUserInfo = async (user: IUser) => {
 }
 export const updatePass = async (pass: string, newPass: string) => {
     const { data } = await axios.post(`${backEndUrl}/users/updatePass`, { pass, newPass }, config);
+    return data
+}
+export const getCourseDetail = async (id: number) => {
+    const user = await getInfoUser();
+    const { data } = await axios.post(`${backEndUrl}/course/${id}`, {
+        user: user.data
+    }, config);
     return data
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
