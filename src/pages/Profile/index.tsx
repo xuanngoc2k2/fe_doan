@@ -12,7 +12,7 @@ import {
 import './profile.scss'
 import { useEffect, useRef, useState } from 'react';
 import { CarouselRef } from 'antd/es/carousel';
-import { backEndUrl, callUploadSingleFile, getInfoUser, updateUserInfo } from '../../apis';
+import { backEndUrl, callUploadSingleFile, getInfoUser, updatePass, updateUserInfo } from '../../apis';
 import { IUser } from '../../custom/type';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -25,6 +25,7 @@ function Profile() {
     type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [dataUpdatePass, setDataUpdatePass] = useState<{ pass: string, newPass: string }>();
 
     const handleClick = () => {
         if (crRef.current) {
@@ -135,7 +136,28 @@ function Profile() {
             message.error("Có lỗi xảy ra trong quá trình cập nhật");
         }
     };
+    const handleUpdatePass = async () => {
+        try {
+            const res = await updatePass(dataUpdatePass!.pass, dataUpdatePass!.newPass);
+            console.log(res);
+            if (res.statusCode == 201) {
+                if (res.data.success === false) {
+                    message.error(res.data.message)
+                }
+                if (res.data.success === true) {
+                    message.success(res.data.message)
+                }
+            }
+            else {
+                message.error(
+                    res.message
+                )
+            }
 
+        } catch {
+            message.error("Lỗi")
+        }
+    }
     return (
         <div className="profile-page-container">
             <div className='profile-content'>
@@ -265,12 +287,74 @@ function Profile() {
                             </div>
                         </Card>
                     </div>
-                    <div className='info-detail' style={{ background: 'blue' }}>
+                    <div className='info-content' style={{ background: 'blue' }}>
                         <Card style={{
                             width: '100%',
                             height: '100%'
                         }} title="Đổi mật khẩu">
-                            <h3>{userInfo && userInfo.last_login}</h3>
+                            <Form
+                                layout='vertical'
+                                name="complex-form"
+                            >
+                                <Form.Item
+                                    label="Mật khẩu cũ"
+                                    rules={[{ required: true, message: 'Mật khẩu cũ không được để trống!' }
+                                    ]}
+                                    hasFeedback
+                                    name="last_password"
+                                    className="custom-input"
+                                >
+                                    <Input.Password
+                                        size='large'
+                                        onChange={(e) => {
+                                            const value = e.target.value as string;
+                                            setDataUpdatePass((prev) => ({ ...prev!, pass: value }))
+                                        }}
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    label="Mật khẩu mới"
+                                    name="new_password"
+                                    className="custom-input"
+                                    hasFeedback
+                                    rules={[
+                                        { required: true, message: 'Mật khẩu mới không được để trống!' }
+                                    ]}
+                                >
+                                    <Input.Password
+                                        size='large'
+                                        onChange={(e) => {
+                                            const value = e.target.value as string;
+                                            setDataUpdatePass((prev) => ({ ...prev!, newPass: value }))
+                                        }}
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    label="Xác nhận mật khẩu mới"
+                                    name="re_new_password"
+                                    hasFeedback
+                                    className="custom-input"
+                                    rules={[{ required: true, message: 'Xác nhận mật khẩu không được để trống!' },
+                                    (
+                                        { getFieldValue }
+                                    ) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('new_password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject("Xác nhận mật khẩu không trùng khớp")
+                                        }
+                                    })
+                                    ]}
+                                >
+                                    <Input.Password
+                                        size='large'
+                                    />
+                                </Form.Item>
+                                <Form.Item style={{ position: 'absolute', bottom: 0, right: 10 }}>
+                                    <Button type="primary" htmlType="submit" onClick={handleUpdatePass}>Cập nhật</Button>
+                                </Form.Item>
+                            </Form>
                         </Card>
                     </div>
                 </Carousel>

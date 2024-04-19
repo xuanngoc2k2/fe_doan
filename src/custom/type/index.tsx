@@ -113,5 +113,7 @@ export interface IUser {
     image: string,
     date_of_birth: Date,
     level: number,
-    last_login: null
+    last_login: null,
+    password?: string,
+    newPass?: string
 }
