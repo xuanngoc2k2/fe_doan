@@ -5,6 +5,18 @@
     .ant-space-item {
         width: 100%;
     }
+    a.lesson-active {
+        position: relative;
+        &::before {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            top: -31px;
+            background-color: #cccccc4a;
+            height: 200%;
+            width: 100%;
+        }
+    }
 }
 .item-lesson-detail {
     display: flex;

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
 import ReactQuill from "react-quill";
-import { backEndUrl, getCourseDetail } from "../apis";
+import { backEndUrl, getCourseDetail, updateDoneLesson } from "../apis";
 import { ICourse, ILesson } from "../custom/type";
 const listComment = [
     {
@@ -132,6 +132,10 @@ function LessonDetail() {
     const navigator = useNavigate();
     const fetch = async () => {
         try {
+            if (videoRef.current) {
+                videoRef.current = null;
+            }
+            console.log(videoRef.current)
             const res = await getCourseDetail(Number(courseId));
             if (res.data) {
                 setCourse(res.data)
@@ -144,6 +148,7 @@ function LessonDetail() {
                         else {
                             if (lessons[index - 1].isComplete) {
                                 setLesson(les);
+
                             }
                             else {
                                 while (!lessons[index - 1].isComplete) {
@@ -165,7 +170,7 @@ function LessonDetail() {
     }
     useEffect(() => {
         fetch()
-    }, [lessonId])
+    }, [Number(lessonId)])
     const showDrawerComment = () => {
         setOpenCommentDrawer(true);
     };
@@ -216,7 +221,23 @@ function LessonDetail() {
     const handleShowNote = () => {
         setOpenNoteDrawer(true);
     }
-
+    const handleFinish = async () => {
+        if (!lesson?.isComplete) {
+            try {
+                const res = await updateDoneLesson(Number(lesson?.id));
+                if (res.data) {
+                    message.success("Đã hoàn thành bài học");
+                    navigator(`/lesson/${courseId}/${lesson!.id + 1}`)
+                }
+                else {
+                    message.error("Học lỗi")
+                }
+            }
+            catch (error) {
+                message.error(String(error))
+            }
+        }
+    }
     const handelEditNote = (currentTime: string) => {
         //khả năng phải sửa thêm giống comment
         //dài vcl
@@ -226,11 +247,14 @@ function LessonDetail() {
         <>
             <div className="lesson-detail-container">
                 <div className="lesson-detail-list-lesson">
-                    <ListLesson courseId={Number(courseId)} lessons={course?.lessons} />
+                    <ListLesson active={Number(lessonId)} courseId={Number(courseId)} lessons={course?.lessons} />
                 </div>
                 {lesson && <div className="lesson-detail-content">
                     <>
                         <video
+                            key={lesson.id}
+                            onEnded={handleFinish}
+                            autoPlay
                             ref={videoRef}
                             className="lesson-detail-main-content"
                             controls

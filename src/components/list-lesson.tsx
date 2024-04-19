@@ -3,12 +3,12 @@ import { Space } from "antd";
 import './styles/list-lesson.scss'
 import { Link } from "react-router-dom";
 import { ILesson } from "../custom/type";
-function ListLesson({ lessons, courseId }: { lessons?: ILesson[], courseId: number }) {
+function ListLesson({ lessons, courseId, active }: { lessons?: ILesson[], courseId: number, active?: number }) {
     return (<>
         <Space style={{ fontFamily: 'Segoe UI' }} className="list-lesson" size={30}>
             {lessons?.map((lesson, index) => {
                 return (
-                    <Link style={{ color: 'black' }} to={(index > 0 && !lessons[index - 1].isComplete) ? '' : `/lesson/${courseId}/${lesson.id}`}>
+                    <Link className={active == lesson.id ? 'lesson-active' : ''} style={{ color: 'black' }} to={(index > 0 && !lessons[index - 1].isComplete) ? '' : `/lesson/${courseId}/${lesson.id}`}>
                         <div key={index} className="item-lesson-detail">
                             <div style={{ display: 'flex', width: '80%' }}>
                                 <p className="item-lesson-title">Lesson {index + 1}: {lesson.lesson_name}</p>
