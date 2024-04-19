@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IListVocab, IQuestionVocab, IVocabulary } from '../custom/type';
+import { IListVocab, IQuestionVocab, IUser, IVocabulary } from '../custom/type';
 // import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 export const backEndUrl = 'http://localhost:3000';
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiaWQiOjEsInVzZXJuYW1lIjoieHVhbm5nb2MyazIiLCJlbWFpbCI6Im5nb2FqZGFuc3NAZ21hbC5jb21kIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzEyOTU0NjY1LCJleHAiOjE4MDEwODI2NjV9.YdcK3IzdutxZZYbcL5BpYqtcBybgtHEffK3aY6gff7o';
@@ -123,6 +123,10 @@ export const getResultQuestionVocab = async (listAnswer: IQuestionVocab[]) => {
 }
 export const getInfoUser = async () => {
     const { data } = await axios.post(`${backEndUrl}/users/user`, {}, config);
+    return data
+}
+export const updateUserInfo = async (user: IUser) => {
+    const { data } = await axios.put(`${backEndUrl}/users/${user.id}`, { user }, config);
     return data
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

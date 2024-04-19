@@ -39,10 +39,28 @@
             justify-content: center !important;
             align-items: center !important;
             .info-image {
+                position: relative;
                 img {
                     width: 150px;
                     height: 150px;
                     border-radius: 50%;
+                }
+                .ant-upload-list-item-container,
+                .ant-upload-select {
+                    width: 150px !important;
+                    height: 150px !important;
+                }
+            }
+            .form-info {
+                label {
+                    font-size: 18px;
+                }
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                .custom-input {
+                    width: 45%;
+                    margin-right: 5%;
                 }
             }
         }
