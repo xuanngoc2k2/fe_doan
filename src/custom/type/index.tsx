@@ -57,6 +57,7 @@ export interface IGroupQuestion {
     image?: string;
     id: number;
     questions: IQuestion[];
+    type?: string;
 }
 
 // export interface IListQuestionItem {

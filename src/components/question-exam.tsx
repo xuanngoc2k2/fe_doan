@@ -11,6 +11,7 @@ import {
     useParams
 } from 'react-router-dom';
 import {
+    backEndUrl,
     getListQuestionOfExam,
     postResult
 } from '../apis';
@@ -143,8 +144,19 @@ function QuestionExam() {
                         }
                         return (
                             <div key={groupIndex} className='group-question'>
-                                <h3>※{groupQuestion.description}</h3>
-                                <p>※{groupQuestion.content}</p>
+                                {groupQuestion.type === 'Listening' ?
+                                    <>
+                                        <p>※{groupQuestion.content}</p>
+                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <audio controls>
+                                                <source src={`${backEndUrl}/audio/${groupQuestion.description}`} />
+                                            </audio>
+                                        </div>
+                                    </> :
+                                    <>
+                                        <h3>※{groupQuestion.description}</h3>
+                                        <p>※{groupQuestion.content}</p>
+                                    </>}
                                 <img src={groupQuestion.image} alt='question' />
                                 <div className='list-question'>
                                     {groupQuestion.questions.map((question: IQuestion, questionIndex) => {
