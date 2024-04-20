@@ -11,7 +11,8 @@ const config = {
     }
 }
 export const getListCourses = async () => {
-    const { data } = await axios.get(`${backEndUrl}/course`);
+    const user = await getInfoUser();
+    const { data } = await axios.post(`${backEndUrl}/course/all`, { user: user.data }, config);
     return data;
 }
 export const getListExams = async () => {
