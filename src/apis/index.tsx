@@ -146,6 +146,22 @@ export const updateDoneLesson = async (id: number) => {
     const { data } = await axios.patch(`${backEndUrl}/user-lesson/${id}`, {}, config);
     return data
 }
+export const addNote = async (comment: string, lessonId: number, commentAt?: string) => {
+    const { data } = await axios.post(`${backEndUrl}/comment`, { comment, commentAt, lessonId }, config);
+    return data
+}
+export const getAllNote = async (lessonId: number, isComment?: boolean) => {
+    const { data } = await axios.post(`${backEndUrl}/comment/getAllNote`, { lessonId, isComment: isComment }, config);
+    return data
+}
+export const deleteNote = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/comment/${id}`, config);
+    return data
+}
+export const updateNote = async (id: number, comment: string) => {
+    const { data } = await axios.patch(`${backEndUrl}/comment/${id}`, { comment }, config);
+    return data
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json

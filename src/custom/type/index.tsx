@@ -131,3 +131,11 @@ export interface IUser {
     password?: string,
     newPass?: string
 }
+export interface IComment {
+    id: number,
+    comment: string,
+    commentAt?: string,
+    lessonId: number,
+    user?: IUser,
+    createdAt: string
+}

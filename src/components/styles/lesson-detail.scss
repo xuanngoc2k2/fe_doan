@@ -96,6 +96,10 @@
         .comment-content {
             margin-bottom: 10px;
             margin-top: 10px;
+            ul,
+            ol {
+                margin-left: 15px;
+            }
         }
         margin-bottom: 20px;
     }
@@ -154,5 +158,8 @@
     background-color: #f2f3f5;
     padding: 10px;
     border-radius: 5px;
+}
+.note-content {
+    padding-left: 25px;
 }
 // }
