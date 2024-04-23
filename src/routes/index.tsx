@@ -17,6 +17,7 @@ import Vocabulary from '../pages/Vocabulary';
 import VocabularyDetail from '../pages/Vocabulary/vocab-detail';
 import FlashcardList from '../components/flashcard-list';
 import Profile from '../pages/Profile';
+import Admin from '../pages/Admin/admin';
 
 interface Route {
   path: string;
@@ -45,6 +46,8 @@ const publicRoutes: Route[] = [
   { path: '/user', component: Profile, }
 ];
 
-const privateRoutes: Route[] = [];
+const privateRoutes: Route[] = [
+  { path: '/admin', component: Admin, }
+];
 
 export { publicRoutes, privateRoutes };
