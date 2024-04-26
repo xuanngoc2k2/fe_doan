@@ -223,7 +223,6 @@ function Home() {
         }
         fetchData()
     }, [])
-    console.log(listExam)
     // const error = (message: string) => {
     //     messageApi.open({
     //         type: 'error',

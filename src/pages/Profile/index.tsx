@@ -140,7 +140,7 @@ function Profile() {
         try {
             const res = await updatePass(dataUpdatePass!.pass, dataUpdatePass!.newPass);
             console.log(res);
-            if (res.statusCode == 201) {
+            if (res.data) {
                 if (res.data.success === false) {
                     message.error(res.data.message)
                 }
@@ -150,7 +150,7 @@ function Profile() {
             }
             else {
                 message.error(
-                    res.message
+                    res.data.message
                 )
             }
 

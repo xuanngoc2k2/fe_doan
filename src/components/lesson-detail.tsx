@@ -172,7 +172,7 @@ function LessonDetail() {
     }
     const fetchListNote = async () => {
         const resNote = await getAllNote(Number(lessonId));
-        if (resNote.statusCode == 201) {
+        if (resNote.data) {
             setListNote(resNote.data);
         }
         else {
@@ -180,9 +180,9 @@ function LessonDetail() {
         }
     }
     const fetchListComment = async () => {
-        const resCom = await getAllNote(Number(lessonId), true);
-        if (resCom.statusCode == 201) {
-            setListComment(resCom.data)
+        const rs = await getAllNote(Number(lessonId), true);
+        if (rs.data) {
+            setListComment(rs.data)
         }
         else {
             message.error("Lay data comment lôi");
@@ -231,7 +231,7 @@ function LessonDetail() {
                     Number(lessonId!),
                     currentTime
                 )
-                if (res.statusCode == 201) {
+                if (res.data) {
                     message.success("Tạo ghi chú thành công")
                     fetchListNote()
                     handelCancel();
@@ -284,7 +284,7 @@ function LessonDetail() {
             if (comment.split('<p><br></p>').filter((item) => item.trim() !== '').join('') != '') {
                 try {
                     const res = await addNote(comment, Number(lessonId));
-                    if (res.statusCode === 201) {
+                    if (res.data) {
                         message.success("Comment thành công");
                         setComment('');
                         fetchListComment();

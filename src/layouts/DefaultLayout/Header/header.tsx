@@ -3,7 +3,7 @@ import React, { ReactNode, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from 'antd';
 import { BookOutlined, CaretDownOutlined, FontColorsOutlined, HighlightOutlined, LoginOutlined, LogoutOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import { callLogout } from "../../../apis";
+import { backEndUrl, callLogout } from "../../../apis";
 import { setLogoutAction } from "../../../redux/slice/accountSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 
@@ -24,6 +24,7 @@ const Header: React.FC<IProps> = ({ children }) => {
             navigate('/login')
         }
     }
+    console.log(user)
     useEffect(() => {
         // dispatch(fetchAccount())
     }, [isAuthenticated])
@@ -63,9 +64,7 @@ const Header: React.FC<IProps> = ({ children }) => {
                         <Menu selectedKeys={[]} mode="horizontal" style={{ borderBottom: 'none' }}>
                             <Menu.SubMenu
                                 className="header-profile"
-                                title={<Avatar size={50}
-                                    icon={<UserOutlined />}
-                                />}
+                                title={<Avatar icon={<img src={`${backEndUrl}/images/users/${user.image}`} />} size={50} />}
                             >
                                 <Menu.Item key="profile" icon={<UserOutlined />} className="header-profile-item"><Link to={'/user'}>Thông tin cá nhân</Link></Menu.Item>
                                 <Menu.Item key="ur-vocabulary"

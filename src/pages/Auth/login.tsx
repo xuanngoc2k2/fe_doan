@@ -17,7 +17,6 @@ function Login() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const callback = params?.get("callback");
-    // const naviga
     useEffect(() => {
         if (isAuthenticated) {
             window.location.href = '/';
@@ -33,7 +32,12 @@ function Login() {
                 localStorage.setItem('access_token', res.data.access_token);
                 dispatch(setUserLoginInfo(res.data.user));
                 message.success("Đăng nhập tài khoản thành công!");
-                window.location.href = callback ? callback : '/'
+                if (res.data.user.role == 'ADMIN') {
+                    window.location.href = '/admin'
+                }
+                else {
+                    window.location.href = callback ? callback : '/'
+                }
             } else if (res.data === undefined) {
                 notification.error({
                     message: "Tài khoản hoặc mật khẩu không đúng",

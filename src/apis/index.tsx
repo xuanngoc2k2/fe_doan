@@ -95,8 +95,8 @@ export const callUploadSingleFile = async (file: any, folderType: string) => {
             }
         })
         if (res.data) {
-            const { data } = res.data;
-            return { data }
+            console.log(res.data)
+            return res.data;
         }
     }
     catch (error) {
@@ -149,12 +149,12 @@ export const updateDoneLesson = async (id: number) => {
     return { data }
 }
 export const addNote = async (comment: string, lessonId: number, commentAt?: string) => {
-    const { data } = await axios.post(`${backEndUrl}/comment`, { comment, commentAt, lessonId });
-    return { data }
+    const data = await axios.post(`${backEndUrl}/comment`, { comment, commentAt, lessonId });
+    return data
 }
 export const getAllNote = async (lessonId: number, isComment?: boolean) => {
-    const { data } = await axios.post(`${backEndUrl}/comment/getAllNote`, { lessonId, isComment: isComment });
-    return { data }
+    const data = await axios.post(`${backEndUrl}/comment/getAllNote`, { lessonId, isComment: isComment });
+    return data;
 }
 export const deleteNote = async (id: number) => {
     const { data } = await axios.delete(`${backEndUrl}/comment/${id}`);

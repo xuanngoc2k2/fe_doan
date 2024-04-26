@@ -54,7 +54,6 @@ function Vocabulary() {
     useEffect(() => {
         fetch()
     }, [])
-    console.log(listVocabs)
     return (<>
         <Row>
             <Col span={8} offset={4}>

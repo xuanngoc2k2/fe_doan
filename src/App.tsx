@@ -5,6 +5,9 @@ import { ComponentType, ReactNode, useEffect } from 'react';
 import DefaultLayout from './layouts/DefaultLayout/default-layout';
 import { useAppDispatch } from './redux/hook';
 import { fetchAccount } from './redux/slice/accountSlice';
+import LayoutApp from './routes/protected-router/layout.app';
+import ProtectedRoute from './routes/protected-router';
+import AdminLayout from './pages/Admin/admin.layout';
 
 function App() {
 
@@ -22,42 +25,49 @@ function App() {
   return (
     <Router>
       <div className='App'>
-        <Routes>
-          {publicRoutes.map((route, index) => {
-            const Page = route.component;
-            let Layout: ComponentType<{ children: ReactNode }> | null = DefaultLayout;
-            if (route.layout === null) {
-              Layout = Fragment;
-            } else if (route.layout) {
-              Layout = route.layout;
-            }
-            return (
-              <Route
-                key={index}
-                path={route.path}
-                element={<Layout><Page /></Layout>} // Bọc Page trong Layout
-              />
-            );
-          })}
-          {privateRoutes.map((route, index) => {
-            const Page = route.component;
-            let Layout: ComponentType<{ children: ReactNode }> | null = Fragment;
-            if (route.layout === null) {
-              Layout = Fragment;
-            } else if (route.layout) {
-              Layout = route.layout;
-            }
-            return (
-              <Route
-                key={index}
-                path={route.path}
-                element={<Layout><Page /></Layout>} // Bọc Page trong Layout
-              />
-            );
-          })}
-        </Routes>
-      </div>
-    </Router>
+        <LayoutApp>
+          <Routes>
+            {publicRoutes.map((route, index) => {
+              const Page = route.component;
+              let Layout: ComponentType<{ children: ReactNode }> | null = DefaultLayout;
+              if (route.layout === null) {
+                Layout = Fragment;
+              } else if (route.layout) {
+                Layout = route.layout;
+              }
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={<Layout><Page /></Layout>} // Bọc Page trong Layout
+                />
+              );
+            })}
+            {privateRoutes.map((route, index) => {
+              const Page = route.component;
+              let Layout: ComponentType<{ children: ReactNode }> | null = AdminLayout;
+              if (route.layout === null) {
+                Layout = Fragment;
+              } else if (route.layout) {
+                Layout = route.layout;
+              }
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Page />
+                      </Layout>
+                    </ProtectedRoute>} // Bọc Page trong Layout
+                />
+              );
+            })}
+          </Routes>
+        </LayoutApp>
+      </div >
+    </Router >
   );
 }
 

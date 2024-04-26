@@ -14,7 +14,6 @@ const twoColors: ProgressProps['strokeColor'] = {
     '100%': '#87d068',
 };
 const CardCourse: React.FC<{ course: ICourse }> = ({ course }) => {
-    console.log(course)
     return (
         <div className='card-course' style={{ marginBottom: 20 }}>
             <Link to={course.id ? `/course/${course.id}` : '/'}>

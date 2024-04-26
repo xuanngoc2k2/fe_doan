@@ -39,7 +39,6 @@ function VocabularyDetail() {
             return;
         }
         try {
-            console.log(newVocab);
             const response = await creatNewVocabOfList(Number(idList), newVocab);
             if (response.data) {
                 message.success(response.data)
@@ -89,7 +88,6 @@ function VocabularyDetail() {
         }
     };
     const handelRemove = async (idWord: number) => {
-        console.log(idWord)
         try {
             const res = await deleteVocabOfList(Number(idList), idWord);
             if (res) {

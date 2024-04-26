@@ -20,6 +20,7 @@ interface IState {
         email: string;
         username: string;
         role: string;
+        image: string;
     };
 }
 
@@ -32,7 +33,8 @@ const initialState: IState = {
         id: 0,
         email: "",
         username: "",
-        role: ""
+        role: "",
+        image: ""
     },
 };
 
@@ -50,6 +52,7 @@ export const accountSlide = createSlice({
             state.user.id = action?.payload?.id;
             state.user.email = action.payload.email;
             state.user.username = action.payload.username;
+            state.user.image = action?.payload?.user?.image;
             state.user.role = action?.payload?.role;
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,7 +63,8 @@ export const accountSlide = createSlice({
                 id: 0,
                 email: "",
                 username: "",
-                role: ""
+                role: "",
+                image: ""
 
             }
         },
@@ -87,6 +91,7 @@ export const accountSlide = createSlice({
                 state.user.email = action.payload.user?.email;
                 state.user.username = action.payload.user?.username;
                 state.user.role = action?.payload?.user?.role;
+                state.user.image = action?.payload?.user?.image;
             }
         })
 
