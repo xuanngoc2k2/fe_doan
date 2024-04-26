@@ -48,7 +48,12 @@ const publicRoutes: Route[] = [
 ];
 
 const privateRoutes: Route[] = [
-  { path: '/admin', component: Admin, layout: AdminLayout }
+  { path: '/admin', component: Admin, layout: AdminLayout },
+  { path: '/admin/course', component: Admin, layout: AdminLayout },
+  { path: '/admin/lesson', component: Admin, layout: AdminLayout },
+  { path: '/admin/exam', component: Admin, layout: AdminLayout },
+  { path: '/admin/vocabulary', component: Admin, layout: AdminLayout },
+  { path: '/admin/news', component: Admin, layout: AdminLayout },
 ];
 
 export { publicRoutes, privateRoutes };

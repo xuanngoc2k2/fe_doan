@@ -3,6 +3,7 @@ import { Mutex } from "async-mutex";
 import axiosClient from "axios";
 import { store } from "../redux/store";
 import { setRefreshTokenAction } from "../redux/slice/accountSlice";
+import { backEndUrl } from ".";
 // interface AccessTokenResponse {
 //     access_token: string;
 // }
@@ -21,7 +22,7 @@ const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null> => {
     return await mutex.runExclusive(async () => {
-        const res = await instance.get('/auth/refresh');
+        const res = await instance.get(backEndUrl + '/auth/refresh');
         if (res && res.data) return res.data.access_token;
         else return null;
     });
