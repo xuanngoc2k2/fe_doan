@@ -1,15 +1,32 @@
-import { Avatar, Divider, Menu } from "antd";
-import React, { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Avatar, Divider, Menu, message } from "antd";
+import React, { ReactNode, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from 'antd';
-import { BookOutlined, CaretDownOutlined, FontColorsOutlined, HighlightOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { BookOutlined, CaretDownOutlined, FontColorsOutlined, HighlightOutlined, LoginOutlined, LogoutOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { callLogout } from "../../../apis";
+import { setLogoutAction } from "../../../redux/slice/accountSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 
 interface IProps {
     children?: ReactNode;
-    user?: unknown;
 }
-const Header: React.FC<IProps> = ({ children, user }) => {
-    console.log(user)
+const Header: React.FC<IProps> = ({ children }) => {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
+    const user = useAppSelector(state => state.account.user);
+    const handleLogout = async () => {
+        const res = await callLogout();
+        if (res && res.data) {
+            dispatch(setLogoutAction({}));
+            message.success('Đăng xuất thành công');
+            navigate('/login')
+        }
+    }
+    useEffect(() => {
+        // dispatch(fetchAccount())
+    }, [isAuthenticated])
     return (
         <>
             <Row className="header-container">
@@ -42,7 +59,7 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                     </Menu>
                 </Col>
                 <Col span={6} className="header-avatar-profile">
-                    {user ? (
+                    {user?.id != 0 ? (
                         <Menu selectedKeys={[]} mode="horizontal" style={{ borderBottom: 'none' }}>
                             <Menu.SubMenu
                                 className="header-profile"
@@ -55,11 +72,22 @@ const Header: React.FC<IProps> = ({ children, user }) => {
                                     icon={<FontColorsOutlined />}
                                     className="header-profile-item">Từ vựng của tôi</Menu.Item>
                                 <Menu.Item key="ur-course" icon={<BookOutlined />} className="header-profile-item"><Link to={'/result'}>Bài thi đã làm</Link></Menu.Item>
-                                <Menu.Item key="logout" icon={<LogoutOutlined />} className="header-profile-item">Đăng xuất</Menu.Item>
+                                <Menu.Item key="logout" icon={<LogoutOutlined />} className="header-profile-item"
+                                    onClick={handleLogout}>Đăng xuất</Menu.Item>
                             </Menu.SubMenu>
                         </Menu>
                     ) : (
-                        <Avatar size={50} icon={<UserOutlined />} />
+                        <Menu selectedKeys={[]} mode="horizontal" style={{ borderBottom: 'none' }}>
+                            <Menu.SubMenu
+                                className="header-profile"
+                                title={<Avatar size={50}
+                                    icon={<UserOutlined />}
+                                />}
+                            >
+                                <Menu.Item key="login" icon={<LoginOutlined />} className="header-profile-item"><Link to={'/login'}>Đăng nhập</Link></Menu.Item>
+                                <Menu.Item key="register" icon={<UserSwitchOutlined />} className="header-profile-item"><Link to={'/register'}>Đăng kí</Link></Menu.Item>
+                            </Menu.SubMenu>
+                        </Menu>
                     )}
                 </Col>
                 {children}

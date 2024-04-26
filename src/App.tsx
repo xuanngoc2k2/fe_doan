@@ -1,10 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from './routes';
 import { Fragment } from 'react/jsx-runtime';
-import { ComponentType, ReactNode } from 'react';
+import { ComponentType, ReactNode, useEffect } from 'react';
 import DefaultLayout from './layouts/DefaultLayout/default-layout';
+import { useAppDispatch } from './redux/hook';
+import { fetchAccount } from './redux/slice/accountSlice';
 
 function App() {
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (
+      window.location.pathname === '/login'
+      || window.location.pathname === '/register'
+    )
+      return;
+    dispatch(fetchAccount())
+  }, [])
+
   return (
     <Router>
       <div className='App'>
