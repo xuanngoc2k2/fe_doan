@@ -7,7 +7,8 @@ export interface ICourse {
     countUser: number,
     id: number
     level_required: number,
-    lessons: ILesson[]
+    lessons: ILesson[],
+    createdAt?: Date
 }
 export interface ILesson {
     id: number,

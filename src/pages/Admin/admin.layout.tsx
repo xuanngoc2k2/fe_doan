@@ -83,6 +83,7 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
             >
                 <Sider
                     theme='light'
+                    width={'15%'}
                     collapsible
                     collapsed={collapsed}
                     onCollapse={(value) => setCollapsed(value)}>
@@ -91,7 +92,7 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
                     <Menu
                         style={{
-                            borderInline: 'none'
+                            borderInline: 'none',
                         }}
                         selectedKeys={[activeMenu]}
                         onClick={(e) => setActiveMenu(e.key)}
@@ -121,7 +122,7 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
 
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                             <Space style={{ cursor: "pointer" }}>
-                                Welcome {user?.username}
+                                {`Welcome ` + user?.username}
                                 <Avatar> {user?.username?.substring(0, 2)?.toUpperCase()} </Avatar>
 
                             </Space>

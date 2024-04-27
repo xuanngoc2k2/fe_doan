@@ -164,6 +164,14 @@ export const updateNote = async (id: number, comment: string) => {
     const { data } = await axios.patch(`${backEndUrl}/comment/${id}`, { comment });
     return { data }
 }
+export const callDeleteCourse = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/course/${id}`);
+    return { data }
+}
+export const searchCourse = async (search: string, level: number[]) => {
+    const { data } = await axios.post(`${backEndUrl}/course/search`, { search, level });
+    return { data }
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json

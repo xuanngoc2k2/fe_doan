@@ -17,8 +17,10 @@ import Vocabulary from '../pages/Vocabulary';
 import VocabularyDetail from '../pages/Vocabulary/vocab-detail';
 import FlashcardList from '../components/flashcard-list';
 import Profile from '../pages/Profile';
-import Admin from '../pages/Admin/admin';
+import Admin from '../pages/Admin/dashboard';
 import AdminLayout from '../pages/Admin/admin.layout';
+import Dashboard from '../pages/Admin/dashboard';
+import AdminCourse from '../pages/Admin/Course/course';
 
 interface Route {
   path: string;
@@ -48,8 +50,8 @@ const publicRoutes: Route[] = [
 ];
 
 const privateRoutes: Route[] = [
-  { path: '/admin', component: Admin, layout: AdminLayout },
-  { path: '/admin/course', component: Admin, layout: AdminLayout },
+  { path: '/admin', component: Dashboard, layout: AdminLayout },
+  { path: '/admin/course', component: AdminCourse, layout: AdminLayout },
   { path: '/admin/lesson', component: Admin, layout: AdminLayout },
   { path: '/admin/exam', component: Admin, layout: AdminLayout },
   { path: '/admin/vocabulary', component: Admin, layout: AdminLayout },
