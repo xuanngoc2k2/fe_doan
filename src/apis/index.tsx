@@ -172,6 +172,14 @@ export const searchCourse = async (search: string, level: number[]) => {
     const { data } = await axios.post(`${backEndUrl}/course/search`, { search, level });
     return { data }
 }
+export const createNewCourse = async (course: type.ICourse) => {
+    const { data } = await axios.post(`${backEndUrl}/course`, { ...course });
+    return { data }
+}
+export const updateCourse = async (id: number, course_name: string, description: string, image: string, level_required: number) => {
+    const { data } = await axios.put(`${backEndUrl}/course/${id}`, { course_name, description, image, level_required });
+    return { data }
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json

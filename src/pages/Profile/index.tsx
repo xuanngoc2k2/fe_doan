@@ -57,7 +57,6 @@ function Profile() {
             setIsLoading(!isLoading); // Kết thúc quá trình loading dữ liệu
         }
     };
-
     useEffect(() => {
         if (!userInfo && isLoading) {
             fetchUserInfo();
@@ -83,6 +82,7 @@ function Profile() {
         const imgWindow = window.open(src);
         imgWindow?.document.write(image.outerHTML);
     };
+
     const onChangeAvatar: UploadProps['onChange'] = ({ file: newFileList }) => {
         newFileList.status = 'done';
         setFileList([newFileList]);

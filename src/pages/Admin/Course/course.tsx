@@ -6,7 +6,7 @@ import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
 import { ICourse } from "../../../custom/type";
-import { backEndUrl, callDeleteCourse, getListCourses, searchCourse } from "../../../apis";
+import { backEndUrl, callDeleteCourse, getCourseDetail, getListCourses, searchCourse } from "../../../apis";
 import ModalCourse from "./modal-course";
 // import { ActionType } from '@ant-design/pro-components';
 
@@ -19,7 +19,7 @@ const AdminCourse: React.FC = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [showModel, setShowModel] = useState(false);
-    const [idFix, setIdFix] = useState<number>();
+    const [dataFix, setDataFix] = useState<ICourse | null>();
     // const tableRef = useRef<ActionType>();
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -122,7 +122,7 @@ const AdminCourse: React.FC = () => {
                                 : level === 3 ? 'orange'
                                     : level === 4 ? 'red'
                                         : level === 5 ? 'magenta'
-                                            : level === 6 ? 'blue'  // Thêm màu mong muốn cho level 6
+                                            : level === 6 ? 'purple'  // Thêm màu mong muốn cho level 6
                                                 : ''  // Màu mặc định khi level không nằm trong khoảng từ 0 đến 6
                     }>
                         TOPIK {level}
@@ -196,18 +196,23 @@ const AdminCourse: React.FC = () => {
             ),
         },
     ]
-    const handleShowModel = (id?: number) => {
+    const handleShowModel = async (id?: number) => {
         if (id) {
-            setIdFix(id)
+            const res = await getCourseDetail(id);
+            setDataFix(res.data)
+        }
+        else {
+            setDataFix(null)
         }
         setShowModel(true)
     }
     const handelCancel = () => {
+        fetch();
         setShowModel(false);
     }
     return (
         <>
-            <Content style={{ padding: '0 48px' }}>
+            <Content style={{ padding: '0 48px', marginBottom: 20 }}>
                 <div
                     style={{
                         background: colorBgContainer,
@@ -278,6 +283,7 @@ const AdminCourse: React.FC = () => {
                                         setPage(page);
                                         setPageSize(pageSize);
                                     },
+                                    // showSizeChanger: true,
                                     showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
                                 }}
                             >
@@ -286,7 +292,7 @@ const AdminCourse: React.FC = () => {
                     </div>
                 </div>
             </Content>
-            <ModalCourse id={idFix} open={showModel} handelCancle={handelCancel} />
+            {showModel && <ModalCourse data={dataFix} open={showModel} handelCancel={handelCancel} />}
         </>
     )
 }

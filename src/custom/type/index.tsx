@@ -3,11 +3,11 @@ export interface ICourse {
     description: string,
     image: string,
     progress?: number,
-    time: number,
-    countUser: number,
+    time?: number,
+    countUser?: number,
     id: number
     level_required: number,
-    lessons: ILesson[],
+    lessons?: ILesson[],
     createdAt?: Date
 }
 export interface ILesson {
