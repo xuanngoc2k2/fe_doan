@@ -21,6 +21,8 @@ import Admin from '../pages/Admin/dashboard';
 import AdminLayout from '../pages/Admin/admin.layout';
 import Dashboard from '../pages/Admin/dashboard';
 import AdminCourse from '../pages/Admin/Course/course';
+import AdminLesson from '../pages/Admin/Lesson/lesson';
+import AdminLessonDetail from '../pages/Admin/Lesson/lesson-detail';
 
 interface Route {
   path: string;
@@ -52,7 +54,8 @@ const publicRoutes: Route[] = [
 const privateRoutes: Route[] = [
   { path: '/admin', component: Dashboard, layout: AdminLayout },
   { path: '/admin/course', component: AdminCourse, layout: AdminLayout },
-  { path: '/admin/lesson', component: Admin, layout: AdminLayout },
+  { path: '/admin/lesson', component: AdminLesson, layout: AdminLayout },
+  { path: '/admin/lesson/:id', component: AdminLessonDetail, layout: AdminLayout },
   { path: '/admin/exam', component: Admin, layout: AdminLayout },
   { path: '/admin/vocabulary', component: Admin, layout: AdminLayout },
   { path: '/admin/news', component: Admin, layout: AdminLayout },

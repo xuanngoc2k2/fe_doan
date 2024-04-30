@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { setLogoutAction } from "../../redux/slice/accountSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
-import { AppstoreOutlined, BookOutlined, BugOutlined, FontColorsOutlined, FormOutlined, HighlightOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, BookOutlined, BugOutlined, FontColorsOutlined, FormOutlined, HighlightOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 
 interface LayoutProps {
@@ -53,6 +53,11 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
             label: <Link to={'/admin/lesson'}>Lesson</Link>,
             key: '/admin/lesson',
             icon: <FormOutlined />
+        },
+        {
+            label: <Link to={'/admin/question'}>Question</Link>,
+            key: '/admin/question',
+            icon: <QuestionCircleOutlined />
         },
         {
             label: <Link to={'/admin/exam'}>Exam</Link>,

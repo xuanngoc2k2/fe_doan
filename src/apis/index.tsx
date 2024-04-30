@@ -104,6 +104,27 @@ export const callUploadSingleFile = async (file: any, folderType: string) => {
     }
     return 'Lỗi';
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const callUploadVideo = async (file: any, folderType: string) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('video', file);
+    try {
+        const res = await axios.post(`${backEndUrl}/file/upload-video`, bodyFormData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "folder_type": folderType
+            }
+        })
+        if (res.data) {
+            console.log(res.data)
+            return res.data;
+        }
+    }
+    catch (error) {
+        console.log(error)
+    }
+    return 'Lỗi';
+}
 export const creatNewVocabOfList = async (idList: number, vocab: type.IVocabulary) => {
     const { data } = await axios.post(`${backEndUrl}/user-vocabulary/${idList}`, vocab);
     // const duration = data.data.duration;
@@ -178,6 +199,38 @@ export const createNewCourse = async (course: type.ICourse) => {
 }
 export const updateCourse = async (id: number, course_name: string, description: string, image: string, level_required: number) => {
     const { data } = await axios.put(`${backEndUrl}/course/${id}`, { course_name, description, image, level_required });
+    return { data }
+}
+export const getListLesson = async () => {
+    const { data } = await axios.get(`${backEndUrl}/lesson`);
+    return { data }
+}
+export const searchLesson = async (search: string, courseId?: number) => {
+    const { data } = await axios.post(`${backEndUrl}/lesson/search`, { search, courseId });
+    return { data }
+}
+export const getLesson = async (id: number) => {
+    const { data } = await axios.get(`${backEndUrl}/lesson/${id}`);
+    return { data }
+}
+export const deleteLesson = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/lesson/${id}`);
+    return { data }
+}
+export const getAllGroupQuestion = async () => {
+    const { data } = await axios.get(`${backEndUrl}/group-question`);
+    return { data }
+}
+export const getAllQuestionByGroupQuestion = async (id: number) => {
+    const { data } = await axios.get(`${backEndUrl}/group-question/question/${id}`);
+    return { data }
+}
+export const createNewLesson = async (lesson: type.ILesson) => {
+    const { data } = await axios.post(`${backEndUrl}/lesson`, lesson);
+    return { data }
+}
+export const updateLesson = async (id: number, lesson: type.ILesson) => {
+    const { data } = await axios.put(`${backEndUrl}/lesson/${id}`, { ...lesson });
     return { data }
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

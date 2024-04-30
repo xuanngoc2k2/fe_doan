@@ -15,11 +15,15 @@ export interface ILesson {
     lesson_name: string,
     content: string,
     description: string,
-    order: 1,
+    order: number,
     duration: string,
     isQuestion?: boolean,
     isComplete?: boolean,
-    currentTime?: string
+    currentTime?: string,
+    createdAt?: Date,
+    thumbnail: string,
+    courseId: number,
+    course?: ICourse,
 }
 export interface IExam {
     id: 6,
