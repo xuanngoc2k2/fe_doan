@@ -233,6 +233,15 @@ export const updateLesson = async (id: number, lesson: type.ILesson) => {
     const { data } = await axios.put(`${backEndUrl}/lesson/${id}`, { ...lesson });
     return { data }
 }
+export const getListQuestion = async () => {
+    const { data } = await axios.get(`${backEndUrl}/question`);
+    return { data }
+}
+export const searchQuestion = async (S: { search: string, groupQuestion: number, type: string }) => {
+    const { data } = await axios.post(`${backEndUrl}/question/search`, { ...S });
+    return { data };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json

@@ -54,6 +54,8 @@ export interface IQuestion {
     question: string;
     answers: IAnswer[];
     result_details?: IResultDetail[];
+    createdAt?: Date
+    group_question?: IGroupQuestion;
 }
 
 export interface IGroupQuestion {

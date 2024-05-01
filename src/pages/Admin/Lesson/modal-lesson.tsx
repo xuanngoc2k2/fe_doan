@@ -311,6 +311,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     rules={[{ required: true, message: 'Video không được để trống!' }]}
                     getValueFromEvent={normFile}
                 >
+                    {/* có thể nhúng video */}
                     {isVideo ? <Upload
                         name="content"
                         maxCount={1}
