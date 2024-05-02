@@ -208,7 +208,11 @@ const AdminQuestion: React.FC = () => {
                     <div style={{ display: 'flex' }}>
                         <div>
                             <Form.Item
+                                name={'question'}
                                 label="Câu hỏi"
+                                rules={[{
+                                    required: true
+                                }]}
                             >
                                 <Input
                                     value={search?.search}

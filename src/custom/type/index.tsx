@@ -54,8 +54,18 @@ export interface IQuestion {
     question: string;
     answers: IAnswer[];
     result_details?: IResultDetail[];
-    createdAt?: Date
+    createdAt?: Date;
+    level?: number;
     group_question?: IGroupQuestion;
+}
+export const CreateNewQuestion = {
+    score: 0,
+    type: '',
+    question: '',
+    answers: [{
+        answer: "",
+    }],
+    level: 0,
 }
 
 export interface IGroupQuestion {
