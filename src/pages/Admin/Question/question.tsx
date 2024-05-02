@@ -6,8 +6,9 @@ import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
 import { IGroupQuestion, ILesson, IQuestion } from "../../../custom/type";
-import { backEndUrl, deleteLesson, getAllGroupQuestion, getAllQuestionByGroupQuestion, getLesson, getListQuestion, searchQuestion } from "../../../apis";
+import { backEndUrl, deleteLesson, deleteQuestion, getAllGroupQuestion, getAllQuestionByGroupQuestion, getLesson, getListQuestion, searchQuestion } from "../../../apis";
 import { ColumnType } from "antd/es/table";
+import { useNavigate } from "react-router-dom";
 // import { ActionType } from '@ant-design/pro-components';
 
 
@@ -18,6 +19,7 @@ const AdminQuestion: React.FC = () => {
     const [search, setSearch] = useState<{ search: string, groupQuestion: number, type: string } | null>();
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const navigator = useNavigate();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -43,11 +45,11 @@ const AdminQuestion: React.FC = () => {
     // const reloadTable = () => {
     //     tableRef?.current?.reload();
     // }
-    const handleDeleteLesson = async (_id: number | undefined) => {
+    const handleDeleteQuestion = async (_id: number | undefined) => {
         if (_id) {
-            const res = await deleteLesson(_id);
+            const res = await deleteQuestion(_id);
             if (res && res.data) {
-                message.success('Xóa bài học thành công');
+                message.success('Xóa câu hỏi thành công');
                 fetch();
             } else {
                 notification.error({
@@ -167,14 +169,13 @@ const AdminQuestion: React.FC = () => {
                             fontSize: 20,
                             color: '#1677ff',
                         }}
-                        onClick={() => {
-                        }}
+                        onClick={() => { navigator(`${record.id}`) }}
                     />
                     <Popconfirm
                         placement="leftTop"
                         title={"Xác nhận xóa câu hỏi"}
                         description={"Bạn có chắc chắn muốn xóa câu hỏi này ?"}
-                        onConfirm={() => handleDeleteLesson(record.id)}
+                        onConfirm={() => handleDeleteQuestion(record.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
                     >
@@ -255,9 +256,11 @@ const AdminQuestion: React.FC = () => {
                 >
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <b>Danh sách bài học</b>
+                            <b>Danh sách câu hỏi</b>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Button style={{ marginRight: 20 }} icon={<PlusOutlined />} type="primary">Thêm mới</Button>
+                                <Button onClick={() => {
+                                    navigator('create-new')
+                                }} style={{ marginRight: 20 }} icon={<PlusOutlined />} type="primary">Thêm mới</Button>
                                 <p onClick={fetch} style={{ cursor: 'pointer' }}><ReloadOutlined /></p>
                             </div>
                         </div>

@@ -51,7 +51,7 @@ function QuestionExam() {
             if (remainingTime > 0) {
                 setRemainingTime(prevTime => prevTime - 1);
             } else {
-                handleSubmit();
+                // handleSubmit();
                 setTimeExpired(true);
             }
         }, 1000);
@@ -149,7 +149,7 @@ function QuestionExam() {
                                         <p>※{groupQuestion.content}</p>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <audio controls>
-                                                <source src={`${backEndUrl}/audio/${groupQuestion.description}`} />
+                                                <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
                                             </audio>
                                         </div>
                                     </> :

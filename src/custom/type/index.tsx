@@ -65,6 +65,7 @@ export interface IGroupQuestion {
     id: number;
     questions: IQuestion[];
     type?: string;
+    audio?: string;
 }
 
 // export interface IListQuestionItem {

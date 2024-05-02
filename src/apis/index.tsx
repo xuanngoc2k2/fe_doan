@@ -37,12 +37,12 @@ export const getExamById = async (id: string) => {
 }
 export const getListQuestionOfExam = async (id: number) => {
     const { data } = await axios.post(`${backEndUrl}/exams/question/${id} `, {});
-    const examGrquestions = data.data.examGrquestions;
+    const examGrquestions = data.examGrquestions;
     const listQuestion = [];
     for (const k in examGrquestions) {
         listQuestion.push(examGrquestions[k]['groupQuestion']);
     }
-    const duration = data.data.duration;
+    const duration = data.duration;
     return { duration, listQuestion }
 }
 export const postResult = async (result: unknown) => {
@@ -239,6 +239,14 @@ export const getListQuestion = async () => {
 }
 export const searchQuestion = async (S: { search: string, groupQuestion: number, type: string }) => {
     const { data } = await axios.post(`${backEndUrl}/question/search`, { ...S });
+    return { data };
+}
+export const deleteQuestion = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/question/${id}`);
+    return { data };
+}
+export const getDetailQuestion = async (id: string) => {
+    const { data } = await axios.get(`${backEndUrl}/question/${id}`);
     return { data };
 }
 
