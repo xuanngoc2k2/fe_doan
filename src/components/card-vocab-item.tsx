@@ -21,7 +21,7 @@ function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove
                 <p className='vocab-meaning'>{word.meaning}</p>
                 {word.example && (
                     <><p>Example:</p>
-                        <p className='vocab-example'>{word.example.split('\n').map((ex) => <li>{ex}</li>)}</p></>)}
+                        <p className='vocab-example'>{word.example.split('\n').map((ex, index) => <li key={index}>{ex}</li>)}</p></>)}
             </div>
             <div className='vocab-image'>
                 {word.image !== null ? <img src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}

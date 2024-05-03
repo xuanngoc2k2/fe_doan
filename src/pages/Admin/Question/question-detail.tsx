@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { backEndUrl, createNewQuestion, getAllGroupQuestion, getDetailQuestion } from "../../../apis";
-import { Button, Form, GetProp, Input, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
+import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getDetailQuestion } from "../../../apis";
+import { Button, Form, GetProp, Input, message, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 
 const QuestionDetail: React.FC = () => {
@@ -14,11 +14,13 @@ const QuestionDetail: React.FC = () => {
     const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion | null>();
     const [question, setQuestion] = useState<IQuestion | null>();
     const [dataQuestion, setDataQuestion] = useState<IQuestion[] | []>([CreateNewQuestion as IQuestion]);
-    // const [answer, setAnswer] = useState<IAnswer[] | []>([]);
+    const [addNew, setAddNew] = useState(false);
+    const [editGr, setEditGr] = useState(false);
+    const [fileAudio, setFileAudio] = useState<UploadFile>();
+    const [fileImage, setFileImage] = useState<UploadFile | null>();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -41,16 +43,42 @@ const QuestionDetail: React.FC = () => {
         imgWindow?.document.write(image.outerHTML);
     };
 
-    const onChangeUpload: UploadProps['onChange'] = ({ file: newFileList }) => {
-        newFileList.status = 'done';
-        setFileList([newFileList]);
+    const upLoadFile = async (file: UploadFile, audio?: boolean) => {
+        const uploadedFile = file.originFileObj as File;
+        if (uploadedFile != null) {
+            try {
+                if (audio) {
+                    const res = await callUploadAudio(uploadedFile, 'audio');
+                    if (res.fileName && audio) {
+                        // message.success(`Thành công ${res.fileName}`);
+                        const groupInfo = { ...(groupQuestion || {}), audio: res.fileName } as IGroupQuestion;
+                        setGroupQuestion(groupInfo); // Cập nhật userInfo.image
+                        return groupInfo; // Trả về userInfo đã được cập nhật
+                    }
+                }
+                else {
+                    const res = await callUploadSingleFile(uploadedFile, 'question');
+                    const groupInfo = { ...(groupQuestion || {}), image: res.fileName } as IGroupQuestion;
+                    setGroupQuestion(groupInfo); // Cập nhật userInfo.image
+                    return groupInfo; // Trả về userInfo đã được cập nhật
+                }
+            } catch (error) {
+                message.error("Lỗi");
+            } finally {
+                // setUploading(false); // Đặt lại trạng thái uploading
+            }
+        }
+        return null; // Trả về null nếu có lỗi xảy ra
+    };
+    const onChangeUpload: UploadProps['onChange'] = ({ file: newFile }) => {
+        newFile.status = 'done';
+        setFileImage(newFile);
+    };
+    const onChangeUploadAudio: UploadProps['onChange'] = ({ file: newFile }) => {
+        newFile.status = 'done';
+        setFileAudio(newFile);
     };
     useEffect(() => {
-        // const video = document.createElement('video');
-        // video.src = `${backEndUrl}/video/testmp4.mp4`;
-        // video.onloadedmetadata = function () {
-        //     console.log('Video duration:', video.duration, 'seconds');
-        // };
         const fetch = async () => {
             try {
                 const res = await getAllGroupQuestion();
@@ -78,11 +106,18 @@ const QuestionDetail: React.FC = () => {
         fetch();
     }, [id, groupQuestion?.id])
     const [form] = Form.useForm();
-    const disable = groupQuestion ? true : false;
     const handleSubmit = async () => {
-        if (dataQuestion && groupQuestion) {
+        console.log(fileAudio, fileImage);
+        if (dataQuestion && groupQuestion?.content != '') {
             try {
-                const res = await createNewQuestion(dataQuestion, groupQuestion!)
+                let newGr = groupQuestion;
+                if (fileAudio) {
+                    newGr = await upLoadFile(fileAudio, true);
+                }
+                if (fileImage) {
+                    newGr = await upLoadFile(fileImage);
+                }
+                const res = await createNewQuestion(dataQuestion, newGr!)
                 if (res && res.data) {
                     notification.success({
                         message: "Tạo mới câu hỏi thành công"
@@ -126,6 +161,22 @@ const QuestionDetail: React.FC = () => {
             return newData;
         });
     };
+    const Reset = () => {
+        setGroupQuestion(null);
+        form.setFieldValue('group_question', null);
+        form.setFieldValue('type_question', undefined);
+        form.setFieldValue('des_groupquestion', '');
+        setFileImage(null);
+    }
+    const handleReset = () => {
+        setAddNew(false);
+        setEditGr(false);
+        Reset()
+    }
+    const handleAddNew = () => {
+        setAddNew(true);
+        Reset();
+    }
     return (<>
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
             <div
@@ -159,25 +210,34 @@ const QuestionDetail: React.FC = () => {
                                     label="Nhóm câu hỏi"
                                     style={{ minWidth: 350, width: '80%' }}
                                 >
-                                    <Select allowClear
-                                        onChange={(value) => {
-                                            const rs = dataListGroupQuestion.find((gr) => gr.id == Number(value));
-                                            setGroupQuestion(rs);
-                                            form.setFieldValue('type_question', rs?.type);
-                                            form.setFieldValue('des_groupquestion', rs?.description);
-                                        }}
-                                        value={groupQuestion}
-                                        placeholder="Chọn nhóm câu hỏi">
-                                        {dataListGroupQuestion.map((groupQuestion) => {
-                                            return (
-                                                <Select.Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Select.Option>
-                                            )
-                                        })}
-                                    </Select>
+                                    {addNew ? <Input
+                                        placeholder="Nhập tên nhóm câu hỏi"
+                                        value={groupQuestion?.content}
+                                        onChange={(e) => {
+                                            setGroupQuestion((prev) => ({ ...prev!, content: e.target.value }))
+                                        }} />
+                                        :
+                                        <Select allowClear
+                                            onChange={(value) => {
+                                                const rs = dataListGroupQuestion.find((gr) => gr.id == Number(value));
+                                                setGroupQuestion(rs);
+                                                form.setFieldValue('type_question', rs?.type);
+                                                form.setFieldValue('des_groupquestion', rs?.description);
+                                            }}
+                                            value={groupQuestion}
+                                            placeholder="Chọn nhóm câu hỏi">
+                                            {dataListGroupQuestion.map((groupQuestion) => {
+                                                return (
+                                                    <Select.Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Select.Option>
+                                                )
+                                            })}
+                                        </Select>}
                                 </Form.Item>
-                                <Button onClick={() => {
-                                }} style={{ marginRight: 20, width: '15%' }} icon={<PlusOutlined />} type="primary">Thêm mới nhóm câu hỏi</Button>
-
+                                <div style={{ fontSize: 20, marginLeft: 10, marginRight: 10, display: 'flex', height: 32 }}>
+                                    {groupQuestion && <EditOutlined style={{ marginRight: 10 }} onClick={() => { setEditGr(true) }} />}
+                                    <RedoOutlined onClick={handleReset} />
+                                </div>
+                                <Button onClick={handleAddNew} style={{ marginRight: 20, width: '15%' }} icon={<PlusOutlined />} type="primary">Thêm mới nhóm câu hỏi</Button>
                             </div>
                             <div style={{ display: 'flex' }}>
                                 <Form.Item
@@ -186,9 +246,9 @@ const QuestionDetail: React.FC = () => {
                                     rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                 >
                                     <Select
-                                        disabled={disable}
+                                        disabled={(!addNew)}
                                         onChange={(value) => {
-                                            disable && setGroupQuestion((prev) => ({ ...prev!, type: value }))
+                                            setGroupQuestion((prev) => ({ ...prev!, type: value }))
                                         }}
                                         allowClear
                                         style={{ maxWidth: 150 }}
@@ -198,13 +258,19 @@ const QuestionDetail: React.FC = () => {
                                         <Option value={`Listening`}>Listening</Option>
                                     </Select>
                                 </Form.Item>
-                                {groupQuestion?.type === 'Listening' &&
+                                {(groupQuestion?.type == "Listening" ||
+                                    form.getFieldValue('type_question') == "Listening") &&
                                     <Form.Item
+                                        getValueFromEvent={normFile}
                                         style={{ marginLeft: 20 }}
+                                        rules={[{ required: true, message: 'File nghe không được để trống!' }]}
                                         label="File nghe"
+                                        name={'audio'}
                                     >
                                         <Upload
-                                            name="content"
+                                            onChange={onChangeUploadAudio}
+                                            disabled={(!addNew && editGr)}
+                                            name="audio"
                                             maxCount={1}
                                         >
                                             <Button type="primary">
@@ -214,18 +280,18 @@ const QuestionDetail: React.FC = () => {
                                     </Form.Item>
                                 }
                             </div>
-                            <Form.Item label="Hình ảnh" valuePropName="fileList"
+                            {(groupQuestion || addNew) && <Form.Item label="Hình ảnh" valuePropName="fileList"
                                 name={'image'}
                                 // rules={[{ required: true, message: 'Hình ảnh không được để trống!' }]}
                                 getValueFromEvent={normFile}
                             >
                                 <div style={{ display: 'flex' }}>
-                                    {groupQuestion?.image && <img src={backEndUrl + '/images/question/' + groupQuestion.image} />}
+                                    {groupQuestion?.image && !addNew && <img src={backEndUrl + '/images/question/' + groupQuestion.image} />}
                                     <Upload
                                         name="image"
                                         maxCount={1}
                                         listType="picture-card"
-                                        fileList={fileList}
+                                        // fil={fileImage}
                                         onChange={onChangeUpload}
                                         onPreview={onPreview}
                                     >
@@ -235,16 +301,35 @@ const QuestionDetail: React.FC = () => {
                                         </button>
                                     </Upload>
                                 </div>
-                            </Form.Item>
+                            </Form.Item>}
                             <Form.Item
                                 name={'des_groupquestion'}
                                 rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
                                 label="Mô tả">
-                                <Input.TextArea rows={1} />
+                                <Input.TextArea
+                                    disabled={(!addNew && editGr)}
+                                    value={groupQuestion?.description}
+                                    onChange={(e) => {
+                                        setGroupQuestion((prev) => ({ ...prev!, description: e.target.value }))
+                                    }}
+                                    rows={1} />
                             </Form.Item>
                             {dataQuestion.map((question, index) => {
                                 return (
-                                    <div style={{ padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>
+                                    <div style={{ position: 'relative', padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>
+                                        <MinusOutlined onClick={() => {
+                                            if (index == 0) {
+                                                notification.error({
+                                                    message: "Không thể xóa hết câu hỏi"
+                                                })
+                                                return
+                                            }
+                                            setDataQuestion((prev) => {
+                                                const updatedQuestions = [...prev];
+                                                updatedQuestions.splice(index, 1);
+                                                return updatedQuestions;
+                                            });
+                                        }} />
                                         <Form.Item
                                             name={`question-${index}`}
                                             rules={[{ required: true, message: 'Câu hỏi không được để trống!' }]}

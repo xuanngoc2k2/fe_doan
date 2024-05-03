@@ -71,6 +71,12 @@ const AdminLesson: React.FC = () => {
     useEffect(() => {
         fetch();
     }, [])
+
+    // const video = document.createElement('video');
+    // video.src = `${backEndUrl}/video/testmp4.mp4`;
+    // video.onloadedmetadata = function () {
+    //     console.log('Video duration:', video.duration, 'seconds');
+    // };
     const handelSearch = async () => {
         const res = await searchLesson(search, searchByCourse!)
         if (res && res.data) {

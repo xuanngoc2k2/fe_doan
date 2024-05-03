@@ -8,7 +8,7 @@ function ListLesson({ lessons, courseId, active }: { lessons?: ILesson[], course
         <Space style={{ fontFamily: 'Segoe UI' }} className="list-lesson" size={30}>
             {lessons?.map((lesson, index) => {
                 return (
-                    <Link className={active == lesson.id ? 'lesson-active' : ''} style={{ color: 'black' }} to={(index > 0 && !lessons[index - 1].isComplete) ? '' : `/lesson/${courseId}/${lesson.id}`}>
+                    <Link key={index} className={active == lesson.id ? 'lesson-active' : ''} style={{ color: 'black' }} to={(index > 0 && !lessons[index - 1].isComplete) ? '' : `/lesson/${courseId}/${lesson.id}`}>
                         <div key={index} className="item-lesson-detail">
                             <div style={{ display: 'flex', width: '80%' }}>
                                 <p className="item-lesson-title">Lesson {index + 1}: {lesson.lesson_name}</p>

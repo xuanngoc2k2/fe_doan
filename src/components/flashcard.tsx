@@ -67,7 +67,7 @@ function FlashCard({
                                     <Tag color='green'>TOPIK {word.level}</Tag>
                                     {word.example && (
                                         <><p>Example:</p>
-                                            <p style={{ marginLeft: 20, textAlign: 'left' }}><ul>{word.example.split('\n').map((ex) => <li>{ex}</li>)}</ul></p></>)}
+                                            <p style={{ marginLeft: 20, textAlign: 'left' }}><ul>{word.example.split('\n').map((ex, index) => <li key={index}>{ex}</li>)}</ul></p></>)}
                                 </div>
                                 <div style={{ width: '50%' }} className='vocab-image'>
                                     {word.image !== null ? <img style={{ width: '100%' }} src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}

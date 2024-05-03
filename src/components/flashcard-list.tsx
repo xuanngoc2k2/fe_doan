@@ -147,8 +147,8 @@ function FlashcardList() {
                 <Carousel
                     afterChange={(cur) => handleAfterChange(cur, autoPlay)}
                     ref={crRef} pauseOnHover={true} dots={false} autoplay={autoPlay}>
-                    {listVocabDetail?.vocabs.map((vob) => {
-                        return <div><FlashCard handelUpdateRemember={handleUpdateRemember} word={vob.vocab} isRemember={vob.isRemember} /></div>
+                    {listVocabDetail?.vocabs.map((vob, index) => {
+                        return <div key={index}><FlashCard handelUpdateRemember={handleUpdateRemember} word={vob.vocab} isRemember={vob.isRemember} /></div>
                     })}
                 </Carousel>
                 <div className='flashcard-list-btn'>

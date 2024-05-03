@@ -125,6 +125,28 @@ export const callUploadVideo = async (file: any, folderType: string) => {
     }
     return 'Lỗi';
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const callUploadAudio = async (file: any, folderType: string) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('audio', file);
+    try {
+        const res = await axios.post(`${backEndUrl}/file/upload-audio`, bodyFormData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "folder_type": folderType
+            }
+        })
+        if (res.data) {
+            console.log(res.data)
+            return res.data;
+        }
+    }
+    catch (error) {
+        console.log(error)
+    }
+    return 'Lỗi';
+}
+
 export const creatNewVocabOfList = async (idList: number, vocab: type.IVocabulary) => {
     const { data } = await axios.post(`${backEndUrl}/user-vocabulary/${idList}`, vocab);
     // const duration = data.data.duration;

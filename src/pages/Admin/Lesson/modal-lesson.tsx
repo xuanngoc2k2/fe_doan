@@ -27,7 +27,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion[] | []>([]);
     const [idGroup, setIdGroup] = useState(0);
     const [listQuestion, setListQuestion] = useState<IQuestion[] | []>([]);
-
     const [fileListVideo, setFileListVideo] = useState<UploadFile[]>(
         data?.isQuestion != null ? [
             {

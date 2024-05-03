@@ -391,8 +391,8 @@ function LessonDetail() {
                                     </div>}
                             </div>
                         </div>
-                        {listComment.map((comment) => {
-                            return <div className="block-user-comment">
+                        {listComment.map((comment, index) => {
+                            return <div key={index} className="block-user-comment">
                                 <div className="block-user-comment-avatar">
                                     <Avatar size={40} style={{ backgroundColor: '#f2f3f5' }} src={`${backEndUrl}/images/users/${comment.user?.image}`} />
                                 </div>
@@ -413,9 +413,9 @@ function LessonDetail() {
                     open={openNoteDrawer}
                 >
                     <Space size={20} style={{ width: '100%' }} direction="vertical">
-                        {listNote.map((comment) => {
+                        {listNote.map((comment, index) => {
                             return (
-                                <div className="block-note">
+                                <div key={index} className="block-note">
                                     <div className="block-note-title">
                                         <a style={{
                                             color: '#cf1f2f'
