@@ -62,9 +62,7 @@ export const CreateNewQuestion = {
     score: 0,
     type: '',
     question: '',
-    answers: [{
-        answer: "",
-    }],
+    answers: [] as IAnswer[],
     level: 0,
 }
 

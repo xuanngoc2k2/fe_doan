@@ -249,7 +249,10 @@ export const getDetailQuestion = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/question/${id}`);
     return { data };
 }
-
+export const createNewQuestion = async (question: type.IQuestion[], group_question: type.IGroupQuestion) => {
+    const { data } = await axios.post(`${backEndUrl}/question/create-new`, { question, group_question });
+    return { data };
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const client = new TextToSpeechClient({
 //     keyFilename: 'D:\\Ki2_Nam4\\DOAN\\fe_doan\\public\\client_secret_850052617440-ks3dlbql8u95hbn0ivtn9eknt1cuolb9.apps.googleusercontent.com.json', // đường dẫn đến credentials.json

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { backEndUrl, getAllGroupQuestion, getDetailQuestion } from "../../../apis";
+import { backEndUrl, createNewQuestion, getAllGroupQuestion, getDetailQuestion } from "../../../apis";
 import { Button, Form, GetProp, Input, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
@@ -46,6 +46,11 @@ const QuestionDetail: React.FC = () => {
         setFileList([newFileList]);
     };
     useEffect(() => {
+        // const video = document.createElement('video');
+        // video.src = `${backEndUrl}/video/testmp4.mp4`;
+        // video.onloadedmetadata = function () {
+        //     console.log('Video duration:', video.duration, 'seconds');
+        // };
         const fetch = async () => {
             try {
                 const res = await getAllGroupQuestion();
@@ -74,8 +79,29 @@ const QuestionDetail: React.FC = () => {
     }, [id, groupQuestion?.id])
     const [form] = Form.useForm();
     const disable = groupQuestion ? true : false;
-    const handleSubmit = () => {
-        console.log(dataQuestion);
+    const handleSubmit = async () => {
+        if (dataQuestion && groupQuestion) {
+            try {
+                const res = await createNewQuestion(dataQuestion, groupQuestion!)
+                if (res && res.data) {
+                    notification.success({
+                        message: "Tạo mới câu hỏi thành công"
+                    });
+                    setDataQuestion([{ ...CreateNewQuestion } as IQuestion]);
+                    setGroupQuestion(null);
+                }
+                else {
+                    notification.error({
+                        message: "Đã xảy ra lỗi"
+                    });
+                }
+            }
+            catch (error) {
+                notification.error({
+                    message: String(error)
+                })
+            }
+        }
     }
     const handleRemoveAnswer = (questionIndex: number, answerIndex: number) => {
         setDataQuestion((prev) => {
@@ -85,6 +111,19 @@ const QuestionDetail: React.FC = () => {
                 form.setFieldValue(`type_question_${questionIndex}`, undefined)
             }
             return updatedQuestions;
+        });
+    };
+    const handleRadioChange = (questionIndex: number, answerIndex: number) => {
+        setDataQuestion((prevData) => {
+            const newData = [...prevData];
+            newData[questionIndex].answers.forEach((answer, index) => {
+                if (index === answerIndex) {
+                    newData[questionIndex].answers[index].is_true = true;
+                } else {
+                    newData[questionIndex].answers[index].is_true = false;
+                }
+            });
+            return newData;
         });
     };
     return (<>
@@ -131,7 +170,7 @@ const QuestionDetail: React.FC = () => {
                                         placeholder="Chọn nhóm câu hỏi">
                                         {dataListGroupQuestion.map((groupQuestion) => {
                                             return (
-                                                <Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Option>
+                                                <Select.Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Select.Option>
                                             )
                                         })}
                                     </Select>
@@ -207,7 +246,7 @@ const QuestionDetail: React.FC = () => {
                                 return (
                                     <div style={{ padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>
                                         <Form.Item
-                                            name={'question'}
+                                            name={`question-${index}`}
                                             rules={[{ required: true, message: 'Câu hỏi không được để trống!' }]}
                                             label="Câu hỏi"
                                         >
@@ -227,7 +266,8 @@ const QuestionDetail: React.FC = () => {
                                         </Form.Item>
                                         <div style={{ display: 'flex' }}>
                                             <Form.Item
-                                                label="Level"
+                                                label={'Level'}
+                                                name={`Level-${index}`}
                                             >
                                                 <Select
                                                     value={dataQuestion[index].level}
@@ -276,7 +316,7 @@ const QuestionDetail: React.FC = () => {
                                                 style={{ marginLeft: 20 }}
                                                 label="Điểm"
                                                 rules={[{ required: true, message: 'Điểm của câu hỏi không được để trống!' }]}
-                                                name={"score"}
+                                                name={`score-${index}`}
                                             >
                                                 <Input value={dataQuestion[index].score} onChange={(e) => {
                                                     setDataQuestion((prev) => {
@@ -337,16 +377,18 @@ const QuestionDetail: React.FC = () => {
                                                     </div>
                                                 )
                                             })} */}
-                                            {question.answers.length > 1 || form.getFieldValue(`type_question_${index}`) == "multiple-choice" ?
+                                            {question.answers.length >= 1 && form.getFieldValue(`type_question_${index}`) == "multiple-choice" ?
                                                 <Form.Item
                                                 >
                                                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
                                                         <h3 style={{ width: '18%', textAlign: 'center' }}>Đáp án đúng</h3>
                                                     </div>
                                                     <Radio.Group
-                                                        defaultValue={'0'}
+                                                        defaultValue={`${index}-0`}
                                                         style={{ width: '100%' }}>
                                                         {question.answers.map((_, ix) => {
+
+                                                            const isAnswerTrue = dataQuestion[index].answers[ix].is_true;
                                                             return (
                                                                 <div style={{ display: 'flex' }}>
                                                                     <Form.Item
@@ -369,7 +411,8 @@ const QuestionDetail: React.FC = () => {
                                                                             prefix={<CloseOutlined onClick={() => handleRemoveAnswer(index, ix)} />}
                                                                             style={{ height: 45 }} placeholder="Nhập câu trả lời" />
                                                                     </Form.Item>
-                                                                    <Radio checked={true} style={{ height: 45, width: '15%', justifyContent: 'center' }} key={`${index}-${ix}`} value={`${index}-${ix}`}>
+                                                                    <Radio onChange={() => handleRadioChange(index, ix)}
+                                                                        checked={isAnswerTrue} style={{ height: 45, width: '15%', justifyContent: 'center' }} key={`${index}-${ix}`} value={`${index}-${ix}`}>
                                                                     </Radio>
                                                                 </div >
                                                             )
@@ -380,7 +423,19 @@ const QuestionDetail: React.FC = () => {
                                                     <Form.Item
                                                         name={`answer-${index}`}
                                                         rules={[{ required: true, message: 'Câu trả lời không được để trống!' }]}>
-                                                        <Input style={{ height: 45 }} placeholder="Nhập câu trả lời" />
+                                                        <Input
+                                                            value={dataQuestion[index].answers[0].answer}
+                                                            onChange={(e) => {
+                                                                setDataQuestion((prev) => {
+                                                                    const updatedQuestions = [...prev];
+                                                                    updatedQuestions[index].answers[0] = {
+                                                                        ...updatedQuestions[index].answers[0],
+                                                                        answer: e.target.value
+                                                                    };
+                                                                    return updatedQuestions;
+                                                                });
+                                                            }}
+                                                            style={{ height: 45 }} placeholder="Nhập câu trả lời" />
                                                     </Form.Item> : <></>}
                                             <div onClick={() => {
                                                 if (form.getFieldValue(`type_question_${index}`) === 'fill' && question.answers.length >= 1) {
@@ -397,9 +452,12 @@ const QuestionDetail: React.FC = () => {
                                                 }
                                                 setDataQuestion((prev) => {
                                                     const updatedQuestion = { ...prev[index] };
+                                                    const isTrue = updatedQuestion.answers.length == 0 ? true : false;
                                                     updatedQuestion.answers = [
-                                                        { answer: '' } as IAnswer,
-                                                        ...updatedQuestion.answers
+                                                        ...updatedQuestion.answers,
+                                                        {
+                                                            answer: '', is_true: isTrue
+                                                        } as IAnswer
                                                     ];
                                                     const updatedQuestions = [...prev.slice(0, index), updatedQuestion, ...prev.slice(index + 1)];
                                                     return updatedQuestions;
