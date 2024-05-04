@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getDetailQuestion } from "../../../apis";
+import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getDetailQuestion, updateGroupQuestion } from "../../../apis";
 import { Button, Form, GetProp, Input, message, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
@@ -18,6 +18,7 @@ const QuestionDetail: React.FC = () => {
     const [editGr, setEditGr] = useState(false);
     const [fileAudio, setFileAudio] = useState<UploadFile>();
     const [fileImage, setFileImage] = useState<UploadFile | null>();
+    const [form] = Form.useForm();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -105,7 +106,6 @@ const QuestionDetail: React.FC = () => {
         }
         fetch();
     }, [id, groupQuestion?.id])
-    const [form] = Form.useForm();
     const handleSubmit = async () => {
         console.log(fileAudio, fileImage);
         if (dataQuestion && groupQuestion?.content != '') {
@@ -177,6 +177,24 @@ const QuestionDetail: React.FC = () => {
         setAddNew(true);
         Reset();
     }
+    const handleUpdateGroup = async () => {
+        try {
+            if (groupQuestion?.id && groupQuestion) {
+                const res = await updateGroupQuestion(groupQuestion!.id, groupQuestion!);
+                if (res && res.data) {
+                    notification.success({ message: "Update thành công" })
+                }
+                else {
+                    notification.error({ message: "Đã xảy ra lỗi update" })
+                }
+
+            }
+        }
+        catch (error) {
+            notification.error({ message: String(error) })
+        }
+    }
+    // const disable = (!addNew && editGr) ? true : false;
     return (<>
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
             <div
@@ -210,9 +228,10 @@ const QuestionDetail: React.FC = () => {
                                     label="Nhóm câu hỏi"
                                     style={{ minWidth: 350, width: '80%' }}
                                 >
-                                    {addNew ? <Input
+                                    {addNew || editGr ? <Input
                                         placeholder="Nhập tên nhóm câu hỏi"
                                         value={groupQuestion?.content}
+                                        allowClear
                                         onChange={(e) => {
                                             setGroupQuestion((prev) => ({ ...prev!, content: e.target.value }))
                                         }} />
@@ -307,13 +326,15 @@ const QuestionDetail: React.FC = () => {
                                 rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
                                 label="Mô tả">
                                 <Input.TextArea
-                                    disabled={(!addNew && editGr)}
+                                    disabled={(!addNew && !editGr)}
                                     value={groupQuestion?.description}
                                     onChange={(e) => {
                                         setGroupQuestion((prev) => ({ ...prev!, description: e.target.value }))
                                     }}
                                     rows={1} />
                             </Form.Item>
+                            {editGr && <Button onClick={handleUpdateGroup}
+                                style={{ marginBottom: 20 }}>Lưu</Button>}
                             {dataQuestion.map((question, index) => {
                                 return (
                                     <div style={{ position: 'relative', padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>

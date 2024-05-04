@@ -26,14 +26,17 @@ export interface ILesson {
     course?: ICourse,
 }
 export interface IExam {
-    id: 6,
+    id: number,
     exam_name: string,
     description: string,
     duration: number,
     countUser: number,
     countTypeQuestion: number,
     countQuestion: number,
-    type: string
+    type?: string,
+    startAt?: Date,
+    endAt?: Date,
+    createdAt: Date
 }
 export interface IAnswer {
     id: number;
@@ -64,6 +67,14 @@ export const CreateNewQuestion = {
     question: '',
     answers: [] as IAnswer[],
     level: 0,
+}
+export const CreateNewGroupQuestion = {
+    content: '',
+    description: '',
+    image: '',
+    questions: [] as IQuestion[],
+    type: '',
+    audio: '',
 }
 
 export interface IGroupQuestion {

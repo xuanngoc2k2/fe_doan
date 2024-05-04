@@ -31,7 +31,6 @@ function ResultDetail() {
         };
         fetch();
     }, [resultId]);
-
     const totalQuestions = listQuestion.reduce((total, groupQuestion) => {
         return total + groupQuestion.questions.length;
     }, 0);

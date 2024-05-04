@@ -64,7 +64,7 @@ export const getResultInfo = async (resultId: number) => {
 export const getResultQuestionDetail = async (resultId: number) => {
     const { data } = await axios.post(`${backEndUrl}/result-detail/${resultId}`, {});
     // const duration = data.data.duration;
-    const listQuestion = data.data;
+    const listQuestion = data;
     return { listQuestion }
 }
 export const getAllListVocab = async () => {
@@ -273,6 +273,22 @@ export const getDetailQuestion = async (id: string) => {
 }
 export const createNewQuestion = async (question: type.IQuestion[], group_question: type.IGroupQuestion) => {
     const { data } = await axios.post(`${backEndUrl}/question/create-new`, { question, group_question });
+    return { data };
+}
+export const updateGroupQuestion = async (id: number, dataUpdate: type.IGroupQuestion) => {
+    const { data } = await axios.put(`${backEndUrl}/group-question/${id}`, { ...dataUpdate });
+    return { data };
+}
+export const deleteExam = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/exams/${id}`);
+    return { data };
+}
+export const searchExam = async (search: string, type: string) => {
+    const { data } = await axios.post(`${backEndUrl}/exams/search`, { search, type });
+    return { data };
+}
+export const createNewExam = async (exam: type.IExam, group_questions: type.IGroupQuestion[]) => {
+    const { data } = await axios.post(`${backEndUrl}/exams`, { exam, group_questions });
     return { data };
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
