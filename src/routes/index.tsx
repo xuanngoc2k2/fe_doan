@@ -17,7 +17,6 @@ import Vocabulary from '../pages/Vocabulary';
 import VocabularyDetail from '../pages/Vocabulary/vocab-detail';
 import FlashcardList from '../components/flashcard-list';
 import Profile from '../pages/Profile';
-import Admin from '../pages/Admin/dashboard';
 import AdminLayout from '../pages/Admin/admin.layout';
 import Dashboard from '../pages/Admin/dashboard';
 import AdminCourse from '../pages/Admin/Course/course';
@@ -28,6 +27,7 @@ import QuestionDetail from '../pages/Admin/Question/question-detail';
 import AdminExam from '../pages/Admin/Exam/exam';
 import AdminExamDetail from '../pages/Admin/Exam/create-new-exam'
 import AdminVocabulary from '../pages/Admin/Vocabulary/vocab';
+import AdminNews from '../pages/Admin/News/news';
 interface Route {
   path: string;
   layout?: ComponentType<{
@@ -65,7 +65,7 @@ const privateRoutes: Route[] = [
   { path: '/admin/exam', component: AdminExam, layout: AdminLayout },
   { path: '/admin/exam/:id', component: AdminExamDetail, layout: AdminLayout },
   { path: '/admin/vocabulary', component: AdminVocabulary, layout: AdminLayout },
-  { path: '/admin/news', component: Admin, layout: AdminLayout },
+  { path: '/admin/news', component: AdminNews, layout: AdminLayout },
 ];
 
 export { publicRoutes, privateRoutes };

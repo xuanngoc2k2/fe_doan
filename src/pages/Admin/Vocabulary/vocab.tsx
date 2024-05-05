@@ -6,7 +6,7 @@ import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
 import { ICourse, IVocabulary } from "../../../custom/type";
-import { backEndUrl, callDeleteCourse, deleteVocab, getAllVocabulary, getCourseDetail, getListCourses, getVocabById, searchCourse } from "../../../apis";
+import { backEndUrl, callDeleteCourse, deleteVocab, getAllVocabulary, getCourseDetail, getListCourses, getListVocabWithCourse, getVocabById, searchCourse } from "../../../apis";
 import { ColumnType } from "antd/es/table";
 import ModalVocab from "./modal-vocab";
 // import { ActionType } from '@ant-design/pro-components';

@@ -169,3 +169,9 @@ export interface IComment {
     user?: IUser,
     createdAt: string
 }
+export interface INews {
+    id?: number,
+    content: string,
+    image?: string,
+    createdAt?: Date
+}
