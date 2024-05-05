@@ -27,6 +27,10 @@ export const getListCourses = async () => {
     const { data } = await axios.post(`${backEndUrl}/course/all`, { user: user.data });
     return { data };
 }
+export const startCourse = async (courseId: number) => {
+    const { data } = await axios.post(`${backEndUrl}/user-course`, { courseId });
+    return { data };
+}
 export const getListExams = async () => {
     const { data } = await axios.get(`${backEndUrl}/exams`);
     return { data };
@@ -184,6 +188,10 @@ export const getCourseDetail = async (id: number) => {
     });
     return { data }
 }
+export const getCourseWithLessons = async (id: number) => {
+    const { data } = await axios.post(`${backEndUrl}/course/allWithLesson/${id}`, {});
+    return { data }
+}
 export const updateDoneLesson = async (id: number) => {
     const { data } = await axios.patch(`${backEndUrl}/user-lesson/${id}`, {});
     return { data }
@@ -268,12 +276,20 @@ export const getDetailQuestion = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/question/${id}`);
     return { data };
 }
+export const checkAnswerQuestion = async (idAns: number, idQues: number) => {
+    const { data } = await axios.post(`${backEndUrl}/question/check`, { idAns, idQues });
+    return { data };
+}
 export const createNewQuestion = async (question: type.IQuestion[], group_question: type.IGroupQuestion) => {
     const { data } = await axios.post(`${backEndUrl}/question/create-new`, { question, group_question });
     return { data };
 }
 export const updateGroupQuestion = async (id: number, dataUpdate: type.IGroupQuestion) => {
     const { data } = await axios.put(`${backEndUrl}/group-question/${id}`, { ...dataUpdate });
+    return { data };
+}
+export const getQuestionByIdGr = async (idGroup: string, idQuestion: string) => {
+    const { data } = await axios.post(`${backEndUrl}/group-question/question`, { idGroup, idQuestion });
     return { data };
 }
 export const deleteExam = async (id: number) => {

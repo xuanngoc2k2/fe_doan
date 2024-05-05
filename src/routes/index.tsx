@@ -21,7 +21,6 @@ import AdminLayout from '../pages/Admin/admin.layout';
 import Dashboard from '../pages/Admin/dashboard';
 import AdminCourse from '../pages/Admin/Course/course';
 import AdminLesson from '../pages/Admin/Lesson/lesson';
-import AdminLessonDetail from '../pages/Admin/Lesson/lesson-detail';
 import AdminQuestion from '../pages/Admin/Question/question';
 import QuestionDetail from '../pages/Admin/Question/question-detail';
 import AdminExam from '../pages/Admin/Exam/exam';
@@ -45,27 +44,34 @@ const publicRoutes: Route[] = [
   { path: '/vocab', component: Vocabulary },
   { path: '/vocab-detail/:idList', component: VocabularyDetail },
   { path: '/course/:id', component: CourseDetail },
-  { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
   { path: '/exams/:idTypeExam', component: Exams },
   { path: '/exam/:idExam', component: ExamDetail },
-  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
-  { path: '/result/', component: Result, },
-  { path: '/result-detail/:resultId', component: ResultDetail, },
-  { path: '/flashcards/:idList', component: FlashcardList, },
-  { path: '/user', component: Profile, }
+  // { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
+  // { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
+  // { path: '/result/', component: Result, },
+  // { path: '/result-detail/:resultId', component: ResultDetail, },
+  // { path: '/flashcards/:idList', component: FlashcardList, },
+  // { path: '/user', component: Profile, }
 ];
-
+const protectedRouter: Route[] = [
+  { path: '/flashcards/:idList', component: FlashcardList, },
+  { path: '/user', component: Profile, },
+  { path: '/result-detail/:resultId', component: ResultDetail, },
+  { path: '/result/', component: Result, },
+  { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
+  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
+  // { path: '/course/:id', component: CourseDetail },
+]
 const privateRoutes: Route[] = [
   { path: '/admin', component: Dashboard, layout: AdminLayout },
   { path: '/admin/course', component: AdminCourse, layout: AdminLayout },
   { path: '/admin/question', component: AdminQuestion, layout: AdminLayout },
   { path: '/admin/question/:id', component: QuestionDetail, layout: AdminLayout },
   { path: '/admin/lesson', component: AdminLesson, layout: AdminLayout },
-  { path: '/admin/lesson/:id', component: AdminLessonDetail, layout: AdminLayout },
   { path: '/admin/exam', component: AdminExam, layout: AdminLayout },
   { path: '/admin/exam/:id', component: AdminExamDetail, layout: AdminLayout },
   { path: '/admin/vocabulary', component: AdminVocabulary, layout: AdminLayout },
   { path: '/admin/news', component: AdminNews, layout: AdminLayout },
 ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes, privateRoutes, protectedRouter };

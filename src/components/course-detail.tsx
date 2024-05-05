@@ -2,157 +2,10 @@ import { Button, Card, message, Tooltip } from "antd";
 // import { useParams } from "react-router-dom";
 import './styles/course-detail.scss'
 import ListLesson from "./list-lesson";
-import { useParams } from "react-router-dom";
-import { backEndUrl, getCourseDetail } from "../apis";
+import { useNavigate, useParams } from "react-router-dom";
+import { backEndUrl, getCourseDetail, startCourse } from "../apis";
 import { useEffect, useState } from "react";
 import { ICourse } from "../custom/type";
-
-// const course = {
-//     course_name: 'Tiếng hàn tổng hợp sơ cấp 1',
-//     description: 'To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here,To style the .course-detail-lesson element with a border, you can specify the border properties in your CSS. Here',
-//     images: 'https://monday.edu.vn/wp-content/uploads/2023/08/tu-vung-tieng-han-so-cap-1-theo-chu-de.jpg',
-//     progress: 50,
-//     time: 30,
-//     count: 502,
-//     id: 1,
-//     lesson: [
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 1
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 2
-
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 3
-
-//         },
-//         {
-//             isVideo: false,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 5
-//         },
-//         {
-//             isVideo: false,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 5
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: false,
-//             id: 4
-//         },
-//         {
-//             isVideo: true,
-//             lesson_name: "Scratch",
-//             duration: "2:00",
-//             isComplete: true,
-//             id: 5
-//         }
-//     ]
-// }
 
 function CourseDetail() {
     const { id } = useParams();
@@ -164,6 +17,7 @@ function CourseDetail() {
             return text;
         }
     };
+    const nav = useNavigate();
     const fetch = async () => {
         try {
             const res = await getCourseDetail(Number(id));
@@ -181,6 +35,30 @@ function CourseDetail() {
     useEffect(() => {
         fetch()
     }, [id])
+    const lastLesson = () => {
+        let lastLesson = 1;
+        if (dataCourse && dataCourse.lessons) {
+            for (const les of dataCourse.lessons) {
+                if (!les.isComplete) {
+                    lastLesson = les.id;
+                    break;
+                }
+            }
+        }
+        return lastLesson;
+    }
+    const handleStartCourse = async () => {
+        try {
+            const res = await startCourse(Number(id));
+            if (res && res.data) {
+                message.success("Đăng kí học thành công");
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+        nav(`/lesson/${id}/${lastLesson()}`);
+    }
     return (
         <>
             {dataCourse &&
@@ -193,7 +71,7 @@ function CourseDetail() {
                             <img src={`${backEndUrl}/images/course/${dataCourse.image}`} />
                             <p>{dataCourse.description.length > 120 ? <Tooltip placement="bottomRight" title={dataCourse.description}>{truncateDescription(dataCourse.description, 120)}</Tooltip> : dataCourse.description}</p>
                         </div>
-                        <Button type="primary">Start Course</Button>
+                        <Button type="primary" onClick={handleStartCourse}>{(lastLesson() == 1) ? "Bắt đầu" : "Tiếp tục"}</Button>
                     </Card>
                 </div>
             }</>

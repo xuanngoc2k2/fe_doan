@@ -13,6 +13,8 @@ import {
     createNewLesson,
     getAllGroupQuestion,
     getAllQuestionByGroupQuestion,
+    getCourseDetail,
+    getCourseWithLessons,
     updateCourse,
     updateLesson,
 } from "../../../apis";
@@ -26,6 +28,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const [isReading, setIsReading] = useState(true);
     const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion[] | []>([]);
     const [idGroup, setIdGroup] = useState(0);
+    const [form] = Form.useForm();
     const [listQuestion, setListQuestion] = useState<IQuestion[] | []>([]);
     const [fileListVideo, setFileListVideo] = useState<UploadFile[]>(
         data?.isQuestion != null ? [
@@ -70,18 +73,16 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 if (content) {
                     const res = await callUploadVideo(uploadedFile, 'video');
                     if (res.fileName && content) {
-                        console.log(res.fileName)
-                        // message.success(`Thành công ${res.fileName}`);
                         const lessonInfo = { ...(dataLesson || {}), content: res.fileName } as ILesson;
-                        setDataLesson(lessonInfo); // Cập nhật userInfo.image
+                        setDataLesson(lessonInfo);
                         setUploading((false))
-                        return lessonInfo; // Trả về userInfo đã được cập nhật
+                        return lessonInfo;
                     }
                 }
                 else {
                     const res = await callUploadSingleFile(uploadedFile, 'lesson');
                     const lessonInfo = { ...(dataLesson || {}), thumbnail: res.fileName } as ILesson;
-                    setDataLesson(lessonInfo); // Cập nhật userInfo.image
+                    setDataLesson(lessonInfo);
                     setUploading((false))
                     return lessonInfo;
                 }
@@ -149,14 +150,22 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const handleSubmit = async () => {
         if (!data) {
             let newLesson = dataLesson; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
-
             if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                newLesson = await upLoadFile(fileList[0]) || newLesson; // Nếu upLoadFile trả về null, giữ nguyên userInfo
+                newLesson = await upLoadFile(fileList[0]) || newLesson;
             }
             if (fileListVideo[0] && fileListVideo[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                newLesson = await upLoadFile(fileList[0], true) || newLesson; // Nếu upLoadFile trả về null, giữ nguyên userInfo
+                const temp = await upLoadFile(fileListVideo[0], true) || newLesson;
+                if (temp?.content) {
+                    newLesson = { ...newLesson!, content: temp.content }
+                }
+                const video = document.createElement('video');
+                video.src = `${backEndUrl}/video/${dataLesson?.content}`;
+                video.onloadedmetadata = function () {
+                    const durationMinutes = Math.floor(video.duration / 60);
+                    const durationSeconds = Math.floor(video.duration % 60);
+                    const formattedDuration = `${durationMinutes}:${durationSeconds}`;
+                    newLesson = { ...newLesson, duration: formattedDuration } as ILesson;
+                };
             }
             const res = await createNewLesson(newLesson!);
             if (res && res.data) {
@@ -175,15 +184,20 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
             let dataUpdateLesson = dataLesson; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
 
             if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
                 dataUpdateLesson = await upLoadFile(fileList[0]) || dataUpdateLesson; // Nếu upLoadFile trả về null, giữ nguyên userInfo
             }
             if (fileListVideo[0] && fileListVideo[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                dataUpdateLesson = await upLoadFile(fileListVideo[0], true) || dataUpdateLesson; // Nếu upLoadFile trả về null, giữ nguyên userInfo
+                dataUpdateLesson = await upLoadFile(fileListVideo[0], true) || dataUpdateLesson;
+                // const video = document.createElement('video');
+                // video.src = `${backEndUrl}/video/${dataLesson?.content}`;
+                // video.onloadedmetadata = function () {
+                //     const durationMinutes = Math.floor(video.duration / 60);
+                //     const durationSeconds = Math.floor(video.duration % 60);
+                //     const formattedDuration = `${durationMinutes}:${durationSeconds}`;
+                //     dataUpdateLesson = { ...dataUpdateLesson, duration: formattedDuration } as ILesson;
+                // };
             }
             const res = await updateLesson(dataUpdateLesson!.id, dataUpdateLesson!);
-            console.log(dataUpdateLesson)
             if (res && res.data) {
                 notification.success({
                     message: "Cập nhật thành công"
@@ -209,7 +223,20 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const handleChangeTypeQuestion = (b: boolean) => {
         setIsReading(b);
     }
-
+    const handleSetOrder = async (index: number) => {
+        const res = await getCourseWithLessons(index);
+        if (res && res.data) {
+            const order = res.data.lessons.length;
+            if (order) {
+                form.setFieldValue('order', Number(order) + 1)
+                setDataLesson((prev) => ({ ...prev!, order: (order) + 1 }))
+            }
+            else {
+                form.setFieldValue('order', 1)
+                setDataLesson((prev) => ({ ...prev!, order: 1 }))
+            }
+        }
+    }
     const switchDefaultChecked = data ? !data.isQuestion : true;
     return (
         <Modal
@@ -219,12 +246,12 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
             footer={false}
             width={1200}
         >
-            <Form layout="vertical"
+            <Form form={form} layout="vertical"
                 initialValues={{
                     lesson_name: data?.lesson_name || '',
                     lesson_des: data?.description || '',
                     course: data?.course!.id ? String(data.course!.id) : undefined,
-                    order: data?.order || '',
+                    order: data?.course?.lessons?.length || '',
                     idGroup: data?.isQuestion ? String(data?.content.split(',')[0]) : undefined,
                     content: data?.isQuestion ? String(data?.content.split(',')[1]) : undefined,
                 }}>
@@ -264,19 +291,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                         name='lesson_des'
                         value={dataLesson?.description} rows={2} />
                 </Form.Item>
-                <Form.Item name='order' label="Thứ tự bài học">
-                    <Input
-                        onChange={(e) => {
-                            setDataLesson((prev: ILesson | undefined) => {
-                                if (prev) {
-                                    return { ...prev, order: Number(e.target.value) };
-                                }
-                                return { ...prev!, order: Number(e.target.value) };
-                            });
-                        }}
-                        name='lesson_des'
-                        value={dataLesson?.order} />
-                </Form.Item>
                 <Form.Item
                     label="Khóa học"
                     name={'course'}
@@ -290,12 +304,27 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                 }
                                 return { ...prev!, courseId: value };
                             });
+                            handleSetOrder(value);
                         }}
                         placeholder="Chọn khóa học">
                         {dataListCourse.map((course) =>
                             <Option value={`${course.id}`}>{course.course_name}</Option>
                         )}
                     </Select>
+                </Form.Item>
+                <Form.Item name='order' label="Thứ tự bài học">
+                    <Input
+                        disabled
+                        onChange={(e) => {
+                            setDataLesson((prev: ILesson | undefined) => {
+                                if (prev) {
+                                    return { ...prev, order: Number(e.target.value) };
+                                }
+                                return { ...prev!, order: Number(e.target.value) };
+                            });
+                        }}
+                        name='lesson_des'
+                        value={dataLesson?.order} />
                 </Form.Item>
                 <Form.Item label={(
                     <div style={{ display: 'flex', alignItems: 'center' }}>

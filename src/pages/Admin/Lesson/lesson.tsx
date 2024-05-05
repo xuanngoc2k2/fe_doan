@@ -150,6 +150,16 @@ const AdminLesson: React.FC = () => {
             }
         },
         {
+            key: '9',
+            title: 'Khóa học',
+            dataIndex: 'course',
+            align: 'center',
+            render: (course: ICourse) => {
+                return <p className="item-lesson-duration">{course && course.course_name}</p>
+
+            }
+        },
+        {
             key: '7',
             title: 'Create at',
             dataIndex: 'createdAt',

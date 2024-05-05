@@ -6,7 +6,7 @@ import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
 import { ICourse } from "../../../custom/type";
-import { backEndUrl, callDeleteCourse, getCourseDetail, getListCourses, searchCourse } from "../../../apis";
+import { backEndUrl, callDeleteCourse, getCourseDetail, getCourseWithLessons, getListCourses, searchCourse } from "../../../apis";
 import ModalCourse from "./modal-course";
 // import { ActionType } from '@ant-design/pro-components';
 
@@ -198,7 +198,7 @@ const AdminCourse: React.FC = () => {
     ]
     const handleShowModel = async (id?: number) => {
         if (id) {
-            const res = await getCourseDetail(id);
+            const res = await getCourseWithLessons(id);
             setDataFix(res.data)
         }
         else {

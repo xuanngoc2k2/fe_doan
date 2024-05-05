@@ -24,7 +24,6 @@ const Header: React.FC<IProps> = ({ children }) => {
             navigate('/login')
         }
     }
-    console.log(user)
     useEffect(() => {
         // dispatch(fetchAccount())
     }, [isAuthenticated])

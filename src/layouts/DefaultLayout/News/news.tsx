@@ -46,7 +46,7 @@ function News() {
             className='new-model-detail'
             footer={<></>}
         >
-            {listNews!.map((news) => {
+            {listNews && listNews.map((news) => {
                 return <>
                     <NewsCom content={news.content} image={news.image} />
                     <Divider />

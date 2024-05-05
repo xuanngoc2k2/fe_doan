@@ -8,7 +8,7 @@ const RoleBaseRoute = (props: any) => {
     const user = useAppSelector(state => state.account.user);
     const userRole = user.role;
 
-    if (userRole !== 'USER') {
+    if (userRole == 'ADMIN') {
         return (<>{props.children}</>)
     } else {
         return (<NotPermitted />)

@@ -163,3 +163,24 @@
     padding-left: 25px;
 }
 // }
+.question-lesson-asw {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+
+    &.selected {
+        border-color: #047ccc;
+        background-color: #047ccc20;
+        &.true {
+            border-color: #b7eb8f;
+            background-color: #f6ffed;
+            color: #389e0d;
+        }
+        &.false {
+            border-color: #ffa39e;
+            background-color: #fff1f0;
+            color: #cf1322;
+        }
+    }
+}

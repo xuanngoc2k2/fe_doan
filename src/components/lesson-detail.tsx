@@ -7,8 +7,17 @@ import { useEffect, useRef, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
 import ReactQuill from "react-quill";
-import { addNote, backEndUrl, deleteNote, getAllNote, getCourseDetail, updateDoneLesson, updateNote } from "../apis";
-import { IComment, ICourse, ILesson } from "../custom/type";
+import {
+    addNote, backEndUrl, checkAnswerQuestion, deleteNote, getAllNote, getCourseDetail,
+    getQuestionByIdGr,
+    // getListQuestion,
+    updateDoneLesson, updateNote
+} from "../apis";
+import {
+    IComment, ICourse, ILesson,
+    IGroupQuestion,
+    // IQuestion
+} from "../custom/type";
 // const listComment = [
 //     {
 //         commentAt: '2:00',
@@ -122,6 +131,8 @@ function LessonDetail() {
     const { courseId, lessonId } = useParams();
     const [course, setCourse] = useState<ICourse | null>();
     const [lesson, setLesson] = useState<ILesson | null>();
+    // const [question, setQuestion] = useState<IQuestion | null>();
+    const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion | null>();
     const [currentTime, setCurrentTime] = useState('');
     const [showAddNote, setShowAddNote] = useState(false);
     const [isEdit, setIsEdit] = useState<number>();
@@ -132,6 +143,9 @@ function LessonDetail() {
     const [comment, setComment] = useState('');
     const [showInputComment, setShowInputComment] = useState(false);
     const [listNote, setListNote] = useState<IComment[] | []>([]);
+    const [isSelected, setIsSelected] = useState('');
+    const [answer, setAnswer] = useState<number>();
+    const [isTrue, setIsTrue] = useState<boolean | null>();
     const [listComment, setListComment] = useState<IComment[] | []>([]);
     const navigator = useNavigate();
     const fetch = async () => {
@@ -140,15 +154,29 @@ function LessonDetail() {
             if (res.data) {
                 setCourse(res.data)
                 const lessons = res.data.lessons;
-                lessons.map((les: ILesson, index: number) => {
+                for (let index = 0; index < lessons.length; index++) {
+                    const les = lessons[index];
                     if (les.id === Number(lessonId)) {
                         if (index == 0) {
                             setLesson(les);
+                            if (les.isQuestion) {
+                                const l = les?.content.split(',');
+                                const resq = await getQuestionByIdGr(l![0], l![1]);
+                                if (resq && resq.data) {
+                                    setGroupQuestion(resq.data);
+                                }
+                            }
                         }
                         else {
                             if (lessons[index - 1].isComplete) {
                                 setLesson(les);
-
+                                if (les.isQuestion) {
+                                    const l = les?.content.split(',');
+                                    const resq = await getQuestionByIdGr(l![0], l![1]);
+                                    if (resq && resq.data) {
+                                        setGroupQuestion(resq.data);
+                                    }
+                                }
                             }
                             else {
                                 while (!lessons[index - 1].isComplete) {
@@ -158,7 +186,7 @@ function LessonDetail() {
                             }
                         }
                     }
-                })
+                }
                 fetchListNote();
                 fetchListComment();
             }
@@ -302,16 +330,17 @@ function LessonDetail() {
             }
         }
     }
-
     const handleShowNote = () => {
         setOpenNoteDrawer(true);
     }
     const handleFinish = async () => {
+        console.log(lesson);
         if (!lesson?.isComplete) {
             try {
                 const res = await updateDoneLesson(Number(lesson?.id));
                 if (res.data) {
                     message.success("Đã hoàn thành bài học");
+                    fetch();
                     navigator(`/lesson/${courseId}/${lesson!.id + 1}`)
                 }
                 else {
@@ -327,13 +356,22 @@ function LessonDetail() {
         setEditText(comment);
         setIsEdit(id)
     }
+    const handelSubmit = async () => {
+        const res = await checkAnswerQuestion(answer!, groupQuestion!.questions[0].id)
+        if (res) {
+            if (res.data == true && !lesson?.isComplete) {
+                handleFinish()
+            }
+            setIsTrue(res.data);
+        }
+    }
     return (
         <>
             <div className="lesson-detail-container">
                 <div className="lesson-detail-list-lesson">
                     <ListLesson active={Number(lessonId)} courseId={Number(courseId)} lessons={course?.lessons} />
                 </div>
-                {lesson && <div className="lesson-detail-content">
+                {(lesson && !lesson?.isQuestion) ? <div className="lesson-detail-content">
                     <>
                         <video
                             key={lesson.id}
@@ -357,7 +395,44 @@ function LessonDetail() {
                             <Button className="button-add-note" onClick={handleShowAddNote}><PlusOutlined />Thêm ghi chú tại {currentTime != '' ? currentTime : '0:00'}</Button>
                         </div>
                     </>
-                </div>}
+                </div> :
+                    <div style={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', marginTop: 50 }}>
+                        <div>
+                            <h3>{groupQuestion?.content}</h3>
+                            <h3>{groupQuestion?.description}</h3>
+                            {groupQuestion?.audio && <audio controls>
+                                <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
+                            </audio>}
+                            {groupQuestion?.image && <img src={`${backEndUrl}/images/question/${groupQuestion.image}`} />}
+                        </div>
+                        <div>
+                            <div>
+                                {groupQuestion?.questions.map((question) => {
+                                    return <div>
+                                        <h4>{question.question}</h4>
+                                        <div>
+                                            {question.answers.map((answer) => {
+                                                return (
+                                                    <div onClick={() => {
+                                                        setIsTrue(null)
+                                                        setAnswer(answer.id);
+                                                        setIsSelected(answer.answer)
+                                                    }}
+                                                        className={`question-lesson-asw ${isTrue} ${isSelected == answer.answer ? 'selected' : ''}`}
+                                                    >
+                                                        {answer.answer}
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+                                            <Button onClick={handelSubmit} style={{ fontWeight: 600, width: 120, borderRadius: 30, color: '#d46b08', borderColor: '#ffd591', backgroundColor: '#fff7e6' }}>Trả lời</Button>
+                                        </div>
+                                    </div>
+                                })}
+                            </div>
+                        </div>
+                    </div>}
                 {/* Button trao đổi */}
                 <Button className="button-comments" onClick={showDrawerComment}><WechatOutlined /> Trao đổi</Button>
                 <div className="comment-component">

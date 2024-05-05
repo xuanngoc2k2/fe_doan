@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { privateRoutes, publicRoutes } from './routes';
+import { privateRoutes, protectedRouter, publicRoutes } from './routes';
 import { Fragment } from 'react/jsx-runtime';
 import { ComponentType, ReactNode, useEffect } from 'react';
 import DefaultLayout from './layouts/DefaultLayout/default-layout';
@@ -8,11 +8,11 @@ import { fetchAccount } from './redux/slice/accountSlice';
 import LayoutApp from './routes/protected-router/layout.app';
 import ProtectedRoute from './routes/protected-router';
 import AdminLayout from './pages/Admin/admin.layout';
+import ProtectedRouteUser from './routes/protected-router/protected-router';
 
 function App() {
 
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (
       window.location.pathname === '/login'
@@ -40,6 +40,22 @@ function App() {
                   key={index}
                   path={route.path}
                   element={<Layout><Page /></Layout>} // Bọc Page trong Layout
+                />
+              );
+            })}
+            {protectedRouter.map((route, index) => {
+              const Page = route.component;
+              let Layout: ComponentType<{ children: ReactNode }> | null = DefaultLayout;
+              if (route.layout === null) {
+                Layout = Fragment;
+              } else if (route.layout) {
+                Layout = route.layout;
+              }
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={<ProtectedRouteUser><Layout><Page /></Layout></ProtectedRouteUser>} // Bọc Page trong Layout
                 />
               );
             })}

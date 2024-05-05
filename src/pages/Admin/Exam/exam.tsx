@@ -65,11 +65,6 @@ const AdminExam: React.FC = () => {
         fetch();
     }, [])
 
-    // const video = document.createElement('video');
-    // video.src = `${backEndUrl}/video/testmp4.mp4`;
-    // video.onloadedmetadata = function () {
-    //     console.log('Video duration:', video.duration, 'seconds');
-    // };
     const handelSearch = async () => {
         const res = await searchExam(search, searchByType!)
         if (res && res.data) {
