@@ -1,49 +1,28 @@
 import { CloseCircleOutlined, NotificationOutlined } from '@ant-design/icons';
 import './news.scss'
-import { useState } from 'react';
-import { Divider, Modal } from 'antd';
+import { useEffect, useState } from 'react';
+import { Divider, Modal, notification } from 'antd';
 import NewsCom from '../../../components/news-com';
-const fakeNews = [
-    {
-        content: `
-        <h1>Ra mắt Server Discord F8 - Học Lập Trình Không Khó</h1>
-        Học lập trình một mình sao bằng có bạn bè cùng tiến? Đừng để bản thân phải lạc lõng, hãy ghé qua Discord của F8 và cảm nhận sự khác biệt nhé!
-        <ul>
-        <li>Cùng nhau xây dựng team code siêu chất, học hỏi lẫn nhau và cùng tiến bộ!</li>
-        <li>Cùng nhau học hỏi từ người đi trước, có thêm động lực và sự tự giác trong học tập!</li>
-        <li>Nơi mà sự tiêu cực không có chỗ đứng, câu hỏi nào cũng được trả lời, không sợ bị đánh giá toxic, chỉ có sự hỗ trợ và tôn trọng lẫn nhau!</li>
-        </ul>`,
-        image: 'https://files.fullstack.edu.vn/f8-prod/public-images/6603da227f20c.png'
-    },
-    {
-        content: `#Ra mắt Server Discord F8 - Học Lập Trình Không Khó
-        Học lập trình một mình sao bằng có bạn bè cùng tiến? Đừng để bản thân phải lạc lõng, hãy ghé qua Discord của F8 và cảm nhận sự khác biệt nhé!
-        
-        Cùng nhau xây dựng team code siêu chất, học hỏi lẫn nhau và cùng tiến bộ!
-        Cùng nhau học hỏi từ người đi trước, có thêm động lực và sự tự giác trong học tập!
-        Nơi mà sự tiêu cực không có chỗ đứng, câu hỏi nào cũng được trả lời, không sợ bị đánh giá toxic, chỉ có sự hỗ trợ và tôn trọng lẫn nhau!`,
-        image: 'https://files.fullstack.edu.vn/f8-prod/public-images/6603da227f20c.png'
-    },
-    {
-        content: `#Ra mắt Server Discord F8 - Học Lập Trình Không Khó
-        Học lập trình một mình sao bằng có bạn bè cùng tiến? Đừng để bản thân phải lạc lõng, hãy ghé qua Discord của F8 và cảm nhận sự khác biệt nhé!
-        
-        Cùng nhau xây dựng team code siêu chất, học hỏi lẫn nhau và cùng tiến bộ!
-        Cùng nhau học hỏi từ người đi trước, có thêm động lực và sự tự giác trong học tập!
-        Nơi mà sự tiêu cực không có chỗ đứng, câu hỏi nào cũng được trả lời, không sợ bị đánh giá toxic, chỉ có sự hỗ trợ và tôn trọng lẫn nhau!`,
-        image: 'https://files.fullstack.edu.vn/f8-prod/public-images/6603da227f20c.png'
-    },
-    {
-        content: `#Ra mắt Server Discord F8 - Học Lập Trình Không Khó
-        Học lập trình một mình sao bằng có bạn bè cùng tiến? Đừng để bản thân phải lạc lõng, hãy ghé qua Discord của F8 và cảm nhận sự khác biệt nhé!
-        
-        Cùng nhau xây dựng team code siêu chất, học hỏi lẫn nhau và cùng tiến bộ!
-        Cùng nhau học hỏi từ người đi trước, có thêm động lực và sự tự giác trong học tập!
-        Nơi mà sự tiêu cực không có chỗ đứng, câu hỏi nào cũng được trả lời, không sợ bị đánh giá toxic, chỉ có sự hỗ trợ và tôn trọng lẫn nhau!`,
-        image: 'https://files.fullstack.edu.vn/f8-prod/public-images/6603da227f20c.png'
-    }
-]
+import { INews } from '../../../custom/type';
+import { getAllNews } from '../../../apis';
 function News() {
+    const [listNews, setListNews] = useState<INews[]>();
+    useEffect(() => {
+        try {
+            const fetch = async () => {
+                const res = await getAllNews();
+                if (res && res.data) {
+                    setListNews(res.data);
+                }
+                else {
+                    notification.error({ message: "Đã xảy ra lỗi!" })
+                }
+            }
+            fetch();
+        } catch (error) {
+            notification.error({ message: String(error) })
+        }
+    }, [])
     const [open, setOpen] = useState(false);
     return (<>
         <div className='news-model' onClick={() => { setOpen(true) }}>
@@ -67,7 +46,7 @@ function News() {
             className='new-model-detail'
             footer={<></>}
         >
-            {fakeNews.map((news) => {
+            {listNews!.map((news) => {
                 return <>
                     <NewsCom content={news.content} image={news.image} />
                     <Divider />

@@ -1,10 +1,8 @@
 import React from 'react';
 import './styles/news-com.scss';
+import { INews } from '../custom/type';
+import { backEndUrl } from '../apis';
 
-interface INews {
-    content: string;
-    image: string;
-}
 
 const NewsCom: React.FC<INews> = ({ content, image }) => {
 
@@ -14,9 +12,10 @@ const NewsCom: React.FC<INews> = ({ content, image }) => {
                 <div >
                     <div className='news-info-detail' dangerouslySetInnerHTML={{ __html: content }} />
                 </div>
-                <div className='news-info-image' style={{ overflow: 'hidden' }}>
-                    <img src={image} />
-                </div>
+                {image &&
+                    <div className='news-info-image' style={{ overflow: 'hidden' }}>
+                        <img src={`${backEndUrl}/images/news/${image}`} />
+                    </div>}
             </div>
         </>
     );
