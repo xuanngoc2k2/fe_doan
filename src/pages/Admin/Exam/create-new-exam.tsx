@@ -4,7 +4,7 @@ import { Button, Collapse, Form, GetProp, Input, notification, Popconfirm, Radio
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
 // import { callUploadAudio, callUploadSingleFile } from "../../../apis";
-import { CreateNewGroupQuestion, IAnswer, IExam, IGroupQuestion } from "../../../custom/type";
+import { CreateNewGroupQuestion, CreateNewQuestion, IAnswer, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 import { backEndUrl, createNewExam, getAllGroupQuestion } from "../../../apis";
@@ -117,6 +117,8 @@ const AdminExamDetail: React.FC = () => {
             });
             return updatedAddNew;
         });
+        form.setFieldValue(`group_question-${indexGr}`, null);
+        console.log(groupQuestions)
     };
     const handleReset = (indexGr: number) => {
         setAddNew((prev) => {

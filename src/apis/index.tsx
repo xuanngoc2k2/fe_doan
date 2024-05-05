@@ -95,7 +95,6 @@ export const callUploadSingleFile = async (file: any, folderType: string) => {
             }
         })
         if (res.data) {
-            console.log(res.data)
             return res.data;
         }
     }
@@ -116,7 +115,6 @@ export const callUploadVideo = async (file: any, folderType: string) => {
             }
         })
         if (res.data) {
-            console.log(res.data)
             return res.data;
         }
     }
@@ -137,7 +135,6 @@ export const callUploadAudio = async (file: any, folderType: string) => {
             }
         })
         if (res.data) {
-            console.log(res.data)
             return res.data;
         }
     }
@@ -289,6 +286,26 @@ export const searchExam = async (search: string, type: string) => {
 }
 export const createNewExam = async (exam: type.IExam, group_questions: type.IGroupQuestion[]) => {
     const { data } = await axios.post(`${backEndUrl}/exams`, { exam, group_questions });
+    return { data };
+}
+export const getAllVocabulary = async (id?: number, word?: string, meaning?: string, level?: string[]) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/search`, { id, word, meaning, level });
+    return { data };
+}
+export const deleteVocab = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/vocabularys/${id}`);
+    return { data };
+}
+export const createNewVocab = async (newVocab: type.IVocabulary) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys`, { ...newVocab });
+    return { data };
+}
+export const getVocabById = async (id: number) => {
+    const { data } = await axios.get(`${backEndUrl}/vocabularys/${id}`);
+    return { data };
+}
+export const updateVocab = async (id: number, vocab: type.IVocabulary) => {
+    const { data } = await axios.put(`${backEndUrl}/vocabularys/${id}`, { ...vocab });
     return { data };
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

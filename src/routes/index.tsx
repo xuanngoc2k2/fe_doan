@@ -27,6 +27,7 @@ import AdminQuestion from '../pages/Admin/Question/question';
 import QuestionDetail from '../pages/Admin/Question/question-detail';
 import AdminExam from '../pages/Admin/Exam/exam';
 import AdminExamDetail from '../pages/Admin/Exam/create-new-exam'
+import AdminVocabulary from '../pages/Admin/Vocabulary/vocab';
 interface Route {
   path: string;
   layout?: ComponentType<{
@@ -63,7 +64,7 @@ const privateRoutes: Route[] = [
   { path: '/admin/lesson/:id', component: AdminLessonDetail, layout: AdminLayout },
   { path: '/admin/exam', component: AdminExam, layout: AdminLayout },
   { path: '/admin/exam/:id', component: AdminExamDetail, layout: AdminLayout },
-  { path: '/admin/vocabulary', component: Admin, layout: AdminLayout },
+  { path: '/admin/vocabulary', component: AdminVocabulary, layout: AdminLayout },
   { path: '/admin/news', component: Admin, layout: AdminLayout },
 ];
 

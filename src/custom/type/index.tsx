@@ -119,6 +119,9 @@ export interface IVocabulary {
     meaning?: string;
     partOfSpeech?: string;
     spell?: string;
+    courseId?: number;
+    createdAt?: Date;
+    course?: ICourse;
 }
 export interface IListVocab {
     name: string;
