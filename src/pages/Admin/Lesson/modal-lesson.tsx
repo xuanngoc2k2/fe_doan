@@ -159,13 +159,16 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     newLesson = { ...newLesson!, content: temp.content }
                 }
                 const video = document.createElement('video');
-                video.src = `${backEndUrl}/video/${dataLesson?.content}`;
-                video.onloadedmetadata = function () {
-                    const durationMinutes = Math.floor(video.duration / 60);
-                    const durationSeconds = Math.floor(video.duration % 60);
-                    const formattedDuration = `${durationMinutes}:${durationSeconds}`;
-                    newLesson = { ...newLesson, duration: formattedDuration } as ILesson;
-                };
+                video.src = `${backEndUrl}/video/${newLesson?.content}`;
+                await new Promise<void>((resolve, reject) => {
+                    video.onloadedmetadata = function () {
+                        const durationMinutes = Math.floor(video.duration / 60);
+                        const durationSeconds = Math.floor(video.duration % 60);
+                        const formattedDuration = `${durationMinutes}:${durationSeconds}`;
+                        newLesson = { ...newLesson, duration: formattedDuration } as ILesson;
+                        resolve();
+                    };
+                });
             }
             const res = await createNewLesson(newLesson!);
             if (res && res.data) {

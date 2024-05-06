@@ -10,6 +10,7 @@ import ReactQuill from "react-quill";
 import {
     addNote, backEndUrl, checkAnswerQuestion, deleteNote, getAllNote, getCourseDetail,
     getQuestionByIdGr,
+    startCourse,
     // getListQuestion,
     updateDoneLesson, updateNote
 } from "../apis";
@@ -159,6 +160,15 @@ function LessonDetail() {
                     if (les.id === Number(lessonId)) {
                         if (index == 0) {
                             setLesson(les);
+                            try {
+                                const res = await startCourse(Number(courseId));
+                                if (res && res.data) {
+                                    message.success("Đăng kí học thành công");
+                                }
+                            }
+                            catch (error) {
+                                console.log(error)
+                            }
                             if (les.isQuestion) {
                                 const l = les?.content.split(',');
                                 const resq = await getQuestionByIdGr(l![0], l![1]);
