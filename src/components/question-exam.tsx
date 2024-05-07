@@ -55,7 +55,6 @@ function QuestionExam() {
                 setTimeExpired(true);
             }
         }, 1000);
-
         // Clear interval khi component unmount
         return () => clearTimeout(timer);
     }, [remainingTime]);

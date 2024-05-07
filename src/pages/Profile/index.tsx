@@ -26,7 +26,6 @@ function Profile() {
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [dataUpdatePass, setDataUpdatePass] = useState<{ pass: string, newPass: string }>();
-
     const handleClick = () => {
         if (crRef.current) {
             console.log(crRef.current.innerSlider.state.currentSlide)

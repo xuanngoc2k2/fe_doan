@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ListLesson from "./list-lesson";
 import './styles/lesson-detail.scss'
 // import { Divider } from "antd";
-import { Avatar, Button, Drawer, Input, message, Popconfirm, Space, Tag } from "antd";
+import { Avatar, Button, Drawer, Input, message, notification, Popconfirm, Space, Tag } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
@@ -148,6 +148,7 @@ function LessonDetail() {
     const [answer, setAnswer] = useState<number>();
     const [isTrue, setIsTrue] = useState<boolean | null>();
     const [listComment, setListComment] = useState<IComment[] | []>([]);
+    const [totalWatchedTime, setTotalWatchedTime] = useState(0);
     const navigator = useNavigate();
     const fetch = async () => {
         try {
@@ -229,7 +230,29 @@ function LessonDetail() {
     useEffect(() => {
         fetch()
     }, [Number(lessonId), listNote.length])
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!videoRef.current?.paused) {
+                setTotalWatchedTime((prevTotalTime) => prevTotalTime + 1);
+            }
+        }, 1000);
 
+        return () => clearInterval(interval);
+    }, []);
+    const handelCheckWatchedEnough = () => {
+        if (lesson?.duration) {
+            const percentageWatched = (totalWatchedTime / timeStringToSeconds(lesson?.duration)) * 100;
+            console.log(percentageWatched)
+            if (percentageWatched >= 75) {
+                return (true);
+            } else {
+                return (false);
+            }
+        }
+        else if (lesson?.duration == '0:00') {
+            return true
+        }
+    }
     const showDrawerComment = () => {
         setOpenCommentDrawer(true);
     };
@@ -344,7 +367,15 @@ function LessonDetail() {
         setOpenNoteDrawer(true);
     }
     const handleFinish = async () => {
-        console.log(lesson);
+        if (!handelCheckWatchedEnough()) {
+            notification.info({ message: "Bạn học quá nhanh, vui lòng không tua video" })
+            if (videoRef.current) {
+                videoRef.current.currentTime = 0;
+                //bắt học lại từ đầu
+                setTotalWatchedTime(0);
+            }
+            return
+        }
         if (!lesson?.isComplete) {
             try {
                 const res = await updateDoneLesson(Number(lesson?.id));
@@ -375,6 +406,7 @@ function LessonDetail() {
             setIsTrue(res.data);
         }
     }
+
     return (
         <>
             <div className="lesson-detail-container">
