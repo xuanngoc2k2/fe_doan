@@ -44,7 +44,7 @@ export const getListQuestionOfExam = async (id: number) => {
     const examGrquestions = data.examGrquestions;
     const listQuestion = [];
     for (const k in examGrquestions) {
-        listQuestion.push(examGrquestions[k]['groupQuestion']);
+        listQuestion.push(examGrquestions[k]);
     }
     const duration = data.duration;
     return { duration, listQuestion }
@@ -276,6 +276,11 @@ export const getDetailQuestion = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/question/${id}`);
     return { data };
 }
+
+export const getDetailQuestionLesson = async (id: string) => {
+    const { data } = await axios.post(`${backEndUrl}/question/detail/${id}`);
+    return { data };
+}
 export const checkAnswerQuestion = async (idAns: number, idQues: number) => {
     const { data } = await axios.post(`${backEndUrl}/question/check`, { idAns, idQues });
     return { data };
@@ -300,8 +305,13 @@ export const searchExam = async (search: string, type: string) => {
     const { data } = await axios.post(`${backEndUrl}/exams/search`, { search, type });
     return { data };
 }
-export const createNewExam = async (exam: type.IExam, group_questions: type.IGroupQuestion[]) => {
-    const { data } = await axios.post(`${backEndUrl}/exams`, { exam, group_questions });
+// export const createNewExam = async (exam: type.IExam, group_questions: type.IGroupQuestion[]) => {
+//     const { data } = await axios.post(`${backEndUrl}/exams`, { exam, group_questions });
+//     return { data };
+// }
+//test new
+export const createNewExam = async (exam: type.IExam, questions: type.IQuestion[]) => {
+    const { data } = await axios.post(`${backEndUrl}/exams`, { exam, questions });
     return { data };
 }
 export const getAllVocabulary = async (id?: number, word?: string, meaning?: string, level?: string[]) => {

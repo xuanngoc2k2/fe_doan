@@ -158,7 +158,18 @@ const AdminExamDetail: React.FC = () => {
     const handleSubmit = async () => {
         if (exam && groupQuestions.length) {
             try {
-                const res = await createNewExam(exam, groupQuestions);
+                const listQuestion: IQuestion[] = groupQuestions.flatMap(groupQuestion => groupQuestion.questions);
+                console.log(listQuestion)
+                // const res = await createNewExam(exam, groupQuestions);
+                // if (res && res.data) {
+                //     notification.success({
+                //         message: "Thêm thành công"
+                //     })
+                // }
+                // else {
+                //     notification.error({ message: "Đã xảy ra lỗi!" })
+                // }
+                const res = await createNewExam(exam, listQuestion);
                 if (res && res.data) {
                     notification.success({
                         message: "Thêm thành công"

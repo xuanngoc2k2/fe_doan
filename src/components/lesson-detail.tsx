@@ -9,14 +9,14 @@ import AddNode from "./add-note";
 import ReactQuill from "react-quill";
 import {
     addNote, backEndUrl, checkAnswerQuestion, deleteNote, getAllNote, getCourseDetail,
-    getQuestionByIdGr,
+    getDetailQuestionLesson,
     startCourse,
     // getListQuestion,
     updateDoneLesson, updateNote
 } from "../apis";
 import {
     IComment, ICourse, ILesson,
-    IGroupQuestion,
+    IQuestion,
     // IQuestion
 } from "../custom/type";
 // const listComment = [
@@ -132,8 +132,9 @@ function LessonDetail() {
     const { courseId, lessonId } = useParams();
     const [course, setCourse] = useState<ICourse | null>();
     const [lesson, setLesson] = useState<ILesson | null>();
-    // const [question, setQuestion] = useState<IQuestion | null>();
-    const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion | null>();
+    const [question, setQuestion] = useState<IQuestion | null>();
+    // const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion | null>();
+    // const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion | null>();
     const [currentTime, setCurrentTime] = useState('');
     const [showAddNote, setShowAddNote] = useState(false);
     const [isEdit, setIsEdit] = useState<number>();
@@ -171,10 +172,9 @@ function LessonDetail() {
                                 console.log(error)
                             }
                             if (les.isQuestion) {
-                                const l = les?.content.split(',');
-                                const resq = await getQuestionByIdGr(l![0], l![1]);
+                                const resq = await getDetailQuestionLesson(les.questionId);
                                 if (resq && resq.data) {
-                                    setGroupQuestion(resq.data);
+                                    setQuestion(resq.data);
                                 }
                             }
                         }
@@ -182,10 +182,9 @@ function LessonDetail() {
                             if (lessons[index - 1].isComplete) {
                                 setLesson(les);
                                 if (les.isQuestion) {
-                                    const l = les?.content.split(',');
-                                    const resq = await getQuestionByIdGr(l![0], l![1]);
+                                    const resq = await getDetailQuestionLesson(les.questionId);
                                     if (resq && resq.data) {
-                                        setGroupQuestion(resq.data);
+                                        setQuestion(resq.data);
                                     }
                                 }
                             }
@@ -230,7 +229,11 @@ function LessonDetail() {
     useEffect(() => {
         fetch()
     }, [Number(lessonId), listNote.length])
+
     useEffect(() => {
+        if (lesson?.isQuestion === true) {
+            return; // Nếu Lesson là một câu hỏi, không cần sử dụng setInterval
+        }
         const interval = setInterval(() => {
             if (!videoRef.current?.paused) {
                 setTotalWatchedTime((prevTotalTime) => prevTotalTime + 1);
@@ -398,12 +401,14 @@ function LessonDetail() {
         setIsEdit(id)
     }
     const handelSubmit = async () => {
-        const res = await checkAnswerQuestion(answer!, groupQuestion!.questions[0].id)
-        if (res) {
-            if (res.data == true && !lesson?.isComplete) {
-                handleFinish()
+        if (question?.id) {
+            const res = await checkAnswerQuestion(answer!, question?.id)
+            if (res) {
+                if (res.data == true && !lesson?.isComplete) {
+                    handleFinish()
+                }
+                setIsTrue(res.data);
             }
-            setIsTrue(res.data);
         }
     }
 
@@ -440,38 +445,39 @@ function LessonDetail() {
                 </div> :
                     <div style={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', marginTop: 50 }}>
                         <div>
-                            <h3>{groupQuestion?.content}</h3>
-                            <h3>{groupQuestion?.description}</h3>
-                            {groupQuestion?.audio && <audio controls>
-                                <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
+                            <h3>{question?.group_question?.content}</h3>
+                            <h3>{question?.group_question?.description}</h3>
+                            {question?.group_question?.audio && <audio controls>
+                                <source src={`${backEndUrl}/audio/${question.group_question.audio}`} />
                             </audio>}
-                            {groupQuestion?.image && <img src={`${backEndUrl}/images/question/${groupQuestion.image}`} />}
+                            {question?.group_question?.image && <img src={`${backEndUrl}/images/question/${question.group_question.image}`} />}
                         </div>
                         <div>
                             <div>
-                                {groupQuestion?.questions.map((question) => {
-                                    return <div>
-                                        <h4>{question.question}</h4>
-                                        <div>
-                                            {question.answers.map((answer) => {
-                                                return (
-                                                    <div onClick={() => {
-                                                        setIsTrue(null)
-                                                        setAnswer(answer.id);
-                                                        setIsSelected(answer.answer)
-                                                    }}
-                                                        className={`question-lesson-asw ${isTrue} ${isSelected == answer.answer ? 'selected' : ''}`}
-                                                    >
-                                                        {answer.answer}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
-                                            <Button onClick={handelSubmit} style={{ fontWeight: 600, width: 120, borderRadius: 30, color: '#d46b08', borderColor: '#ffd591', backgroundColor: '#fff7e6' }}>Trả lời</Button>
-                                        </div>
+                                {/* {question.map((question) => { */}
+                                {/* return  */}
+                                <div>
+                                    <h4>{question?.question}</h4>
+                                    <div>
+                                        {question?.answers.map((answer) => {
+                                            return (
+                                                <div onClick={() => {
+                                                    setIsTrue(null)
+                                                    setAnswer(answer.id);
+                                                    setIsSelected(answer.answer)
+                                                }}
+                                                    className={`question-lesson-asw ${isTrue} ${isSelected == answer.answer ? 'selected' : ''}`}
+                                                >
+                                                    {answer.isImage ? <img src={`${backEndUrl}/images/question/${answer.isImage}`} /> : <p>{answer.answer}</p>}
+                                                </div>
+                                            )
+                                        })}
                                     </div>
-                                })}
+                                    <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button onClick={handelSubmit} style={{ fontWeight: 600, width: 120, borderRadius: 30, color: '#d46b08', borderColor: '#ffd591', backgroundColor: '#fff7e6' }}>Trả lời</Button>
+                                    </div>
+                                </div>
+                                {/* })} */}
                             </div>
                         </div>
                     </div>}
