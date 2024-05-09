@@ -93,6 +93,9 @@ export const accountSlide = createSlice({
                 state.user.role = action?.payload?.user?.role;
                 state.user.image = action?.payload?.user?.image;
             }
+            else {
+                state.isLoading = false;
+            }
         })
 
         builder.addCase(fetchAccount.rejected, (state, action) => {

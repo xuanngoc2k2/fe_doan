@@ -206,6 +206,10 @@ export const getInfoUser = async () => {
     const { data } = await axios.post(`${backEndUrl}/users/user`, {});
     return { data }
 }
+export const getAllUser = async () => {
+    const { data } = await axios.get(`${backEndUrl}/users`);
+    return { data }
+}
 export const updateUserInfo = async (user: type.IUser) => {
     const { data } = await axios.put(`${backEndUrl}/users/${user.id}`, { user });
     return { data }
