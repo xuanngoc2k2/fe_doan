@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { CreateNewGroupQuestion, CreateNewQuestion, IAnswer, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-import { backEndUrl, createNewExam, getAllGroupQuestion } from "../../../apis";
+import { backEndUrl, createNewExam, getAllGroupQuestion, getExamById, getListQuestionOfExam } from "../../../apis";
 import { DatePicker } from 'antd';
 import type { DatePickerProps, GetProps } from 'antd';
 
@@ -35,16 +35,25 @@ const AdminExamDetail: React.FC = () => {
                 if (res && res.data) {
                     setDataListGroupQuestion(res.data);
                 }
-                // if (id != 'create-new') {
-                //     const res = await getDetailQuestion(id!);
-                //     if (res && res.data) {
-                //         setQuestion(res.data)
-                //     }
-                else {
-                    notification.error({
-                        message: "Đã xảy ra lỗi lấy dữ liệu"
-                    })
+                if (id != 'create-new' && id != '' && !isNaN(Number(id))) {
+                    const resExam = await getExamById(id!);
+                    if (resExam && resExam.data) {
+                        setExam(resExam.data)
+                        form.setFieldValue('exam_name', resExam.data.exam_name)
+                        form.setFieldValue('exam_duration', resExam.data.duration)
+                        form.setFieldValue('exam_type', resExam.data.type)
+                        form.setFieldValue('exam_desc', resExam.data.description)
+                    }
+                    const res = await getListQuestionOfExam(Number(id));
+                    if (res && res.listQuestion) {
+                        setGroupQuestions(res.listQuestion)
+                    }
                 }
+                // else {
+                //     notification.error({
+                //         message: "Đã xảy ra lỗi lấy dữ liệu"
+                //     })
+                // }
                 // }
             }
             catch (error) {
@@ -208,10 +217,16 @@ const AdminExamDetail: React.FC = () => {
                 }}
             >
                 <Form
+                    initialValues={{
+                        exam_name: exam?.exam_name || '',
+                        exam_duration: exam?.duration || '',
+                        exam_type: exam?.type || undefined,
+                        exam_desc: exam?.description || ''
+                    }}
                     form={form}>
                     <Form.Item
                         rules={[{ required: true, message: 'Tên bài thi không được để trống!' }]}
-                        name={`exam-name`}
+                        name={`exam_name`}
                         label="Tên bài thi"
                     ><Input
                             value={exam?.exam_name}
@@ -224,7 +239,7 @@ const AdminExamDetail: React.FC = () => {
                     <div style={{ display: 'flex' }}>
                         <Form.Item
                             rules={[{ required: true, message: 'Thời gian làm bài không được để trống!' }]}
-                            name={`exam-duration`}
+                            name={`exam_duration`}
                             label="Thời gian làm bài"
                         ><Input type="number"
                             value={exam?.duration}
@@ -237,7 +252,7 @@ const AdminExamDetail: React.FC = () => {
                         <Form.Item
                             style={{ marginLeft: 20 }}
                             rules={[{ required: true, message: 'Thời gian khả dụng bài thi không được để trống!' }]}
-                            name={`exam-date`}
+                            name={`exam_date`}
                             label="Thời gian khả dụng bài thi"
                         >
                             <RangePicker
@@ -256,7 +271,7 @@ const AdminExamDetail: React.FC = () => {
                         <Form.Item
                             style={{ marginLeft: 20 }}
                             rules={[{ required: true, message: 'Loại bài thi không được để trống!' }]}
-                            name={`exam-type`}
+                            name={`exam_type`}
                             label="Loại bài thi"
                         >
                             <Select
@@ -287,6 +302,7 @@ const AdminExamDetail: React.FC = () => {
                                 <MinusOutlined onClick={() => { handleRemoveGr(indexGr) }} />
                                 <div key={indexGr} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Form.Item
+                                        initialValue={String(groupQuestion.id)}
                                         rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                         name={`group_question-${indexGr}`}
                                         label="Nhóm câu hỏi"
@@ -296,7 +312,8 @@ const AdminExamDetail: React.FC = () => {
                                             placeholder="Nhập tên nhóm câu hỏi"
                                             allowClear />
                                             :
-                                            <Select allowClear
+                                            <Select
+                                                allowClear
                                                 value={groupQuestion}
                                                 onChange={(value) => {
                                                     setGroupQuestions((prev) => {
@@ -322,7 +339,14 @@ const AdminExamDetail: React.FC = () => {
                                     <div style={{ fontSize: 20, marginLeft: 10, marginRight: 10, display: 'flex', height: 32 }}>
                                         <RedoOutlined onClick={() => handleReset(indexGr)} />
                                     </div>
-                                    <Button onClick={() => handleAddNew(indexGr)} style={{ marginRight: 20, width: '15%' }} icon={<PlusOutlined />} type="primary">Thêm mới nhóm câu hỏi</Button>
+                                    {!groupQuestion.content &&
+                                        <Button
+                                            onClick={() => handleAddNew(indexGr)}
+                                            style={{ marginRight: 20, width: '15%' }}
+                                            icon={<PlusOutlined />}
+                                            type="primary">
+                                            Thêm mới nhóm câu hỏi
+                                        </Button>}
                                 </div >
                                 <div style={{ display: 'flex' }}>
                                     <Form.Item

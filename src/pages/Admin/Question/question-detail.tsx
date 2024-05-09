@@ -6,6 +6,7 @@ import { Button, Form, GetProp, Input, message, notification, Popconfirm, Radio,
 import { Content } from "antd/es/layout/layout";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
+// import ModalAnswer from "./modal-answer";
 
 const QuestionDetail: React.FC = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const QuestionDetail: React.FC = () => {
     const [editGr, setEditGr] = useState(false);
     const [fileAudio, setFileAudio] = useState<UploadFile>();
     const [fileImage, setFileImage] = useState<UploadFile | null>();
+    // const [showModalAnswer, setShowModalAnswer] = useState(0);
     const [form] = Form.useForm();
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -107,7 +109,6 @@ const QuestionDetail: React.FC = () => {
         fetch();
     }, [id, groupQuestion?.id])
     const handleSubmit = async () => {
-        console.log(fileAudio, fileImage);
         if (dataQuestion && groupQuestion?.content != '') {
             try {
                 let newGr = groupQuestion;
@@ -194,6 +195,9 @@ const QuestionDetail: React.FC = () => {
             notification.error({ message: String(error) })
         }
     }
+    // const handleEditAnswer = (id: number) => {
+    //     setShowModalAnswer(id);
+    // }
     // const disable = (!addNew && editGr) ? true : false;
     return (<>
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
@@ -229,6 +233,7 @@ const QuestionDetail: React.FC = () => {
                                     style={{ minWidth: 350, width: '80%' }}
                                 >
                                     {addNew || editGr ? <Input
+                                        name="group_question"
                                         placeholder="Nhập tên nhóm câu hỏi"
                                         value={groupQuestion?.content}
                                         allowClear
@@ -242,6 +247,7 @@ const QuestionDetail: React.FC = () => {
                                                 setGroupQuestion(rs);
                                                 form.setFieldValue('type_question', rs?.type);
                                                 form.setFieldValue('des_groupquestion', rs?.description);
+                                                form.setFieldValue("group_question", rs?.content);
                                             }}
                                             value={groupQuestion}
                                             placeholder="Chọn nhóm câu hỏi">
@@ -644,6 +650,7 @@ const QuestionDetail: React.FC = () => {
                                                                 color: '#ffa500',
                                                             }}
                                                             onClick={() => {
+                                                                // handleEditAnswer(answer.id);
                                                             }}
                                                         />
                                                         <Popconfirm
@@ -683,6 +690,7 @@ const QuestionDetail: React.FC = () => {
                                 </div>
                             </section>
                         </div>
+                        {/* <ModalAnswer id={showModalAnswer} /> */}
                     </>
                 }
             </div >

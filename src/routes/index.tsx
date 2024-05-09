@@ -44,7 +44,7 @@ const publicRoutes: Route[] = [
   { path: '/vocab', component: Vocabulary },
   { path: '/vocab-detail/:idList', component: VocabularyDetail },
   { path: '/course/:id', component: CourseDetail },
-  { path: '/exams/:idTypeExam', component: Exams },
+  { path: '/exams/:typeExam', component: Exams },
   { path: '/exam/:idExam', component: ExamDetail },
   { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
   { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },

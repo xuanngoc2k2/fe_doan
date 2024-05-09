@@ -77,6 +77,12 @@ export const getAllListVocab = async () => {
     return { data }
 }
 
+export const getListVocabCourses = async () => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/courses`);
+    // const duration = data.data.duration;
+    return { data }
+}
+
 export const postNewList = async (value: type.IListVocab) => {
     const { data } = await axios.post(`${backEndUrl}/list-vocab`, value);
     // const duration = data.data.duration;
@@ -276,7 +282,10 @@ export const getDetailQuestion = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/question/${id}`);
     return { data };
 }
-
+export const getRandomQuestion = async () => {
+    const { data } = await axios.post(`${backEndUrl}/question/random`);
+    return { data };
+}
 export const getDetailQuestionLesson = async (id: string) => {
     const { data } = await axios.post(`${backEndUrl}/question/detail/${id}`);
     return { data };
@@ -301,6 +310,11 @@ export const deleteExam = async (id: number) => {
     const { data } = await axios.delete(`${backEndUrl}/exams/${id}`);
     return { data };
 }
+
+export const getExamByType = async (type: string) => {
+    const { data } = await axios.post(`${backEndUrl}/exams/type`, { type });
+    return { data };
+}
 export const searchExam = async (search: string, type: string) => {
     const { data } = await axios.post(`${backEndUrl}/exams/search`, { search, type });
     return { data };
@@ -317,6 +331,43 @@ export const createNewExam = async (exam: type.IExam, questions: type.IQuestion[
 export const getAllVocabulary = async (id?: number, word?: string, meaning?: string, level?: string[]) => {
     const { data } = await axios.post(`${backEndUrl}/vocabularys/search`, { id, word, meaning, level });
     return { data };
+}
+export const searchVocab = async (search: string) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/userSearch`, { search });
+    if (data) {
+        return { data };
+    }
+    else {
+        try {
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${search}&langpair=ko|vi`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data.responseData.translatedText)
+                const word = data.responseData.translatedText
+                const apiUrl = `https://ac.dict.naver.com/enendict/ac?q=${encodeURIComponent(search)}&q_enc=utf-8&st=11001`;
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.items && data.items.length > 0) {
+                            const pronunciation = data.items[0].hvoice;
+                            console.log("Phiên âm của từ '" + word + "' là: " + pronunciation);
+                        } else {
+                            console.log("Không tìm thấy phiên âm cho từ '" + word + "'");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Lỗi khi tìm phiên âm:", error);
+                    });
+                return { data: { word: search, meaning: data.responseData.translatedText } };
+            } else {
+                console.error("Failed to fetch translation:", response.statusText);
+                return { data: null };
+            }
+        } catch (fetchError) {
+            console.error("Error fetching translation:", fetchError);
+            return { data: null };
+        }
+    }
 }
 export const deleteVocab = async (id: number) => {
     const { data } = await axios.delete(`${backEndUrl}/vocabularys/${id}`);

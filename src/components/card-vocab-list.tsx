@@ -15,7 +15,6 @@ interface CardVocabListProps {
     }
 }
 const CardVocabList: React.FC<CardVocabListProps> = ({ data }) => {
-
     return (
         <>
             {data ?
@@ -26,8 +25,8 @@ const CardVocabList: React.FC<CardVocabListProps> = ({ data }) => {
                         </h2>
                         <div className='card-vocab-list-detail'>
                             <p className="total-word">{data.totalWords} từ</p>
-                            <p>Cần ôn tập: <span style={{ color: 'red', fontWeight: 'bold' }}>{data.needRemember}</span></p>
-                            <p>Đã nhớ: {data.remembered}</p>
+                            <p>Cần ôn tập: <span style={{ color: 'red', fontWeight: 'bold' }}>{data.needRemember || data.totalWords}</span></p>
+                            <p>Đã nhớ: {data.remembered || 0}</p>
                         </div>
                         {/* <div className='card-vocab-list-des'>
                             <p>{data.description}</p>

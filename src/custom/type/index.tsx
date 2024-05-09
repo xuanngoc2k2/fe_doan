@@ -24,6 +24,8 @@ export interface ILesson {
     thumbnail: string,
     courseId: number,
     course?: ICourse,
+    questionId: number,
+    question: IQuestion
 }
 export interface IExam {
     id: number,

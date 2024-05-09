@@ -2,10 +2,12 @@ import { Button, Col, Form, Input, message, Modal, Row } from "antd";
 import CardVocab from "../../components/card-vocab-list";
 import './vocab.scss'
 import { useEffect, useState } from "react";
-import { getAllListVocab, postNewList } from "../../apis";
+import { getAllListVocab, getListVocabCourses, postNewList } from "../../apis";
 import { IListVocab } from "../../custom/type";
+import { useAppSelector } from "../../redux/hook";
 function Vocabulary() {
     const [showModal, setShowModal] = useState(false);
+    const user = useAppSelector((state) => state.account.user);
     const [newList, setNewList] = useState<IListVocab | null>(null);
     const [listVocabs, setListVocabs] = useState([]);
     const handleShowModel = () => {
@@ -42,9 +44,17 @@ function Vocabulary() {
     }
     const fetch = async () => {
         try {
-            const res = await getAllListVocab();
-            if (res.data) {
-                setListVocabs(res.data);
+            if (user.id != 0) {
+                const res = await getAllListVocab();
+                if (res.data) {
+                    setListVocabs(res.data);
+                }
+            }
+            else {
+                const res = await getListVocabCourses();
+                if (res.data) {
+                    setListVocabs(res.data);
+                }
             }
         }
         catch {
@@ -64,9 +74,11 @@ function Vocabulary() {
 
             <div className="vocab-container">
                 <div className="list-card">
+                    {/* {user.id != 0 && */}
                     <div className="create-new-listVocab" onClick={handleShowModel}>
                         <CardVocab />
                     </div>
+                    {/* } */}
                     {listVocabs.map((list) => {
                         return (
                             <CardVocab data={list} />

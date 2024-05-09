@@ -113,8 +113,8 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     useEffect(() => {
         if (data) {
             setDataLesson(data)
-            const idGroup = data.content.split(',');
-            setIdGroup(Number(idGroup[0]));
+            const idGroup = data.question.group_question?.id;
+            setIdGroup(Number(idGroup));
         }
         try {
             const fetch = async () => {
@@ -170,6 +170,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     };
                 });
             }
+            console.log(newLesson)
             const res = await createNewLesson(newLesson!);
             if (res && res.data) {
                 notification.success({
@@ -200,6 +201,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 //     dataUpdateLesson = { ...dataUpdateLesson, duration: formattedDuration } as ILesson;
                 // };
             }
+            console.log(dataUpdateLesson)
             const res = await updateLesson(dataUpdateLesson!.id, dataUpdateLesson!);
             if (res && res.data) {
                 notification.success({
@@ -254,9 +256,9 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     lesson_name: data?.lesson_name || '',
                     lesson_des: data?.description || '',
                     course: data?.course!.id ? String(data.course!.id) : undefined,
-                    order: data?.course?.lessons?.length || '',
-                    idGroup: data?.isQuestion ? String(data?.content.split(',')[0]) : undefined,
-                    content: data?.isQuestion ? String(data?.content.split(',')[1]) : undefined,
+                    order: data?.order || '',
+                    idGroup: data?.isQuestion ? String(data.question.group_question?.id) : undefined,
+                    content: data?.isQuestion ? String(data?.questionId) : undefined,
                 }}>
                 <Form.Item
                     label="Tên bài học"
@@ -380,9 +382,9 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                         onChange={(value) => {
                                             setDataLesson((prev: ILesson | undefined) => {
                                                 if (prev) {
-                                                    return { ...prev, content: (idGroup + ',' + value) };
+                                                    return { ...prev, questionId: value };
                                                 }
-                                                return { ...prev!, content: (idGroup + ',' + value) };
+                                                return { ...prev!, questionId: value };
                                             });
                                         }}
                                         placeholder="Chọn câu hỏi">

@@ -154,6 +154,7 @@ const AdminExam: React.FC = () => {
                             color: '#ffa500',
                         }}
                         onClick={() => {
+                            navigator(`${record.id}`)
                             console.log(_, record)
                             // handlexShowModel(record.id)
                         }}

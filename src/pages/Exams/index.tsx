@@ -1,9 +1,10 @@
-import { Col, message, Row } from "antd";
+import { Col, message, Pagination, Row } from "antd";
 import ExamRanking from "../../components/exam-ranking";
 import CardExam from "../../components/card-exam";
 import './exams.scss'
 import { useEffect, useState } from "react";
-import { getListExams } from "../../apis";
+import { getExamByType } from "../../apis";
+import { useParams } from "react-router-dom";
 const fakeDataRanking = [
     {
         full_name: "Nguyễn Như Ý",
@@ -15,7 +16,8 @@ const fakeDataRanking = [
         full_name: "pham thi oanh",
         score: 97,
         date: "April 5, 2024, 10:10 a.m"
-    }, {
+    },
+    {
         full_name: "thu hang",
         score: 90,
         date: "April 1, 2024, 9:58 p.m."
@@ -60,13 +62,24 @@ const fakeDataRanking = [
 //chưa phân trang
 function Exams() {
     const [listExam, setListExam] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 12;
+    const indexOfLastExam = currentPage * pageSize;
+    const indexOfFirstExam = indexOfLastExam - pageSize;
+    const currentExams = listExam.slice(indexOfFirstExam, indexOfLastExam);
+    const typeExam = useParams();
+    // Xử lý sự kiện khi chuyển trang
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
     useEffect(() => {
         const fetchData = async () => {
             try {
-
-                const res = await getListExams();
-                if (res.data) {
-                    setListExam(res.data);
+                if (typeExam.typeExam) {
+                    const res = await getExamByType(String(typeExam.typeExam));
+                    if (res.data) {
+                        setListExam(res.data);
+                    }
                 }
             }
             catch {
@@ -77,7 +90,7 @@ function Exams() {
             }
         }
         fetchData()
-    }, [])
+    }, [typeExam.typeExam])
     return (
         <>
             <Row>
@@ -87,13 +100,23 @@ function Exams() {
             </Row>
             <Row className="exams-container">
                 <Row className="exams-list">
-                    {listExam.map((exam, index) => {
+                    {currentExams.map((exam, index) => {
                         return <>
                             <Col key={index}>
                                 <CardExam exam={exam} />
                             </Col>
                         </>
                     })}
+                    <Row style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                        <Col span={24} style={{ textAlign: 'center' }}>
+                            <Pagination
+                                current={currentPage}
+                                pageSize={pageSize}
+                                total={listExam.length}
+                                onChange={handlePageChange}
+                            />
+                        </Col>
+                    </Row>
                 </Row >
                 <Row className="exams-ranking">
                     <ExamRanking data={fakeDataRanking} />

@@ -2,12 +2,19 @@
     height: 260px;
     perspective: 1000px;
     .flip-question {
-        font-size: 30px;
+        font-size: 20px;
+        font-family: 'sans-serif';
+    }
+    .flip-description {
+        font-size: 16px;
         font-family: 'sans-serif';
     }
     button {
         position: relative;
-        bottom: -75px;
+        bottom: -80px;
+        &.true {
+            bottom: -7px;
+        }
     }
 }
 

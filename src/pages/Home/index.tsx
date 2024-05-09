@@ -12,132 +12,30 @@ import ExamRanking from "../../components/exam-ranking";
 import { SearchProps } from "antd/es/input";
 import WordInfo from "../../components/word-info";
 import { useEffect, useState } from "react";
-import { getListCourses, getListExams } from "../../apis";
+import { getListCourses, getListExams, getRandomQuestion } from "../../apis";
+import { IQuestion } from "../../custom/type";
 
-const fakeQuestion = [
-    {
-        title: "오늘은 뭘 할거에요?",
-        answer: "학교에 가요.",
-        isQuestion: true
-    },
-    {
-        title: "Kì thi TOPIK 94 sắp bắt đầu",
-        description: `Đăng ký tại khu vực miền Nam: từ 15h00 ngày 06/03/2024 -12/03/2024
-        Hàn Quốc:       
-        Đăng ký từ 12/03/2024-18/03/2024: Seoul, Gangwon, Gyeongnam, Gyeongbuk, Jeonnam, Jeonbuk, Jeju, South Chungcheong, North Chungcheong
-        Đăng ký từ 13/03/2024-18/03/2024: Gyeonggi,Incheon, Daejeon, Daegu, Gwangju, Busan, Ulsan
-        Đăng ký từ 14/03/2024-18/03/2024: Khu vực khác`,
-        isQuestion: false
-    },
-    {
-        title: "오늘은 뭘 할거에요?",
-        answer: "학교에 가요.",
-        isQuestion: true
-    },
-]
-// const fakeExam = [
+// const fakeQuestion = [
 //     {
-//         exam_name: 'Sơ cấp 1',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         id: 1,
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
+//         title: "오늘은 뭘 할거에요?",
+//         answer: "학교에 가요.",
+//         isQuestion: true
 //     },
 //     {
-//         exam_name: 'Sơ cấp 2',
-//         id: 1,
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
+//         title: "Kì thi TOPIK 94 sắp bắt đầu",
+//         description: `Đăng ký tại khu vực miền Nam: từ 15h00 ngày 06/03/2024 -12/03/2024
+//         Hàn Quốc:       
+//         Đăng ký từ 12/03/2024-18/03/2024: Seoul, Gangwon, Gyeongnam, Gyeongbuk, Jeonnam, Jeonbuk, Jeju, South Chungcheong, North Chungcheong
+//         Đăng ký từ 13/03/2024-18/03/2024: Gyeonggi,Incheon, Daejeon, Daegu, Gwangju, Busan, Ulsan
+//         Đăng ký từ 14/03/2024-18/03/2024: Khu vực khác`,
+//         isQuestion: false
 //     },
 //     {
-//         exam_name: 'Trung cấp 3',
-//         id: 1,
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
+//         title: "오늘은 뭘 할거에요?",
+//         answer: "학교에 가요.",
+//         isQuestion: true
 //     },
-//     {
-//         id: 1,
-//         exam_name: 'Trung cấp 4',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 12,
-//         exam_name: 'Trung cấp 3',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 3,
-//         exam_name: 'Trung cấp 4',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 4,
-//         exam_name: 'Trung cấp 3',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 5,
-//         exam_name: 'Trung cấp 4',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 5,
-//         exam_name: 'Trung cấp 4',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     },
-//     {
-//         id: 6,
-//         exam_name: 'Trung cấp 4',
-//         description: 'Kiến thức nhập môn tiếng Hàn',
-//         duration: 40,
-//         countUser: 230,
-//         countTypeQuestion: 10,
-//         countQuestion: 200,
-//         type: 'TOPIK I'
-//     }
 // ]
-
 const fakeDataRanking = [
     {
         full_name: "Nguyễn Như Ý",
@@ -201,6 +99,7 @@ function Home() {
     const [search, setSearch] = useState(false);
     const [listCourse, setListCourse] = useState([]);
     const [listExam, setListExam] = useState([]);
+    const [questions, setQuestion] = useState<IQuestion[] | []>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -212,6 +111,10 @@ function Home() {
                 const res = await getListExams();
                 if (res.data) {
                     setListExam(res.data.slice(0, 8));
+                }
+                const resq = await getRandomQuestion();
+                if (resq && resq.data) {
+                    setQuestion(resq.data)
                 }
             }
             catch {
@@ -240,8 +143,9 @@ function Home() {
         //         error('Ngôn ngữ nhập vào phải là Tiếng hàn')
         //     }
         //     else {
-        console.log(value)
-        setSearch(true)
+        if (value) {
+            setSearch(true)
+        }
         //     }
     };
     return (
@@ -258,8 +162,8 @@ function Home() {
                             autoplay
                             draggable
                         >
-                            {fakeQuestion.map((question, index) => {
-                                return <CardQuestion key={index} isQuestion={question.isQuestion} title={question.title} description={question.description} answer={question.answer} />
+                            {questions.map((question, index) => {
+                                return <CardQuestion key={index} question={question} title={question.question} answers={question.answers} />
                             })}
                         </Carousel>
                     </Col>
