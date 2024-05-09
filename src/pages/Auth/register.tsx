@@ -1,12 +1,33 @@
 import { LeftCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input, Space } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Card, DatePicker, Form, Input, notification, Space } from "antd";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { IUser } from "../../custom/type";
+import { callRegister } from "../../apis";
 
 function Register() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onFinish = (values: any) => {
-        console.log('Received values:', values);
-        // Xử lý đăng nhập ở đây
+    const [user, setUser] = useState<IUser | null>();
+    const navigator = useNavigate();
+    const onFinish = async () => {
+        if (user) {
+            try {
+                const res = await callRegister(user);
+                if (res && res.data) {
+                    notification.success({ message: "Đăng kí thành công" });
+                    navigator('/login');
+                }
+                else {
+                    console.log(res.message)
+                    notification.error({ message: String(res.message) });
+                }
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            catch (error) {
+                // Truy cập thông điệp lỗi và xử lý nó
+                console.error("Lỗi:", String(error));
+            }
+        }
+
     };
 
     return (
@@ -38,6 +59,8 @@ function Register() {
                         >
                             <Input
                                 size="large"
+                                value={user?.full_name}
+                                onChange={(e) => setUser((prev) => ({ ...prev!, full_name: e.target.value.trim() }))}
                                 className="input-login"
                                 placeholder="Họ tên"
                             />
@@ -48,6 +71,8 @@ function Register() {
                         >
                             <Input
                                 size="large"
+                                value={user?.email}
+                                onChange={(e) => setUser((prev) => ({ ...prev!, email: e.target.value.trim() }))}
                                 className="input-login"
                                 placeholder="Email"
                             />
@@ -57,6 +82,8 @@ function Register() {
                             rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
                         >
                             <Input
+                                value={user?.phone_number}
+                                onChange={(e) => setUser((prev) => ({ ...prev!, phone_number: e.target.value.trim() }))}
                                 size="large"
                                 className="input-login"
                                 placeholder="Số điện thoại"
@@ -68,8 +95,23 @@ function Register() {
                         >
                             <Input
                                 size="large"
+                                value={user?.username}
+                                onChange={(e) => setUser((prev) => ({ ...prev!, username: e.target.value.trim() }))}
                                 className="input-login"
                                 placeholder="Tên đăng nhập"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="birthday"
+                            rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
+                        >
+                            <DatePicker
+                                allowClear={false}
+                                style={{ width: '100%' }}
+                                size="large"
+                                value={user?.date_of_birth}
+                                onChange={(date) => setUser((prev) => ({ ...prev!, date_of_birth: date }))}
+                                placeholder="Ngày sinh"
                             />
                         </Form.Item>
                         <Form.Item
@@ -78,14 +120,28 @@ function Register() {
                         >
                             <Input.Password
                                 size="large"
+                                value={user?.password}
+                                onChange={(e) => setUser((prev) => ({ ...prev!, password: e.target.value.trim() }))}
                                 className="input-login"
                                 type="password"
                                 placeholder="Mật khẩu"
                             />
                         </Form.Item>
                         <Form.Item
+                            hasFeedback
                             name="re-password"
-                            rules={[{ required: true, message: 'Vui lòng nhắc lại mật khẩu!' }]}
+                            rules={[{ required: true, message: 'Xác nhận mật khẩu không được để trống!' },
+                            (
+                                { getFieldValue }
+                            ) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue('password') === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject("Xác nhận mật khẩu không trùng khớp")
+                                }
+                            })
+                            ]}
                         >
                             <Input.Password
                                 size="large"

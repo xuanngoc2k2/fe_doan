@@ -22,6 +22,28 @@ export const callLogin = async (username: string, password: string) => {
     const { data } = await axios.post(`${backEndUrl}/auth/login`, { username, password });
     return { data };
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const callRegister = async (user: type.IUser): Promise<{ data?: any, message?: string }> => {
+    try {
+        return await axios.post(`${backEndUrl}/auth/register`, { ...user })
+            .then((response: { data?: type.IUser, message?: string }) => {
+                if (response.data) {
+                    return { data: response.data }; // Trả về dữ liệu nếu có
+                } else {
+                    console.log(response)
+                    return { message: String(response.message) }; // Trả về thông điệp lỗi nếu không có dữ liệu
+                }
+            })
+            .catch(error => {
+                throw error; // Ném lỗi để được xử lý ở phần catch bên ngoài
+            });
+    }
+    catch (error) {
+        console.log(String(error));
+        throw error; // Ném lỗi để được xử lý ở phần catch bên ngoài
+    }
+};
+
 export const getListCourses = async () => {
     const user = await getInfoUser();
     const { data } = await axios.post(`${backEndUrl}/course/all`, { user: user.data });
@@ -57,6 +79,11 @@ export const postResult = async (result: unknown) => {
 export const getListResult = async () => {
     const { data } = await axios.get(`${backEndUrl}/result`);
     // console.log(data)
+    return { data };
+}
+
+export const getRanking = async () => {
+    const { data } = await axios.post(`${backEndUrl}/result/ranking`);
     return { data };
 }
 

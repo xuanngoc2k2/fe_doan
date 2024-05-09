@@ -3,64 +3,11 @@ import ExamRanking from "../../components/exam-ranking";
 import CardExam from "../../components/card-exam";
 import './exams.scss'
 import { useEffect, useState } from "react";
-import { getExamByType } from "../../apis";
+import { getExamByType, getRanking } from "../../apis";
 import { useParams } from "react-router-dom";
-const fakeDataRanking = [
-    {
-        full_name: "Nguyễn Như Ý",
-        score: 98,
-        date: "April 4, 2024, 7:59 p.m",
-        image: "https://onthitopik.vn/media/images/default.png"
-    },
-    {
-        full_name: "pham thi oanh",
-        score: 97,
-        date: "April 5, 2024, 10:10 a.m"
-    },
-    {
-        full_name: "thu hang",
-        score: 90,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "HO VAN THAI",
-        score: 86,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m.qqqqqqqqqqqqq"
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-]
-
 //chưa phân trang
 function Exams() {
+    const [ranking, setRanking] = useState([]);
     const [listExam, setListExam] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 12;
@@ -80,6 +27,10 @@ function Exams() {
                     if (res.data) {
                         setListExam(res.data);
                     }
+                }
+                const resranking = await getRanking();
+                if (resranking && resranking.data) {
+                    setRanking(resranking.data);
                 }
             }
             catch {
@@ -119,7 +70,7 @@ function Exams() {
                     </Row>
                 </Row >
                 <Row className="exams-ranking">
-                    <ExamRanking data={fakeDataRanking} />
+                    <ExamRanking data={ranking} />
                 </Row >
             </Row>
         </>

@@ -1,3 +1,9 @@
+export interface IBackendRes<T> {
+    error?: string | string[];
+    message: string;
+    statusCode: number | string;
+    data?: T;
+}
 export interface ICourse {
     course_name: string,
     description: string,

@@ -12,82 +12,9 @@ import ExamRanking from "../../components/exam-ranking";
 import { SearchProps } from "antd/es/input";
 import WordInfo from "../../components/word-info";
 import { useEffect, useState } from "react";
-import { getListCourses, getListExams, getRandomQuestion } from "../../apis";
+import { getListCourses, getListExams, getRandomQuestion, getRanking } from "../../apis";
 import { IQuestion } from "../../custom/type";
 
-// const fakeQuestion = [
-//     {
-//         title: "오늘은 뭘 할거에요?",
-//         answer: "학교에 가요.",
-//         isQuestion: true
-//     },
-//     {
-//         title: "Kì thi TOPIK 94 sắp bắt đầu",
-//         description: `Đăng ký tại khu vực miền Nam: từ 15h00 ngày 06/03/2024 -12/03/2024
-//         Hàn Quốc:       
-//         Đăng ký từ 12/03/2024-18/03/2024: Seoul, Gangwon, Gyeongnam, Gyeongbuk, Jeonnam, Jeonbuk, Jeju, South Chungcheong, North Chungcheong
-//         Đăng ký từ 13/03/2024-18/03/2024: Gyeonggi,Incheon, Daejeon, Daegu, Gwangju, Busan, Ulsan
-//         Đăng ký từ 14/03/2024-18/03/2024: Khu vực khác`,
-//         isQuestion: false
-//     },
-//     {
-//         title: "오늘은 뭘 할거에요?",
-//         answer: "학교에 가요.",
-//         isQuestion: true
-//     },
-// ]
-const fakeDataRanking = [
-    {
-        full_name: "Nguyễn Như Ý",
-        score: 98,
-        date: "April 4, 2024, 7:59 p.m",
-        image: "https://onthitopik.vn/media/images/default.png"
-    },
-    {
-        full_name: "pham thi oanh",
-        score: 97,
-        date: "April 5, 2024, 10:10 a.m"
-    }, {
-        full_name: "thu hang",
-        score: 90,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "HO VAN THAI",
-        score: 86,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m.qqqqqqqqqqqqq"
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-    {
-        full_name: "tien",
-        score: 85,
-        date: "April 1, 2024, 9:58 p.m."
-    },
-]
 
 // function isKorean(text: string) {
 //     const koreanRegex = /[\uac00-\ud7a3]/;
@@ -100,6 +27,7 @@ function Home() {
     const [listCourse, setListCourse] = useState([]);
     const [listExam, setListExam] = useState([]);
     const [questions, setQuestion] = useState<IQuestion[] | []>([]);
+    const [ranking, setRanking] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -115,6 +43,10 @@ function Home() {
                 const resq = await getRandomQuestion();
                 if (resq && resq.data) {
                     setQuestion(resq.data)
+                }
+                const resranking = await getRanking();
+                if (resranking && resranking.data) {
+                    setRanking(resranking.data);
                 }
             }
             catch {
@@ -204,7 +136,7 @@ function Home() {
                         })}
                     </Row >
                     <Row className="home-exam-ranking">
-                        <ExamRanking data={fakeDataRanking} />
+                        <ExamRanking data={ranking} />
                     </Row >
                 </Row>
                 <Divider />
