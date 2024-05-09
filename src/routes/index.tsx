@@ -46,21 +46,20 @@ const publicRoutes: Route[] = [
   { path: '/course/:id', component: CourseDetail },
   { path: '/exams/:typeExam', component: Exams },
   { path: '/exam/:idExam', component: ExamDetail },
-  { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
-  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
-  { path: '/result/', component: Result, },
-  { path: '/result-detail/:resultId', component: ResultDetail, },
-  { path: '/flashcards/:idList', component: FlashcardList, },
-  { path: '/user', component: Profile, }
-];
-const protectedRouter: Route[] = [
-  // { path: '/flashcards/:idList', component: FlashcardList, },
-  // { path: '/user', component: Profile, },
-  // { path: '/result-detail/:resultId', component: ResultDetail, },
-  // { path: '/result/', component: Result, },
   // { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
   // { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
-  // { path: '/course/:id', component: CourseDetail },
+  // { path: '/result/', component: Result, },
+  // { path: '/result-detail/:resultId', component: ResultDetail, },
+  // { path: '/flashcards/:idList', component: FlashcardList, },
+  // { path: '/user', component: Profile, }
+];
+const protectedRouter: Route[] = [
+  { path: '/flashcards/:idList', component: FlashcardList, },
+  { path: '/user', component: Profile, },
+  { path: '/result-detail/:resultId', component: ResultDetail, },
+  { path: '/result/', component: Result, },
+  { path: '/lesson/:courseId/:lessonId', component: LessonDetail, layout: NotNewsLayout },
+  { path: '/exam/questions/:idExam', component: QuestionExam, layout: NotNewsLayout },
 ];
 const privateRoutes: Route[] = [
   { path: '/admin', component: Dashboard, layout: AdminLayout },

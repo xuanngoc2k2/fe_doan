@@ -55,7 +55,12 @@ function App() {
                 <Route
                   key={index}
                   path={route.path}
-                  element={<ProtectedRouteUser><Layout><Page /></Layout></ProtectedRouteUser>} // Bọc Page trong Layout
+                  element={
+                    <ProtectedRouteUser>
+                      <Layout>
+                        <Page />
+                      </Layout>
+                    </ProtectedRouteUser>}
                 />
               );
             })}
