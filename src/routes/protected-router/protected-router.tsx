@@ -6,9 +6,9 @@ import Loading from "./loading";
 const ProtectedRouteUser = ({ children }: { children: React.ReactNode }) => {
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
     const isLoading = useAppSelector(state => state.account.isLoading)
-    useEffect(() => {
-        console.log(isAuthenticated)
-    }, [isAuthenticated])
+    // useEffect(() => {
+    //     console.log(isAuthenticated)
+    // }, [isAuthenticated])
     useEffect(() => {
         console.log(isAuthenticated);
     }, [isAuthenticated]);

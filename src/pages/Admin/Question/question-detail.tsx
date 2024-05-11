@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getDetailQuestion, updateGroupQuestion } from "../../../apis";
+import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getAnswer, getDetailQuestion, updateGroupQuestion } from "../../../apis";
 import { Button, Form, GetProp, Input, message, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-// import ModalAnswer from "./modal-answer";
+import ModalAnswer from "./modal-answer";
+import './question.scss';
 
 const QuestionDetail: React.FC = () => {
     const { id } = useParams();
@@ -17,9 +18,10 @@ const QuestionDetail: React.FC = () => {
     const [dataQuestion, setDataQuestion] = useState<IQuestion[] | []>([CreateNewQuestion as IQuestion]);
     const [addNew, setAddNew] = useState(false);
     const [editGr, setEditGr] = useState(false);
+    const [open, setOpen] = useState(false);
     const [fileAudio, setFileAudio] = useState<UploadFile>();
     const [fileImage, setFileImage] = useState<UploadFile | null>();
-    // const [showModalAnswer, setShowModalAnswer] = useState(0);
+    const [dataEditAnswer, setDataEditAnswer] = useState<IAnswer | null>();
     const [form] = Form.useForm();
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -195,10 +197,36 @@ const QuestionDetail: React.FC = () => {
             notification.error({ message: String(error) })
         }
     }
-    // const handleEditAnswer = (id: number) => {
-    //     setShowModalAnswer(id);
-    // }
+    const handleCancel = () => {
+        setOpen(false);
+    }
+    const handleEditAnswer = async (id: number) => {
+        setOpen(true)
+        try {
+            const res = await getAnswer(id);
+            if (res && res.data) {
+                setDataEditAnswer(res.data);
+            }
+        }
+        catch {
+            console.log("lỗi")
+        }
+    }
     // const disable = (!addNew && editGr) ? true : false;
+    const handleChangeAnswerIsTrue = (value: number) => {
+        const answers = question?.answers.map((answer) => {
+            if (answer.id == value) {
+                return { ...answer, is_true: true }
+            }
+            else return { ...answer, is_true: false }
+        }) as IAnswer[];
+        setQuestion((prev) => {
+            return {
+                ...prev!, answers: answers
+            }
+        })
+        console.log(question, value);
+    }
     return (<>
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
             <div
@@ -620,7 +648,7 @@ const QuestionDetail: React.FC = () => {
                                     <h3>※{question?.group_question?.description}</h3>
                                     <p>※{question?.group_question?.content}</p>
                                 </>}
-                            <img src={`${backEndUrl}/images/question/${question?.group_question?.image}`} alt='question' />
+                            {question?.group_question?.image && <img src={`${backEndUrl}/images/question/${question?.group_question?.image}`} alt='question' />}
                         </div>
                         <div className='question'>
                             <section key={question?.id}>
@@ -628,54 +656,74 @@ const QuestionDetail: React.FC = () => {
                                     <h3>Câu hỏi: {question?.question}</h3>
                                 </div>
                                 <div >
-                                    {question?.answers.map((answer) => {
-                                        return (
-                                            <div style={{
-                                                display: 'flex',
-                                                padding: 10,
-                                                paddingLeft: 30,
-                                                margin: 5,
-                                                justifyContent: 'space-between',
-                                                border: '1px solid #ccc',
-                                                borderColor: answer.is_true ? '#b7eb8f' : '#ccc',
-                                                backgroundColor: answer.is_true ? '#f6ffed' : '',
-                                                color: answer.is_true ? '#389e0d' : ''
-                                            }}>
-                                                {answer.isImage ? <img width={150} src={backEndUrl + '/images/question/' + answer.answer} /> : <h3>{answer.answer}</h3>}
-                                                <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
-                                                    <Space>
-                                                        <EditOutlined
-                                                            style={{
-                                                                fontSize: 20,
-                                                                color: '#ffa500',
-                                                            }}
-                                                            onClick={() => {
-                                                                // handleEditAnswer(answer.id);
-                                                            }}
-                                                        />
-                                                        <Popconfirm
-                                                            placement="leftTop"
-                                                            title={"Xác nhận xóa bài học"}
-                                                            description={"Bạn có chắc chắn muốn xóa bài học này ?"}
-                                                            // onConfirm={() => handleDeleteLesson(record.id)}
-                                                            okText="Xác nhận"
-                                                            cancelText="Hủy"
-                                                        >
-                                                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                                                <DeleteOutlined
+
+                                    <Radio.Group
+                                        style={{ width: '100%' }}
+                                        defaultValue={
+                                            question?.answers.find((a) => a.is_true)?.id
+                                        }
+                                    >
+                                        {question?.answers.map((answer) => {
+                                            return (
+                                                <>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        padding: 10,
+                                                        paddingLeft: 30,
+                                                        margin: 5,
+                                                        justifyContent: 'space-between',
+                                                        border: '1px solid #ccc',
+                                                        borderColor: answer.is_true ? '#b7eb8f' : '#ccc',
+                                                        backgroundColor: answer.is_true ? '#f6ffed' : '',
+                                                        color: answer.is_true ? '#389e0d' : ''
+                                                    }}>
+                                                        <div style={{ width: '80%', fontSize: 14, display: 'flex', alignItems: 'center' }}>
+                                                            {answer.isImage ? <img width={150} src={backEndUrl + '/images/question/' + answer.answer} /> :
+                                                                <h3 >{answer.answer}</h3>}</div>
+                                                        <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
+                                                            <Space>
+                                                                <EditOutlined
                                                                     style={{
                                                                         fontSize: 20,
-                                                                        color: '#ff4d4f',
+                                                                        color: '#ffa500',
+                                                                    }}
+                                                                    onClick={() => {
+                                                                        handleEditAnswer(answer.id);
                                                                     }}
                                                                 />
-                                                            </span>
-                                                        </Popconfirm>
-                                                    </Space>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
+                                                                <Popconfirm
+                                                                    placement="leftTop"
+                                                                    title={"Xác nhận xóa đáp án này"}
+                                                                    description={"Bạn có chắc chắn muốn xóa đáp án này ?"}
+                                                                    // onConfirm={() => handleDeleteLesson(record.id)}
+                                                                    okText="Xác nhận"
+                                                                    cancelText="Hủy"
+                                                                >
+                                                                    <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                                                        <DeleteOutlined
+                                                                            style={{
+                                                                                fontSize: 20,
+                                                                                color: '#ff4d4f',
+                                                                            }}
+                                                                        />
+                                                                    </span>
+                                                                </Popconfirm>
+                                                            </Space>
+                                                        </div>
+                                                        <Radio
+                                                            style={{ width: '5%', justifyContent: 'center' }}
+                                                            key={answer.id}
+                                                            value={answer.id}
+                                                            onChange={(value) => handleChangeAnswerIsTrue(value.target.value)}
+                                                        >
+                                                        </Radio>
+                                                    </div >
+                                                </>
+                                            )
+                                        })}
+                                    </Radio.Group>
                                     <div
+                                        onClick={() => setOpen(true)}
                                         style={{
                                             cursor: 'pointer',
                                             display: 'flex',
@@ -690,7 +738,7 @@ const QuestionDetail: React.FC = () => {
                                 </div>
                             </section>
                         </div>
-                        {/* <ModalAnswer id={showModalAnswer} /> */}
+                        {open && <ModalAnswer data={dataEditAnswer} open={open} handleCancel={handleCancel} />}
                     </>
                 }
             </div >

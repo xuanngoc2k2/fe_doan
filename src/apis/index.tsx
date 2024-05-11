@@ -321,6 +321,14 @@ export const getDetailQuestionLesson = async (id: string) => {
     const { data } = await axios.post(`${backEndUrl}/question/detail/${id}`);
     return { data };
 }
+export const getAnswer = async (id: number) => {
+    const { data } = await axios.get(`${backEndUrl}/answer/${id}`);
+    return { data };
+}
+export const updateAnswer = async (id: number, answer: type.IAnswer) => {
+    const { data } = await axios.put(`${backEndUrl}/answer/${id}`, { answer });
+    return { data };
+}
 export const checkAnswerQuestion = async (idAns: number, idQues: number) => {
     const { data } = await axios.post(`${backEndUrl}/question/check`, { idAns, idQues });
     return { data };

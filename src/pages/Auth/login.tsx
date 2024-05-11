@@ -10,10 +10,12 @@ import { useAppSelector } from "../../redux/hook";
 import { useEffect } from "react";
 import { callLogin } from "../../apis";
 import { setUserLoginInfo } from "../../redux/slice/accountSlice";
+// import Loading from "../../routes/protected-router/loading";
 
 function Login() {
     const dispatch = useDispatch();
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
+    const isLoading = useAppSelector(state => state.account.isLoading)
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const callback = params?.get("callback");
@@ -22,7 +24,8 @@ function Login() {
             window.location.href = '/';
             // navigator('/')
         }
-    }, [])
+        console.log(isLoading)
+    }, [isAuthenticated])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
         const { username, password } = values;

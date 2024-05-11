@@ -51,6 +51,7 @@ export interface IAnswer {
     answer: string;
     is_true?: boolean;
     isImage?: boolean;
+    explain?: string;
 }
 export interface IResultDetail {
     resultId: number;
