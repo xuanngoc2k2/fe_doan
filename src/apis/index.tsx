@@ -325,8 +325,21 @@ export const getAnswer = async (id: number) => {
     const { data } = await axios.get(`${backEndUrl}/answer/${id}`);
     return { data };
 }
-export const updateAnswer = async (id: number, answer: type.IAnswer) => {
-    const { data } = await axios.put(`${backEndUrl}/answer/${id}`, { answer });
+export const updateAnswer = async (id: number, answerU: type.IAnswer) => {
+    const { answer, explain, isImage } = answerU;
+    const { data } = await axios.put(`${backEndUrl}/answer/${id}`, { answer, explain, isImage });
+    return { data };
+}
+export const addAnswer = async (answer: type.IAnswer, questionId: number) => {
+    const { data } = await axios.post(`${backEndUrl}/answer`, { ...answer, questionId, is_true: false });
+    return { data };
+}
+export const deleteAnswer = async (id: number) => {
+    const { data } = await axios.delete(`${backEndUrl}/answer/${id}`);
+    return { data };
+}
+export const updateQuestion = async (id: number, question: type.IQuestion) => {
+    const { data } = await axios.put(`${backEndUrl}/question/${id}`, { ...question });
     return { data };
 }
 export const checkAnswerQuestion = async (idAns: number, idQues: number) => {

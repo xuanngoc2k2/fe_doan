@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, getAllGroupQuestion, getAnswer, getDetailQuestion, updateGroupQuestion } from "../../../apis";
+import { backEndUrl, callUploadAudio, callUploadSingleFile, createNewQuestion, deleteAnswer, getAllGroupQuestion, getAnswer, getDetailQuestion, updateGroupQuestion, updateQuestion } from "../../../apis";
 import { Button, Form, GetProp, Input, message, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
@@ -83,31 +83,31 @@ const QuestionDetail: React.FC = () => {
         newFile.status = 'done';
         setFileAudio(newFile);
     };
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const res = await getAllGroupQuestion();
-                if (res && res.data) {
-                    setDataListGroupQuestion(res.data);
-                }
-                if (id != 'create-new') {
-                    const res = await getDetailQuestion(id!);
-                    if (res && res.data) {
-                        setQuestion(res.data)
-                    }
-                    else {
-                        notification.error({
-                            message: "Đã xảy ra lỗi lấy dữ liệu"
-                        })
-                    }
-                }
+    const fetch = async () => {
+        try {
+            const res = await getAllGroupQuestion();
+            if (res && res.data) {
+                setDataListGroupQuestion(res.data);
             }
-            catch (error) {
-                notification.error({
-                    message: String(error)
-                })
+            if (id != 'create-new') {
+                const res = await getDetailQuestion(id!);
+                if (res && res.data) {
+                    setQuestion(res.data)
+                }
+                else {
+                    notification.error({
+                        message: "Đã xảy ra lỗi lấy dữ liệu"
+                    })
+                }
             }
         }
+        catch (error) {
+            notification.error({
+                message: String(error)
+            })
+        }
+    }
+    useEffect(() => {
         fetch();
     }, [id, groupQuestion?.id])
     const handleSubmit = async () => {
@@ -199,18 +199,22 @@ const QuestionDetail: React.FC = () => {
     }
     const handleCancel = () => {
         setOpen(false);
+        setDataEditAnswer(null);
     }
     const handleEditAnswer = async (id: number) => {
-        setOpen(true)
         try {
             const res = await getAnswer(id);
             if (res && res.data) {
                 setDataEditAnswer(res.data);
             }
+            else {
+                setDataEditAnswer(null);
+            }
         }
         catch {
             console.log("lỗi")
         }
+        setOpen(true)
     }
     // const disable = (!addNew && editGr) ? true : false;
     const handleChangeAnswerIsTrue = (value: number) => {
@@ -225,7 +229,61 @@ const QuestionDetail: React.FC = () => {
                 ...prev!, answers: answers
             }
         })
-        console.log(question, value);
+    }
+    const handleSubmitAnswer = (an: IAnswer, isEdit: boolean) => {
+        let answers = question?.answers as IAnswer[];
+        if (isEdit) {
+            answers = question?.answers.map((answer) => {
+                if (answer.id == an.id) {
+                    return { ...an }
+                }
+                else return { ...answer }
+            }) as IAnswer[];
+        }
+        else {
+            answers = [...answers, { ...an } as IAnswer]
+        }
+        setQuestion((prev) => {
+            return {
+                ...prev!, answers: answers
+            }
+        })
+        fetch()
+    }
+    const handleDeleteAnswer = async (id: number) => {
+        const res = await deleteAnswer(id);
+        if (res && res.data) {
+            const updatedAnswers = question?.answers.filter(answer => answer.id !== id) || [];
+            setQuestion(prev => ({
+                ...prev!,
+                answers: updatedAnswers
+            }));
+            notification.success({ message: "Xóa thành công" })
+        }
+        else {
+            console.log("Lỗi")
+        }
+    }
+    const [form2] = Form.useForm();
+    const [editQ, setEditQ] = useState(false);
+    const handleSetEditQuestion = () => {
+        form2.setFieldValue('question-edit', question?.question)
+        form2.setFieldValue('level', String(question?.level))
+        form2.setFieldValue('score', question?.score)
+        setEditQ(!editQ);
+    }
+    const handleEditQuestion = async () => {
+        if (question?.id) {
+            const res = await updateQuestion(question?.id, question);
+            if (res && res.data) {
+                notification.success({ message: "Cập nhật câu hỏi thành công" });
+                setEditQ(false)
+                fetch()
+            }
+            else {
+                notification.error({ message: "Cập nhật lỗi" })
+            }
+        }
     }
     return (<>
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
@@ -652,93 +710,149 @@ const QuestionDetail: React.FC = () => {
                         </div>
                         <div className='question'>
                             <section key={question?.id}>
-                                <div style={{ display: 'flex' }}>
-                                    <h3>Câu hỏi: {question?.question}</h3>
-                                </div>
-                                <div >
+                                <Form
+                                    form={form2}
+                                >
+                                    <div style={{ display: 'flex' }}>
+                                        <h3>Câu hỏi:</h3>
+                                        <Form.Item
+                                            name={'question-edit'}
+                                            style={{ width: '70%', marginBottom: 0, display: !editQ ? 'none' : '' }}
 
-                                    <Radio.Group
-                                        style={{ width: '100%' }}
-                                        defaultValue={
-                                            question?.answers.find((a) => a.is_true)?.id
-                                        }
-                                    >
-                                        {question?.answers.map((answer) => {
-                                            return (
-                                                <>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        padding: 10,
-                                                        paddingLeft: 30,
-                                                        margin: 5,
-                                                        justifyContent: 'space-between',
-                                                        border: '1px solid #ccc',
-                                                        borderColor: answer.is_true ? '#b7eb8f' : '#ccc',
-                                                        backgroundColor: answer.is_true ? '#f6ffed' : '',
-                                                        color: answer.is_true ? '#389e0d' : ''
-                                                    }}>
-                                                        <div style={{ width: '80%', fontSize: 14, display: 'flex', alignItems: 'center' }}>
-                                                            {answer.isImage ? <img width={150} src={backEndUrl + '/images/question/' + answer.answer} /> :
-                                                                <h3 >{answer.answer}</h3>}</div>
-                                                        <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
-                                                            <Space>
-                                                                <EditOutlined
-                                                                    style={{
-                                                                        fontSize: 20,
-                                                                        color: '#ffa500',
-                                                                    }}
-                                                                    onClick={() => {
-                                                                        handleEditAnswer(answer.id);
-                                                                    }}
-                                                                />
-                                                                <Popconfirm
-                                                                    placement="leftTop"
-                                                                    title={"Xác nhận xóa đáp án này"}
-                                                                    description={"Bạn có chắc chắn muốn xóa đáp án này ?"}
-                                                                    // onConfirm={() => handleDeleteLesson(record.id)}
-                                                                    okText="Xác nhận"
-                                                                    cancelText="Hủy"
-                                                                >
-                                                                    <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                                                        <DeleteOutlined
-                                                                            style={{
-                                                                                fontSize: 20,
-                                                                                color: '#ff4d4f',
-                                                                            }}
-                                                                        />
-                                                                    </span>
-                                                                </Popconfirm>
-                                                            </Space>
-                                                        </div>
-                                                        <Radio
-                                                            style={{ width: '5%', justifyContent: 'center' }}
-                                                            key={answer.id}
-                                                            value={answer.id}
-                                                            onChange={(value) => handleChangeAnswerIsTrue(value.target.value)}
-                                                        >
-                                                        </Radio>
-                                                    </div >
-                                                </>
-                                            )
-                                        })}
-                                    </Radio.Group>
-                                    <div
-                                        onClick={() => setOpen(true)}
-                                        style={{
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            padding: 10,
-                                            paddingLeft: 30,
-                                            margin: 5,
-                                            justifyContent: 'space-between',
-                                            border: '1px solid #ccc',
-                                        }}>
-                                        <h3><PlusOutlined /> Thêm câu trả lời</h3>
+                                        >
+                                            <Input
+                                                onChange={(e) => setQuestion((prev) => ({ ...prev!, question: e.target.value }))}
+                                                value={question?.question}
+                                                name="question-edit" />
+                                        </Form.Item>
+                                        <Space.Compact
+                                            style={{ width: '20%', marginBottom: 0, display: !editQ ? 'none' : '' }}
+                                        >
+                                            <Form.Item
+                                                name={['level']}
+                                                noStyle
+                                            >
+                                                <Select
+                                                    value={question?.level}
+                                                    onChange={(value) => setQuestion((prev) => ({ ...prev!, level: Number(value) }))}
+                                                    placeholder="Chọn cấp độ">
+                                                    <Option value="1">TOPIK 1</Option>
+                                                    <Option value="2">TOPIK 2</Option>
+                                                    <Option value="3">TOPIK 3</Option>
+                                                    <Option value="4">TOPIK 4</Option>
+                                                    <Option value="5">TOPIK 5</Option>
+                                                    <Option value="6">TOPIK 6</Option>
+                                                </Select>
+
+                                            </Form.Item>
+                                            <Form.Item
+                                                name={['score']}
+                                                noStyle
+                                            >
+                                                <Input value={question?.score} onChange={(e) => setQuestion((prev) => ({ ...prev!, score: Number(e.target.value) }))} type="number" placeholder="Nhập điểm" />
+                                            </Form.Item>
+                                        </Space.Compact>
+                                        <h3 style={{ display: editQ ? 'none' : '' }}> {question?.question} (TOPIK {question?.level}) [{question?.score} 점]</h3>
+                                        <EditOutlined
+                                            style={{
+                                                fontSize: 20,
+                                                color: '#ffa500',
+                                            }}
+                                            onClick={handleSetEditQuestion} />
                                     </div>
-                                </div>
+                                    <div >
+
+                                        <Radio.Group
+                                            style={{ width: '100%' }}
+                                            defaultValue={
+                                                question?.answers.find((a) => a.is_true)?.id
+                                            }
+                                        >
+                                            {question?.answers.map((answer) => {
+                                                return (
+                                                    <>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            padding: 10,
+                                                            paddingLeft: 30,
+                                                            margin: 5,
+                                                            justifyContent: 'space-between',
+                                                            border: '1px solid #ccc',
+                                                            borderColor: answer.is_true ? '#b7eb8f' : '#ccc',
+                                                            backgroundColor: answer.is_true ? '#f6ffed' : '',
+                                                            color: answer.is_true ? '#389e0d' : ''
+                                                        }}>
+                                                            <div style={{ width: '80%', fontSize: 14, display: 'flex', alignItems: 'center' }}>
+                                                                {answer.isImage ? <img width={150} src={backEndUrl + '/images/answer/' + answer.answer} /> :
+                                                                    <h3 >{answer.answer}</h3>}</div>
+                                                            <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
+                                                                <Space>
+                                                                    <EditOutlined
+                                                                        style={{
+                                                                            fontSize: 20,
+                                                                            color: '#ffa500',
+                                                                        }}
+                                                                        onClick={() => {
+                                                                            handleEditAnswer(answer.id);
+                                                                        }}
+                                                                    />
+
+                                                                    {!answer.is_true && <Popconfirm
+                                                                        placement="leftTop"
+                                                                        title={"Xác nhận xóa đáp án này"}
+                                                                        description={"Bạn có chắc chắn muốn xóa đáp án này ?"}
+                                                                        onConfirm={() => handleDeleteAnswer(answer.id)}
+                                                                        okText="Xác nhận"
+                                                                        cancelText="Hủy"
+                                                                    >
+                                                                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                                                            <DeleteOutlined
+                                                                                style={{
+                                                                                    fontSize: 20,
+                                                                                    color: '#ff4d4f',
+                                                                                }}
+                                                                            />
+                                                                        </span>
+                                                                    </Popconfirm>}
+                                                                </Space>
+                                                            </div>
+                                                            <Radio
+                                                                checked={answer.is_true}
+                                                                style={{ width: '5%', justifyContent: 'center' }}
+                                                                key={answer.id}
+                                                                value={answer.id}
+                                                                onChange={(value) => handleChangeAnswerIsTrue(value.target.value)}
+                                                            >
+                                                            </Radio>
+                                                        </div >
+                                                    </>
+                                                )
+                                            })}
+                                        </Radio.Group>
+                                        <div
+                                            onClick={() => setOpen(true)}
+                                            style={{
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                padding: 10,
+                                                paddingLeft: 30,
+                                                margin: 5,
+                                                justifyContent: 'space-between',
+                                                border: '1px solid #ccc',
+                                            }}>
+                                            <h3><PlusOutlined /> Thêm câu trả lời</h3>
+                                        </div>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button onClick={handleEditQuestion} type="primary" htmlType="submit">Lưu</Button>
+                                    </div>
+                                </Form>
                             </section>
                         </div>
-                        {open && <ModalAnswer data={dataEditAnswer} open={open} handleCancel={handleCancel} />}
+                        {open && <ModalAnswer
+                            id={question?.id}
+                            handleSubmitAnswer={handleSubmitAnswer}
+                            data={dataEditAnswer} open={open} handleCancel={handleCancel} />}
                     </>
                 }
             </div >
