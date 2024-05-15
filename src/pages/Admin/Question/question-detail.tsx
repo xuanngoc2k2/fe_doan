@@ -127,6 +127,8 @@ const QuestionDetail: React.FC = () => {
                     });
                     setDataQuestion([{ ...CreateNewQuestion } as IQuestion]);
                     setGroupQuestion(null);
+                    fetch();
+                    form.resetFields();
                 }
                 else {
                     notification.error({
@@ -318,9 +320,9 @@ const QuestionDetail: React.FC = () => {
                                     label="Nhóm câu hỏi"
                                     style={{ minWidth: 350, width: '80%' }}
                                 >
-                                    {addNew || editGr ? <Input
+                                    {addNew || editGr ? <Input.TextArea
                                         name="group_question"
-                                        placeholder="Nhập tên nhóm câu hỏi"
+                                        placeholder="Nhập nhóm câu hỏi"
                                         value={groupQuestion?.content}
                                         allowClear
                                         onChange={(e) => {
@@ -339,7 +341,7 @@ const QuestionDetail: React.FC = () => {
                                             placeholder="Chọn nhóm câu hỏi">
                                             {dataListGroupQuestion.map((groupQuestion) => {
                                                 return (
-                                                    <Select.Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Select.Option>
+                                                    <Select.Option value={`${groupQuestion.id}`} title={groupQuestion.content}>{groupQuestion.content}</Select.Option>
                                                 )
                                             })}
                                         </Select>}
@@ -415,7 +417,7 @@ const QuestionDetail: React.FC = () => {
                             </Form.Item>}
                             <Form.Item
                                 name={'des_groupquestion'}
-                                rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
+                                // rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
                                 label="Mô tả">
                                 <Input.TextArea
                                     disabled={(!addNew && !editGr)}

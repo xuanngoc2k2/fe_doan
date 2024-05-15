@@ -25,13 +25,13 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const [isLoading, setIsLoading] = useState(true);
     const [dataLesson, setDataLesson] = useState<ILesson | undefined>();
     const [isVideo, setIsVideo] = useState(data ? data.isQuestion ? false : true : true);
-    const [isReading, setIsReading] = useState(true);
+    const [audio, setAudio] = useState();
     const [groupQuestion, setGroupQuestion] = useState<IGroupQuestion[] | []>([]);
     const [idGroup, setIdGroup] = useState(0);
     const [form] = Form.useForm();
     const [listQuestion, setListQuestion] = useState<IQuestion[] | []>([]);
     const [fileListVideo, setFileListVideo] = useState<UploadFile[]>(
-        data?.isQuestion != null ? [
+        (data && !data?.isQuestion) ? [
             {
                 uid: '-1',
                 name: data.content,
@@ -113,8 +113,10 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     useEffect(() => {
         if (data) {
             setDataLesson(data)
-            const idGroup = data.question.group_question?.id;
-            setIdGroup(Number(idGroup));
+            if (data.isQuestion) {
+                const idGroup = data.question.group_question?.id;
+                setIdGroup(Number(idGroup));
+            }
         }
         try {
             const fetch = async () => {
@@ -130,7 +132,8 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 if (idGroup) {
                     const res = await getAllQuestionByGroupQuestion(idGroup)
                     if (res && res.data) {
-                        setListQuestion(res.data[0].questions);
+                        setListQuestion(res.data.questions);
+                        setAudio(res.data.audio);
                     }
                     else {
                         notification.error({
@@ -225,9 +228,9 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
         });
         setIsVideo(b);
     }
-    const handleChangeTypeQuestion = (b: boolean) => {
-        setIsReading(b);
-    }
+    // const handleChangeTypeQuestion = (b: boolean) => {
+    //     setIsReading(b);
+    // }
     const handleSetOrder = async (index: number) => {
         const res = await getCourseWithLessons(index);
         if (res && res.data) {
@@ -290,8 +293,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                 }
                                 return { ...prev!, description: e.target.value };
                             });
-
-
                         }}
                         name='lesson_des'
                         value={dataLesson?.description} rows={2} />
@@ -337,7 +338,10 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                         <Switch onChange={handleChange} style={{ marginLeft: 20 }} checkedChildren="Video" unCheckedChildren="Câu hỏi"
                             defaultChecked={switchDefaultChecked}
                         />
-                        {!isVideo && <Switch onChange={handleChangeTypeQuestion} style={{ marginLeft: 20 }} checkedChildren="Reading" unCheckedChildren="Listening" defaultChecked />}
+                        {!isVideo && audio && <audio controls>
+                            <source src={`${backEndUrl}/audio/${audio}`} />
+                        </audio>}
+                        {/* {!isVideo && <Switch onChange={handleChangeTypeQuestion} style={{ marginLeft: 20 }} checkedChildren="Reading" unCheckedChildren="Listening" defaultChecked />} */}
                     </div>
                 )} valuePropName="fileListVideo"
                     name={data ? undefined : 'content'}
@@ -372,6 +376,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                     )}
                                 </Select>
                             </Form.Item>
+                            {/* {!isVideo} */}
                             {idGroup != 0 &&
                                 <Form.Item
                                     label="Câu hỏi"
@@ -418,7 +423,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     <Button onClick={handleSubmit} type="primary" htmlType="submit" >{!data ? 'Tạo mới' : 'Lưu'}</Button>
                     <Button onClick={handelCancel} style={{ marginLeft: 10 }}>Cancel</Button>
                 </Form.Item>
-            </Form>
+            </Form >
         </Modal >);
 }
 

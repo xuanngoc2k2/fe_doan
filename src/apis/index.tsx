@@ -61,6 +61,10 @@ export const getExamById = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/exams/${id}`);
     return { data };
 }
+export const adminGetListQuestionExam = async (id: number) => {
+    const { data } = await axios.post(`${backEndUrl}/exams/admin/${id}`);
+    return { data };
+}
 export const getListQuestionOfExam = async (id: number) => {
     const { data } = await axios.post(`${backEndUrl}/exams/question/${id} `, {});
     const examGrquestions = data.examGrquestions;
@@ -289,6 +293,7 @@ export const getAllQuestionByGroupQuestion = async (id: number) => {
     const { data } = await axios.get(`${backEndUrl}/group-question/question/${id}`);
     return { data }
 }
+// export const getQu
 export const createNewLesson = async (lesson: type.ILesson) => {
     const { data } = await axios.post(`${backEndUrl}/lesson`, lesson);
     return { data }
@@ -362,7 +367,10 @@ export const deleteExam = async (id: number) => {
     const { data } = await axios.delete(`${backEndUrl}/exams/${id}`);
     return { data };
 }
-
+export const updateExam = async (id: number, exam: type.IExam, questions: type.IQuestion[]) => {
+    const { data } = await axios.put(`${backEndUrl}/exams/${id}`, { exam, questions });
+    return { data };
+}
 export const getExamByType = async (type: string) => {
     const { data } = await axios.post(`${backEndUrl}/exams/type`, { type });
     return { data };

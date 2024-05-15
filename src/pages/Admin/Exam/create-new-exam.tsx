@@ -4,13 +4,13 @@ import { Button, Collapse, Form, GetProp, Input, notification, Popconfirm, Radio
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
 // import { callUploadAudio, callUploadSingleFile } from "../../../apis";
-import { CreateNewGroupQuestion, CreateNewQuestion, IAnswer, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
+import { CreateNewGroupQuestion, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
+import { DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-import { backEndUrl, createNewExam, getAllGroupQuestion, getExamById, getListQuestionOfExam } from "../../../apis";
+import { adminGetListQuestionExam, backEndUrl, createNewExam, getAllGroupQuestion, getAllQuestionByGroupQuestion, getExamById, getListQuestionOfExam, updateExam } from "../../../apis";
 import { DatePicker } from 'antd';
 import type { DatePickerProps, GetProps } from 'antd';
-
+import dayjs from 'dayjs';
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 const { RangePicker } = DatePicker;
@@ -36,17 +36,18 @@ const AdminExamDetail: React.FC = () => {
                     setDataListGroupQuestion(res.data);
                 }
                 if (id != 'create-new' && id != '' && !isNaN(Number(id))) {
-                    const resExam = await getExamById(id!);
+                    const resExam = await adminGetListQuestionExam(Number(id)!);
                     if (resExam && resExam.data) {
                         setExam(resExam.data)
+                        setGroupQuestions(resExam.data.examGrquestions)
                         form.setFieldValue('exam_name', resExam.data.exam_name)
                         form.setFieldValue('exam_duration', resExam.data.duration)
                         form.setFieldValue('exam_type', resExam.data.type)
                         form.setFieldValue('exam_desc', resExam.data.description)
-                    }
-                    const res = await getListQuestionOfExam(Number(id));
-                    if (res && res.listQuestion) {
-                        setGroupQuestions(res.listQuestion)
+                        form.setFieldValue('group_question-0', resExam.data.examGrquestions[0].content)
+                        form.setFieldValue('type_question_0', resExam.data.examGrquestions[0].type)
+                        form.setFieldValue('des_groupquestion_0', resExam.data.examGrquestions[0].description)
+                        form.setFieldValue('exam_date', [dayjs(resExam.data.startAt), dayjs(res.data.endAt)]);
                     }
                 }
                 // else {
@@ -129,13 +130,28 @@ const AdminExamDetail: React.FC = () => {
         form.setFieldValue(`group_question-${indexGr}`, null);
         console.log(groupQuestions)
     };
-    const handleReset = (indexGr: number) => {
-        setAddNew((prev) => {
-            const updatedAddNew = prev.map((value, index) => {
-                return index === indexGr ? false : value;
+    const handleReset = async (idGroup: number) => {
+        const res = await getAllQuestionByGroupQuestion(idGroup);
+        if (res.data.questions) {
+            setGroupQuestions((prev) => {
+                const updatedGroupQuestions = prev.map((group) => {
+                    if (group.id === idGroup) {
+                        return {
+                            ...group,
+                            questions: res.data.questions, // giả sử `res.questions` chứa danh sách câu hỏi mới
+                        };
+                    }
+                    return group;
+                });
+                return updatedGroupQuestions;
             });
-            return updatedAddNew;
-        });
+        }
+        // setAddNew((prev) => {
+        //     const updatedAddNew = prev.map((value, index) => {
+        //         return index === indexGr ? false : value;
+        //     });
+        //     return updatedAddNew;
+        // });
     }
     const handleRemoveGr = (indexGr: number) => {
         if (indexGr == 0) {
@@ -165,19 +181,26 @@ const AdminExamDetail: React.FC = () => {
         })
     }
     const handleSubmit = async () => {
+        if (id != 'create-new' && id != '' && !isNaN(Number(id)) && exam) {
+            const listQuestion: IQuestion[] = groupQuestions.flatMap(groupQuestion => groupQuestion.questions);
+            const examData = {
+                exam_name: exam.exam_name,
+                duration: exam.duration,
+                type: exam.type,
+                description: exam.description,
+                id: exam.id,
+                startAt: exam.startAt,
+                endAt: exam.endAt,
+            };
+            const res = await updateExam(Number(id), examData as IExam, listQuestion);
+            if (res && res.data) {
+                notification.success({ message: "Cập nhật thành công" })
+                return
+            }
+        }
         if (exam && groupQuestions.length) {
             try {
                 const listQuestion: IQuestion[] = groupQuestions.flatMap(groupQuestion => groupQuestion.questions);
-                console.log(listQuestion)
-                // const res = await createNewExam(exam, groupQuestions);
-                // if (res && res.data) {
-                //     notification.success({
-                //         message: "Thêm thành công"
-                //     })
-                // }
-                // else {
-                //     notification.error({ message: "Đã xảy ra lỗi!" })
-                // }
                 const res = await createNewExam(exam, listQuestion);
                 if (res && res.data) {
                     notification.success({
@@ -296,62 +319,59 @@ const AdminExamDetail: React.FC = () => {
                             rows={2} />
                     </Form.Item>
                     {groupQuestions.map((groupQuestion, indexGr) => {
+                        const isAlreadySelected = (id: number) => groupQuestions.some(gq => gq.id === id);
                         return (
-
                             <div style={{ position: 'relative', padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>
                                 <MinusOutlined onClick={() => { handleRemoveGr(indexGr) }} />
                                 <div key={indexGr} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Form.Item
-                                        initialValue={String(groupQuestion.id)}
+                                        initialValue={groupQuestion.id ? String(groupQuestion.content) : ''}
                                         rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                         name={`group_question-${indexGr}`}
                                         label="Nhóm câu hỏi"
-                                        style={{ minWidth: 350, width: '80%' }}
+                                        style={{ minWidth: 350, width: '90%' }}
                                     >
                                         {addNew[indexGr] ? <Input
                                             placeholder="Nhập tên nhóm câu hỏi"
                                             allowClear />
                                             :
                                             <Select
-                                                allowClear
-                                                value={groupQuestion}
-                                                onChange={(value) => {
+                                                labelInValue
+                                                value={{ value: groupQuestion.id, label: groupQuestion.content }}
+                                                onChange={(selected) => {
                                                     setGroupQuestions((prev) => {
-                                                        const selectedGroupQuestion = dataListGroupQuestion.find((group) => group.id === Number(value));
+                                                        const selectedGroupQuestion = dataListGroupQuestion.find((group) => group.id === Number(selected.value));
                                                         if (selectedGroupQuestion) {
                                                             const updatedGroupQuestions = [...prev];
                                                             updatedGroupQuestions[indexGr] = selectedGroupQuestion;
-                                                            form.setFieldValue(`type_question_${indexGr}`, updatedGroupQuestions[indexGr].type)
-                                                            form.setFieldValue(`des_groupquestion_${indexGr}`, updatedGroupQuestions[indexGr].description)
+                                                            form.setFieldValue(`type_question_${indexGr}`, updatedGroupQuestions[indexGr].type);
+                                                            form.setFieldValue(`des_groupquestion_${indexGr}`, updatedGroupQuestions[indexGr].description);
                                                             return updatedGroupQuestions;
                                                         }
                                                         return prev;
-                                                    })
+                                                    });
                                                 }}
-                                                placeholder="Chọn nhóm câu hỏi">
-                                                {dataListGroupQuestion.map((groupQuestion) => {
-                                                    return (
-                                                        <Select.Option value={`${groupQuestion.id}`}>{groupQuestion.content}</Select.Option>
-                                                    )
-                                                })}
-                                            </Select>}
+                                                placeholder="Chọn nhóm câu hỏi"
+                                            >
+                                                {dataListGroupQuestion.map((g) =>
+                                                    !isAlreadySelected(g.id) ? (
+                                                        <Select.Option key={g.id} value={`${g.id}`}>
+                                                            {g.content}
+                                                        </Select.Option>
+                                                    ) : null
+                                                )}
+                                            </Select>
+                                        }
                                     </Form.Item>
                                     <div style={{ fontSize: 20, marginLeft: 10, marginRight: 10, display: 'flex', height: 32 }}>
-                                        <RedoOutlined onClick={() => handleReset(indexGr)} />
+                                        <RedoOutlined onClick={() => handleReset(groupQuestion.id)} />
                                     </div>
-                                    {!groupQuestion.content &&
-                                        <Button
-                                            onClick={() => handleAddNew(indexGr)}
-                                            style={{ marginRight: 20, width: '15%' }}
-                                            icon={<PlusOutlined />}
-                                            type="primary">
-                                            Thêm mới nhóm câu hỏi
-                                        </Button>}
                                 </div >
                                 <div style={{ display: 'flex' }}>
                                     <Form.Item
                                         label="Loại nhóm câu hỏi"
                                         name={`type_question_${indexGr}`}
+                                        initialValue={groupQuestion.type ? String(groupQuestion.type) : undefined}
                                         rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                     >
                                         <Select
@@ -369,23 +389,13 @@ const AdminExamDetail: React.FC = () => {
                                         <Form.Item
                                             getValueFromEvent={normFile}
                                             style={{ marginLeft: 20 }}
-                                            rules={[{ required: true, message: 'File nghe không được để trống!' }]}
+                                            // rules={[{ required: true, message: 'File nghe không được để trống!' }]}
                                             label="File nghe"
                                             name={'audio'}
                                         >
                                             <audio controls>
                                                 <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
                                             </audio>
-                                            {/* <Upload
-                                                onChange={onChangeUploadAudio}
-                                                disabled={(!addNew[indexGr])}
-                                                name="audio"
-                                                maxCount={1}
-                                            >
-                                                <Button type="primary">
-                                                    <div><PlusOutlined /> Upload</div>
-                                                </Button>
-                                            </Upload> */}
                                         </Form.Item>
                                     }
                                 </div>
@@ -415,7 +425,7 @@ const AdminExamDetail: React.FC = () => {
                                 }
                                 <Form.Item
                                     name={`des_groupquestion_${indexGr}`}
-                                    rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
+                                    // rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
                                     label="Mô tả">
                                     <Input.TextArea
                                         disabled={(!addNew[indexGr])}
@@ -456,7 +466,7 @@ const AdminExamDetail: React.FC = () => {
                                                                                 backgroundColor: answer.is_true ? '#f6ffed' : '',
                                                                                 color: answer.is_true ? '#389e0d' : ''
                                                                             }}>
-                                                                                {answer.isImage ? <img width={150} src={backEndUrl + '/images/question/' + answer.answer} /> : <h3>{answer.answer}</h3>}
+                                                                                {answer.isImage ? <img width={150} src={backEndUrl + '/images/answer/' + answer.answer} /> : <h3>{answer.answer}</h3>}
                                                                                 <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
                                                                                     <Space>
                                                                                         <EditOutlined
@@ -489,18 +499,6 @@ const AdminExamDetail: React.FC = () => {
                                                                             </div>
                                                                         ))}
                                                                     </div>
-                                                                    <div
-                                                                        style={{
-                                                                            cursor: 'pointer',
-                                                                            display: 'flex',
-                                                                            padding: 10,
-                                                                            paddingLeft: 30,
-                                                                            margin: 5,
-                                                                            justifyContent: 'space-between',
-                                                                            border: '1px solid #ccc',
-                                                                        }}>
-                                                                        <h3><PlusOutlined /> Thêm câu trả lời</h3>
-                                                                    </div>
                                                                 </Collapse.Panel>
                                                             </Collapse>
                                                         </section>
@@ -515,7 +513,7 @@ const AdminExamDetail: React.FC = () => {
                     })}
                     <Button onClick={handleAddGroupQuestion}>Thêm mới nhóm câu hỏi</Button>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleSubmit} htmlType="submit" type="primary">Thêm</Button>
+                        <Button onClick={handleSubmit} htmlType="submit" type="primary">{(id != 'create-new' && id != '' && !isNaN(Number(id))) ? "Cập nhật" : "Thêm"}</Button>
                     </div>
                 </Form>
             </div>

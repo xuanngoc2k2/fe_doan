@@ -1,5 +1,5 @@
 import { BarChartOutlined } from "@ant-design/icons";
-import { Col, message, Row } from "antd";
+import { Col, message, Pagination, Row } from "antd";
 import './result.scss';
 import { useEffect, useState } from "react";
 import { getListResult } from "../../apis";
@@ -8,6 +8,16 @@ import { Link } from "react-router-dom";
 
 function Result() {
     const [listResult, setListResult] = useState<IResult[]>([])
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 8;
+    const indexOfLastCourse = currentPage * pageSize;
+    const indexOfFirstCourse = indexOfLastCourse - pageSize;
+    const currentResults = listResult.slice(indexOfFirstCourse, indexOfLastCourse);
+
+    // Xử lý sự kiện khi chuyển trang
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    }
     useEffect(() => {
         const fetch = async () => {
             try {
@@ -33,7 +43,7 @@ function Result() {
                 </Col>
             </Row>
             <Row>
-                {listResult.map((result) => {
+                {currentResults.map((result) => {
                     return (<>
                         <Col span={10} offset={4}>
                             <div className='result-container'>
@@ -54,6 +64,16 @@ function Result() {
                         </Col>
                     </>)
                 })}
+            </Row>
+            <Row>
+                <Col span={24} style={{ textAlign: 'center', margin: 50 }}>
+                    <Pagination
+                        current={currentPage}
+                        pageSize={pageSize}
+                        total={listResult.length}
+                        onChange={handlePageChange}
+                    />
+                </Col>
             </Row>
         </div>);
 }
