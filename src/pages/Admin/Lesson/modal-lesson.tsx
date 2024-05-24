@@ -9,13 +9,10 @@ import {
     backEndUrl,
     callUploadSingleFile,
     callUploadVideo,
-    createNewCourse,
     createNewLesson,
     getAllGroupQuestion,
     getAllQuestionByGroupQuestion,
-    getCourseDetail,
     getCourseWithLessons,
-    updateCourse,
     updateLesson,
 } from "../../../apis";
 
@@ -129,18 +126,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                         message: 'Đã xảy ra lỗi lấy dữ liệu group question'
                     })
                 }
-                if (idGroup) {
-                    const res = await getAllQuestionByGroupQuestion(idGroup)
-                    if (res && res.data) {
-                        setListQuestion(res.data.questions);
-                        setAudio(res.data.audio);
-                    }
-                    else {
-                        notification.error({
-                            message: 'Đã xảy ra lỗi lấy dữ liệu question'
-                        })
-                    }
-                }
             }
             fetch();
         }
@@ -149,12 +134,36 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 message: String(error)
             })
         }
+    }, [data])
+
+    useEffect(() => {
+        const fetch = async () => {
+            if (idGroup) {
+                const res = await getAllQuestionByGroupQuestion(idGroup)
+                setDataLesson((prev) => {
+                    return { ...prev!, isQuestion: true };
+                })
+                if (res && res.data) {
+                    setAudio(res.data.audio);
+                    setListQuestion(res.data.questions);
+                }
+                else {
+                    notification.error({
+                        message: 'Đã xảy ra lỗi lấy dữ liệu question'
+                    })
+                }
+            }
+        }
+        fetch();
     }, [idGroup])
     const handleSubmit = async () => {
         if (!data) {
             let newLesson = dataLesson; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
             if (fileList[0] && fileList[0].originFileObj) {
                 newLesson = await upLoadFile(fileList[0]) || newLesson;
+                if (newLesson?.thumbnail) {
+                    newLesson = { ...newLesson!, thumbnail: newLesson.thumbnail }
+                }
             }
             if (fileListVideo[0] && fileListVideo[0].originFileObj) {
                 const temp = await upLoadFile(fileListVideo[0], true) || newLesson;
@@ -173,7 +182,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     };
                 });
             }
-            console.log(newLesson)
             const res = await createNewLesson(newLesson!);
             if (res && res.data) {
                 notification.success({
@@ -194,17 +202,22 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 dataUpdateLesson = await upLoadFile(fileList[0]) || dataUpdateLesson; // Nếu upLoadFile trả về null, giữ nguyên userInfo
             }
             if (fileListVideo[0] && fileListVideo[0].originFileObj) {
-                dataUpdateLesson = await upLoadFile(fileListVideo[0], true) || dataUpdateLesson;
-                // const video = document.createElement('video');
-                // video.src = `${backEndUrl}/video/${dataLesson?.content}`;
-                // video.onloadedmetadata = function () {
-                //     const durationMinutes = Math.floor(video.duration / 60);
-                //     const durationSeconds = Math.floor(video.duration % 60);
-                //     const formattedDuration = `${durationMinutes}:${durationSeconds}`;
-                //     dataUpdateLesson = { ...dataUpdateLesson, duration: formattedDuration } as ILesson;
-                // };
+                const temp = await upLoadFile(fileListVideo[0], true) || dataUpdateLesson;
+                if (temp?.content) {
+                    dataUpdateLesson = { ...dataUpdateLesson!, content: temp.content }
+                }
+                const video = document.createElement('video');
+                video.src = `${backEndUrl}/video/${dataUpdateLesson?.content}`;
+                await new Promise<void>((resolve, reject) => {
+                    video.onloadedmetadata = function () {
+                        const durationMinutes = Math.floor(video.duration / 60);
+                        const durationSeconds = Math.floor(video.duration % 60);
+                        const formattedDuration = `${durationMinutes}:${durationSeconds}`;
+                        dataUpdateLesson = { ...dataUpdateLesson, duration: formattedDuration } as ILesson;
+                        resolve();
+                    };
+                });
             }
-            console.log(dataUpdateLesson)
             const res = await updateLesson(dataUpdateLesson!.id, dataUpdateLesson!);
             if (res && res.data) {
                 notification.success({
@@ -228,9 +241,6 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
         });
         setIsVideo(b);
     }
-    // const handleChangeTypeQuestion = (b: boolean) => {
-    //     setIsReading(b);
-    // }
     const handleSetOrder = async (index: number) => {
         const res = await getCourseWithLessons(index);
         if (res && res.data) {
@@ -369,6 +379,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                 <Select
                                     onChange={(value) => {
                                         setIdGroup(value);
+                                        form.setFieldValue('content', undefined)
                                     }}
                                     placeholder="Chọn nhóm câu hỏi">
                                     {groupQuestion.map((group) =>

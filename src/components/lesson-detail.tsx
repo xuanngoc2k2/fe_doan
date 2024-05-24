@@ -82,7 +82,7 @@ function LessonDetail() {
     const [showInputComment, setShowInputComment] = useState(false);
     const [listNote, setListNote] = useState<IComment[] | []>([]);
     const [isSelected, setIsSelected] = useState('');
-    const [answer, setAnswer] = useState<number>();
+    const [answer, setAnswer] = useState<string>();
     const [isTrue, setIsTrue] = useState<boolean | null>();
     const [listComment, setListComment] = useState<IComment[] | []>([]);
     const [totalWatchedTime, setTotalWatchedTime] = useState(0);
@@ -101,7 +101,12 @@ function LessonDetail() {
                             try {
                                 const res = await startCourse(Number(courseId));
                                 if (res && res.data) {
-                                    message.success("Đăng kí học thành công");
+                                    if (res.data.already == true) {
+                                        console.log();
+                                    }
+                                    else {
+                                        message.success("Đăng kí học thành công");
+                                    }
                                 }
                             }
                             catch (error) {
@@ -133,6 +138,8 @@ function LessonDetail() {
                         }
                     }
                 }
+                setAnswer('');
+                setIsTrue(null);
                 fetchListNote();
                 fetchListComment();
             }
@@ -340,14 +347,13 @@ function LessonDetail() {
         if (question?.id) {
             const res = await checkAnswerQuestion(answer!, question?.id)
             if (res) {
-                if (res.data == true && !lesson?.isComplete) {
+                if (res.data.isCorrect == true && !lesson?.isComplete) {
                     handleFinish()
                 }
-                setIsTrue(res.data);
+                setIsTrue(res.data.isCorrect);
             }
         }
     }
-
     return (
         <>
             <div className="lesson-detail-container">
@@ -394,21 +400,29 @@ function LessonDetail() {
                                 {/* return  */}
                                 <div>
                                     <h4>{question?.question}</h4>
-                                    <div>
-                                        {question?.answers.map((answer) => {
-                                            return (
-                                                <div onClick={() => {
-                                                    setIsTrue(null)
-                                                    setAnswer(answer.id);
-                                                    setIsSelected(answer.answer)
-                                                }}
-                                                    className={`question-lesson-asw ${isTrue} ${isSelected == answer.answer ? 'selected' : ''}`}
-                                                >
-                                                    {answer.isImage ? <img src={`${backEndUrl}/images/question/${answer.isImage}`} /> : <p>{answer.answer}</p>}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
+                                    {question?.type == 'fill' ? <div>
+                                        <Input
+                                            style={{ minWidth: 400 }}
+                                            className={`question-lesson-asw ${isTrue} selected`}
+                                            placeholder="Nhập câu trả lời" value={answer}
+                                            onChange={(e) => setAnswer(e.target.value)} />
+                                    </div> :
+                                        <div>
+                                            {question?.answers.map((answer) => {
+                                                return (
+                                                    <div onClick={() => {
+                                                        setIsTrue(null)
+                                                        setAnswer(answer.answer);
+                                                        setIsSelected(answer.answer)
+                                                    }}
+                                                        className={`question-lesson-asw ${isTrue} ${isSelected == answer.answer ? 'selected' : ''}`}
+                                                    >
+                                                        {answer.isImage ? <img width={150} src={`${backEndUrl}/images/answer/${answer.answer}`} /> : <p>{answer.answer}</p>}
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    }
                                     <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
                                         <Button onClick={handelSubmit} style={{ fontWeight: 600, width: 120, borderRadius: 30, color: '#d46b08', borderColor: '#ffd591', backgroundColor: '#fff7e6' }}>Trả lời</Button>
                                     </div>

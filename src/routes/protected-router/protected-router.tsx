@@ -10,7 +10,6 @@ const ProtectedRouteUser = ({ children }: { children: React.ReactNode }) => {
     //     console.log(isAuthenticated)
     // }, [isAuthenticated])
     useEffect(() => {
-        console.log(isAuthenticated);
     }, [isAuthenticated]);
 
     // Nếu isLoading là true, hiển thị một thông báo tải

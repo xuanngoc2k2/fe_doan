@@ -365,8 +365,8 @@ export const updateQuestion = async (id: number, question: type.IQuestion) => {
     const { data } = await axios.put(`${backEndUrl}/question/${id}`, { ...question });
     return { data };
 }
-export const checkAnswerQuestion = async (idAns: number, idQues: number) => {
-    const { data } = await axios.post(`${backEndUrl}/question/check`, { idAns, idQues });
+export const checkAnswerQuestion = async (answer: string, idQues: number) => {
+    const { data } = await axios.post(`${backEndUrl}/question/check`, { answer, idQues });
     return { data };
 }
 export const createNewQuestion = async (question: type.IQuestion[], group_question: type.IGroupQuestion) => {
