@@ -1,4 +1,4 @@
-import { Empty, Tag } from "antd";
+import { Empty, Popconfirm, Tag } from "antd";
 import { IVocabulary } from "../custom/type";
 import { DeleteOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import './styles/card-vocab-item.scss'
@@ -60,9 +60,21 @@ function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove
             <div className='vocab-image'>
                 {word.image !== null ? <img src={`${backEndUrl}/images/vocabulary/${word.image}`} /> : <Empty />}
             </div>
-            {handelRemove && <div onClick={() => handelRemove(Number(word.id))} className='btn-delete-vob'>
-                <DeleteOutlined />
-            </div>}
+            {handelRemove &&
+                <div className='btn-delete-vob'>
+                    <Popconfirm
+                        placement="leftTop"
+                        title={"Xác nhận xóa từ vựng"}
+                        description={"Bạn có chắc chắn muốn xóa từ vựng này ?"}
+                        onConfirm={() => handelRemove(Number(word.id))}
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                    >
+                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                            <DeleteOutlined />
+                        </span>
+                    </Popconfirm>
+                </div>}
         </div>
     </>);
 }

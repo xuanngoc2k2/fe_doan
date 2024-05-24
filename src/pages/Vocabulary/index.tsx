@@ -1,15 +1,15 @@
-import { Button, Col, Form, Input, message, Modal, Row } from "antd";
+import { Button, Col, Form, Input, message, Modal, notification, Row } from "antd";
 import CardVocab from "../../components/card-vocab-list";
 import './vocab.scss'
 import { useEffect, useState } from "react";
-import { getAllListVocab, getListVocabCourses, postNewList } from "../../apis";
-import { IListVocab } from "../../custom/type";
+import { deleteList, getAllListVocab, postNewList } from "../../apis";
+import { IListVocab, IListVocabDetail } from "../../custom/type";
 import { useAppSelector } from "../../redux/hook";
 function Vocabulary() {
     const [showModal, setShowModal] = useState(false);
-    const user = useAppSelector((state) => state.account.user);
+    const user = useAppSelector((state) => state.account?.user);
     const [newList, setNewList] = useState<IListVocab | null>(null);
-    const [listVocabs, setListVocabs] = useState([]);
+    const [listVocabs, setListVocabs] = useState<IListVocabDetail[] | []>([]);
     const handleShowModel = () => {
         setShowModal(true);
     }
@@ -44,18 +44,18 @@ function Vocabulary() {
     }
     const fetch = async () => {
         try {
-            if (user.id != 0) {
-                const res = await getAllListVocab();
-                if (res.data) {
-                    setListVocabs(res.data);
-                }
+            // if (user.id != 0) {
+            const res = await getAllListVocab();
+            if (res.data) {
+                setListVocabs(res.data);
             }
-            else {
-                const res = await getListVocabCourses();
-                if (res.data) {
-                    setListVocabs(res.data);
-                }
-            }
+            // }
+            // else {
+            //     const res = await getListVocabCourses();
+            //     if (res.data) {
+            //         setListVocabs(res.data);
+            //     }
+            // }
         }
         catch {
             alert("Lỗi lấy api")
@@ -63,7 +63,20 @@ function Vocabulary() {
     }
     useEffect(() => {
         fetch()
-    }, [])
+    }, [user.id])
+    const handleRemove = async (idList: number) => {
+        const isMine = listVocabs.find((list: IListVocabDetail) => list.id == idList);
+        if (isMine && !isMine.isMine) {
+            notification.error({ message: "Bạn không thể xóa list từ vựng này" });
+        }
+        else if (isMine && isMine.isMine) {
+            const res = await deleteList(idList + "");
+            if (res && res.data) {
+                fetch()
+                console.log(res.data);
+            }
+        }
+    }
     return (<>
         <Row>
             <Col span={8} offset={4}>
@@ -81,7 +94,7 @@ function Vocabulary() {
                     {/* } */}
                     {listVocabs.map((list) => {
                         return (
-                            <CardVocab data={list} />
+                            <CardVocab handleRemove={handleRemove} data={list} />
                         )
                     })}
                 </div>

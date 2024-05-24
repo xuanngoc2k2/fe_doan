@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { setLogoutAction } from "../../redux/slice/accountSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
-import { AppstoreOutlined, BookOutlined, BugOutlined, FontColorsOutlined, FormOutlined, HighlightOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, BookOutlined, BugOutlined, FontColorsOutlined, FormOutlined, HighlightOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, QuestionCircleOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import NotPermitted from "../../routes/protected-router/not-permitted";
 
@@ -63,6 +63,11 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
             label: <Link to={'/admin/exam'}>Exam</Link>,
             key: '/admin/exam',
             icon: <HighlightOutlined />
+        },
+        {
+            label: <Link to={'/admin/listvocab'}>List Vocabulary</Link>,
+            key: '/admin/listvocab',
+            icon: <UnorderedListOutlined />
         },
         {
             label: <Link to={'/admin/vocabulary'}>Vocabulary</Link>,

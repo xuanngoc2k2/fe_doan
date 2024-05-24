@@ -102,26 +102,38 @@ export const getResultQuestionDetail = async (resultId: number) => {
     const listQuestion = data;
     return { listQuestion }
 }
-export const getAllListVocab = async () => {
-    const { data } = await axios.get(`${backEndUrl}/list-vocab`);
-    // const duration = data.data.duration;
-    return { data }
-}
-
-export const getListVocabCourses = async () => {
-    const { data } = await axios.post(`${backEndUrl}/vocabularys/courses`);
-    // const duration = data.data.duration;
-    return { data }
+export const getAllListVocab = async (search?: string) => {
+    if (search) {
+        const { data } = await axios.get(`${backEndUrl}/list-vocab?search=${search}`);
+        // const duration = data.data.duration;
+        return { data }
+    }
+    else {
+        const { data } = await axios.get(`${backEndUrl}/list-vocab`);
+        // const duration = data.data.duration;
+        return { data }
+    }
 }
 
 export const postNewList = async (value: type.IListVocab) => {
     const { data } = await axios.post(`${backEndUrl}/list-vocab`, value);
-    // const duration = data.data.duration;
+    return { data }
+}
+export const updateListVocab = async (id: number, value: type.IListVocab) => {
+    const { data } = await axios.put(`${backEndUrl}/list-vocab/${id}`, value);
     return { data }
 }
 export const getVocabOfList = async (id: string) => {
     const { data } = await axios.get(`${backEndUrl}/list-vocab/${id}`);
-    // const duration = data.data.duration;
+    return { data }
+}
+
+export const deleteList = async (id: string) => {
+    const { data } = await axios.delete(`${backEndUrl}/list-vocab/${id}`);
+    return { data }
+}
+export const copyNewList = async (idList: string, name?: string, des?: string) => {
+    const { data } = await axios.post(`${backEndUrl}/list-vocab/copy`, { idList, name, des });
     return { data }
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,8 +197,8 @@ export const callUploadAudio = async (file: any, folderType: string) => {
     return 'Lỗi';
 }
 
-export const creatNewVocabOfList = async (idList: number, vocab: type.IVocabulary) => {
-    const { data } = await axios.post(`${backEndUrl}/user-vocabulary/${idList}`, vocab);
+export const creatNewVocabOfList = async (idList: number, vocabulary: type.IVocabulary) => {
+    const { data } = await axios.post(`${backEndUrl}/user-vocabulary`, { idList, vocabulary });
     // const duration = data.data.duration;
     return { data }
 }
@@ -206,6 +218,12 @@ export const getResultQuestionVocab = async (listAnswer: type.IQuestionVocab[]) 
     const { data } = await axios.post(`${backEndUrl}/vocabularys/checkResult`, listAnswer);
     return { data };
 }
+
+export const addVocabOfList = async (listVocab: type.IVocabulary[], idList: number) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/addVocabOfList`, { listVocab, idList });
+    return { data };
+}
+
 export const getInfoUser = async () => {
     const { data } = await axios.post(`${backEndUrl}/users/user`, {});
     return { data }
@@ -388,8 +406,8 @@ export const createNewExam = async (exam: type.IExam, questions: type.IQuestion[
     const { data } = await axios.post(`${backEndUrl}/exams`, { exam, questions });
     return { data };
 }
-export const getAllVocabulary = async (id?: number, word?: string, meaning?: string, level?: string[]) => {
-    const { data } = await axios.post(`${backEndUrl}/vocabularys/search`, { id, word, meaning, level });
+export const getAllVocabulary = async (id?: number, word?: string, meaning?: string, level?: string[], listId?: number) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/search`, { id, word, meaning, level, listId });
     return { data };
 }
 export const searchVocab = async (search: string) => {
@@ -433,8 +451,8 @@ export const deleteVocab = async (id: number) => {
     const { data } = await axios.delete(`${backEndUrl}/vocabularys/${id}`);
     return { data };
 }
-export const createNewVocab = async (newVocab: type.IVocabulary) => {
-    const { data } = await axios.post(`${backEndUrl}/vocabularys`, { ...newVocab });
+export const createNewVocab = async (newVocab: type.IVocabulary, idList?: number) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys`, { newVocab, idList });
     return { data };
 }
 export const getVocabById = async (id: number) => {
@@ -445,6 +463,12 @@ export const updateVocab = async (id: number, vocab: type.IVocabulary) => {
     const { data } = await axios.put(`${backEndUrl}/vocabularys/${id}`, { ...vocab });
     return { data };
 }
+
+export const getVocabNotOfList = async (idList: number, id?: number, word?: string, meaning?: string, level?: string[]) => {
+    const { data } = await axios.post(`${backEndUrl}/vocabularys/get-not-of-list`, { idList, id, word, meaning, level });
+    return { data };
+}
+
 export const getListVocabWithCourse = async () => {
     const { data } = await axios.post(`${backEndUrl}/user-vocabulary/course`, {});
     return { data };

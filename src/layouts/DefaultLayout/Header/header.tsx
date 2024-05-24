@@ -25,6 +25,9 @@ const Header: React.FC<IProps> = ({ children }) => {
         }
     }
     useEffect(() => {
+        if (user && user.role === 'ADMIN') {
+            navigate('/admin')
+        }
         // dispatch(fetchAccount())
     }, [isAuthenticated])
     // if (location == '/') {

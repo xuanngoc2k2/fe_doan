@@ -5,47 +5,55 @@ import { Button, Form, Input, message, notification, Popconfirm, Select, Space, 
 import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
-import { ICourse, IVocabulary } from "../../../custom/type";
-import { backEndUrl, callDeleteCourse, deleteVocab, getAllVocabulary, getCourseDetail, getListCourses, getListVocabWithCourse, getVocabById, searchCourse } from "../../../apis";
+import { IVocabulary } from "../../../custom/type";
+import { backEndUrl, deleteVocab, deleteVocabOfList, getAllVocabulary, getVocabById, getVocabOfList } from "../../../apis";
 import { ColumnType } from "antd/es/table";
-import ModalVocab from "./modal-vocab";
+import ModalVocab from "../Vocabulary/modal-vocab";
+import { useParams } from "react-router-dom";
+import ModalListVocab from "./modal-list-vocab";
 // import { ActionType } from '@ant-design/pro-components';
 
 
-const AdminVocabulary: React.FC = () => {
+const AdminListDetail: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState<{ word: string, id: number, meaning: string, level: string[] } | null>();
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [showModel, setShowModel] = useState(false);
+    const [showModelList, setShowModelList] = useState(false);
     const [dataFix, setDataFix] = useState<IVocabulary | null>();
     const [listVocab, setListVocab] = useState<IVocabulary[] | []>([]);
-    // const tableRef = useRef<ActionType>();
+    const { id } = useParams();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     const fetch = async () => {
         setLoading(true);
-        const rs = await getAllVocabulary();
-        if (rs && rs.data) {
-            setListVocab(rs.data)
-            setLoading(false);
-        }
-        else {
-            notification.error({
-                message: "Đã xảy ra lỗi!",
-                description:
-                    rs.data.message,
-                duration: 5
-            })
+        if (id) {
+            const res = await getVocabOfList(String(id));
+            if (res && res.data) {
+                const listVocabs = res.data.vocabs.map((vocab: { vocab: any; }) => {
+                    return vocab.vocab
+                })
+                setListVocab(listVocabs);
+                setLoading(false);
+            }
+            else {
+                notification.error({
+                    message: "Đã xảy ra lỗi!",
+                    description:
+                        res.data.message,
+                    duration: 5
+                })
+            }
         }
     }
     const handleDeleteVocab = async (_id: number | undefined) => {
         if (_id) {
-            const res = await deleteVocab(_id);
+            const res = await deleteVocabOfList(Number(id), _id);
             if (res && res.data) {
-                message.success('Xóa từ vựng thành công');
+                message.success('Xóa từ vựng khỏi danh sách thành công');
                 fetch();
             } else {
                 notification.error({
@@ -58,16 +66,16 @@ const AdminVocabulary: React.FC = () => {
 
     const handleResetSearch = () => {
         setSearch(null);
-        // setSearchLevel([])
+        fetch();
     }
 
     useEffect(() => {
         fetch();
     }, [])
     const handelSearch = async () => {
-        if (search) {
+        if (search?.id || search?.level.length || search?.meaning || search?.word) {
             setLoading(true);
-            const res = await getAllVocabulary(search.id, search.word, search.meaning, search.level);
+            const res = await getAllVocabulary(search.id, search.word, search.meaning, search.level, Number(id));
             if (res && res.data) {
                 setListVocab(res.data)
             }
@@ -157,16 +165,8 @@ const AdminVocabulary: React.FC = () => {
                 return <p dangerouslySetInnerHTML={{ __html: example }}></p>
             }
         },
-        // {
-        //     key: '7',
-        //     title: 'List',
-        //     dataIndex: 'course',
-        //     render: (course: ICourse) => {
-        //         return <p>{course ? course.course_name : ''}</p>
-        //     }
-        // },
         {
-            key: '8',
+            key: '7',
             title: 'Create at',
             dataIndex: 'createdAt',
             sorter: (a: IVocabulary, b: IVocabulary) => {
@@ -180,7 +180,7 @@ const AdminVocabulary: React.FC = () => {
             }
         },
         {
-            key: '9',
+            key: '8',
             title: 'Actions',
             align: 'center',
             render: (_: any, record: IVocabulary) => (
@@ -196,8 +196,8 @@ const AdminVocabulary: React.FC = () => {
                     />
                     <Popconfirm
                         placement="leftTop"
-                        title={"Xác nhận xóa từ vựng"}
-                        description={"Bạn có chắc chắn muốn xóa từ vựng này ?"}
+                        title={"Xác nhận xóa từ vựng khỏi danh sách"}
+                        description={"Bạn có chắc chắn muốn xóa từ vựng khỏi danh sách này ?"}
                         onConfirm={() => handleDeleteVocab(record.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -228,6 +228,10 @@ const AdminVocabulary: React.FC = () => {
     const handelCancel = () => {
         fetch();
         setShowModel(false);
+        setShowModelList(false)
+    }
+    const handleShowModelList = () => {
+        setShowModelList(true);
     }
     return (
         <>
@@ -244,7 +248,6 @@ const AdminVocabulary: React.FC = () => {
                 >
                     <div style={{ display: 'flex' }}>
                         <div>
-
                             <Form.Item
                                 label="Từ"
                             >
@@ -264,19 +267,6 @@ const AdminVocabulary: React.FC = () => {
                                     style={{ minWidth: 300 }} />
                             </Form.Item>
                         </div>
-                        {/* <Form.Item
-                            label="Khóa học"
-                            style={{ minWidth: 400, marginLeft: 20 }}
-                        >
-                            <Select
-                                onChange={(value) => setSearch((prev) => ({ ...prev!, id: value }))}
-                                placeholder="Chọn khóa học">
-                                {dataListCourse.map((course) => {
-                                    return (
-                                        <Select.Option value={course.id}>{course.course_name}</Select.Option>)
-                                })}
-                            </Select>
-                        </Form.Item> */}
                         <Form.Item
                             label="Level"
                             style={{ minWidth: 150, marginLeft: 20 }}
@@ -312,6 +302,7 @@ const AdminVocabulary: React.FC = () => {
                             <b>Danh sách từ vựng</b>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Button onClick={() => handleShowModel()} style={{ marginRight: 20 }} icon={<PlusOutlined />} type="primary">Thêm mới</Button>
+                                <Button onClick={() => handleShowModelList()} style={{ marginRight: 20 }} type="primary">Thêm từ danh sách</Button>
                                 <p onClick={fetch} style={{ cursor: 'pointer' }}><ReloadOutlined /></p>
                             </div>
                         </div>
@@ -336,8 +327,9 @@ const AdminVocabulary: React.FC = () => {
                     </div>
                 </div>
             </Content>
-            {showModel && <ModalVocab data={dataFix} handelCancel={handelCancel} open={showModel} />}
+            {showModel && <ModalVocab idList={Number(id)} data={dataFix} handelCancel={handelCancel} open={showModel} />}
+            {showModelList && <ModalListVocab idList={Number(id)} handelCancel={handelCancel} open={showModelList} />}
         </>
     )
 }
-export default AdminVocabulary
+export default AdminListDetail

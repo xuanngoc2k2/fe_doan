@@ -1,51 +1,52 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, InfoCircleOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, notification, Popconfirm, Select, Space, Table, Tag, theme } from "antd"
 import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
-import { ICourse, IVocabulary } from "../../../custom/type";
-import { backEndUrl, callDeleteCourse, deleteVocab, getAllVocabulary, getCourseDetail, getListCourses, getListVocabWithCourse, getVocabById, searchCourse } from "../../../apis";
+import { ICourse, IListVocabDetail, IVocabulary } from "../../../custom/type";
+import { backEndUrl, callDeleteCourse, deleteList, deleteVocab, getAllListVocab, getAllVocabulary, getCourseDetail, getListCourses, getListVocabWithCourse, getVocabById, searchCourse } from "../../../apis";
 import { ColumnType } from "antd/es/table";
-import ModalVocab from "./modal-vocab";
+import { useNavigate } from "react-router-dom";
+import ModalList from "./modal-list";
 // import { ActionType } from '@ant-design/pro-components';
 
 
-const AdminVocabulary: React.FC = () => {
+const AdminListVocab: React.FC = () => {
     const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState<{ word: string, id: number, meaning: string, level: string[] } | null>();
+    const [search, setSearch] = useState<string>();
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [showModel, setShowModel] = useState(false);
-    const [dataFix, setDataFix] = useState<IVocabulary | null>();
-    const [listVocab, setListVocab] = useState<IVocabulary[] | []>([]);
+    const [dataFix, setDataFix] = useState<IListVocabDetail | null>();
+    const [listVocab, setListVocab] = useState<IListVocabDetail[] | []>([]);
     // const tableRef = useRef<ActionType>();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
+    const navigator = useNavigate();
     const fetch = async () => {
         setLoading(true);
-        const rs = await getAllVocabulary();
-        if (rs && rs.data) {
-            setListVocab(rs.data)
+        const res = await getAllListVocab();
+        if (res && res.data) {
+            setListVocab(res.data);
             setLoading(false);
         }
         else {
             notification.error({
                 message: "Đã xảy ra lỗi!",
                 description:
-                    rs.data.message,
+                    res.data.message,
                 duration: 5
             })
         }
     }
-    const handleDeleteVocab = async (_id: number | undefined) => {
+    const handleDeleteListVocab = async (_id: number | undefined) => {
         if (_id) {
-            const res = await deleteVocab(_id);
+            const res = await deleteList(_id + '');
             if (res && res.data) {
-                message.success('Xóa từ vựng thành công');
+                message.success('Xóa danh sách từ vựng thành công');
                 fetch();
             } else {
                 notification.error({
@@ -57,7 +58,8 @@ const AdminVocabulary: React.FC = () => {
     }
 
     const handleResetSearch = () => {
-        setSearch(null);
+        setSearch('');
+        fetch();
         // setSearchLevel([])
     }
 
@@ -65,9 +67,9 @@ const AdminVocabulary: React.FC = () => {
         fetch();
     }, [])
     const handelSearch = async () => {
-        if (search) {
+        if (search?.trim() != '') {
             setLoading(true);
-            const res = await getAllVocabulary(search.id, search.word, search.meaning, search.level);
+            const res = await getAllListVocab(search);
             if (res && res.data) {
                 setListVocab(res.data)
             }
@@ -77,7 +79,7 @@ const AdminVocabulary: React.FC = () => {
             setLoading(false)
         }
     }
-    const columns: ColumnType<IVocabulary>[] = [
+    const columns: ColumnType<IListVocabDetail>[] = [
         {
             key: '1',
             align: 'center',
@@ -93,14 +95,14 @@ const AdminVocabulary: React.FC = () => {
         },
         {
             key: '2',
-            title: 'Từ',
+            title: 'Tên danh sách',
             width: 200,
-            dataIndex: 'word',
-            sorter: (a: IVocabulary, b: IVocabulary) => {
-                if (a.word! < b.word!) {
+            dataIndex: 'name',
+            sorter: (a: IListVocabDetail, b: IListVocabDetail) => {
+                if (a.name < b.name) {
                     return -1;
                 }
-                if (a.word! > b.word!) {
+                if (a.name > b.name) {
                     return 1;
                 }
                 return 0;
@@ -108,34 +110,19 @@ const AdminVocabulary: React.FC = () => {
         },
         {
             key: '3',
-            width: 200,
-            title: 'Định nghĩa',
-            dataIndex: 'meaning'
+            title: 'Mô tả',
+            dataIndex: 'description'
         },
         {
             key: '4',
-            title: 'Level',
-            dataIndex: 'level',
-            render: (level: number) => {
-                return (
-                    <Tag color={
-                        level === 1 ? 'cyan'
-                            : level === 2 ? 'green'
-                                : level === 3 ? 'orange'
-                                    : level === 4 ? 'red'
-                                        : level === 5 ? 'magenta'
-                                            : level === 6 ? 'purple'  // Thêm màu mong muốn cho level 6
-                                                : ''  // Màu mặc định khi level không nằm trong khoảng từ 0 đến 6
-                    }>
-                        TOPIK {level}
-                    </Tag>
-                );
-            },
-            sorter: (a: IVocabulary, b: IVocabulary) => {
-                if (a.level! < b.level!) {
+            title: 'Tổng số từ',
+            dataIndex: 'totalWords',
+            width: 200,
+            sorter: (a: IListVocabDetail, b: IListVocabDetail) => {
+                if (a.totalWords! < b.totalWords!) {
                     return -1;
                 }
-                if (a.level! > b.level!) {
+                if (a.totalWords! > b.totalWords!) {
                     return 1;
                 }
                 return 0;
@@ -143,33 +130,10 @@ const AdminVocabulary: React.FC = () => {
         },
         {
             key: '5',
-            title: 'Hình ảnh',
-            dataIndex: 'image',
-            render: (image: string) => {
-                return <img width={100} src={backEndUrl + '/images/vocabulary/' + image} />
-            }
-        },
-        {
-            key: '6',
-            title: 'Ví dụ',
-            dataIndex: 'example',
-            render: (example: string) => {
-                return <p dangerouslySetInnerHTML={{ __html: example }}></p>
-            }
-        },
-        // {
-        //     key: '7',
-        //     title: 'List',
-        //     dataIndex: 'course',
-        //     render: (course: ICourse) => {
-        //         return <p>{course ? course.course_name : ''}</p>
-        //     }
-        // },
-        {
-            key: '8',
             title: 'Create at',
             dataIndex: 'createdAt',
-            sorter: (a: IVocabulary, b: IVocabulary) => {
+            width: 200,
+            sorter: (a: IListVocabDetail, b: IListVocabDetail) => {
                 if (a.createdAt! < b.createdAt!) {
                     return -1;
                 }
@@ -180,11 +144,20 @@ const AdminVocabulary: React.FC = () => {
             }
         },
         {
-            key: '9',
+            key: '6',
             title: 'Actions',
             align: 'center',
-            render: (_: any, record: IVocabulary) => (
+            width: 100,
+            render: (_: any, record: IListVocabDetail) => (
                 <Space>
+                    <InfoCircleOutlined
+                        style={{
+                            fontSize: 20,
+                            color: '#1677ff',
+                            cursor: "pointer", margin: "0 10px"
+                        }}
+                        onClick={() => { navigator(`${record.id}`) }}
+                    />
                     <EditOutlined
                         style={{
                             fontSize: 20,
@@ -197,8 +170,8 @@ const AdminVocabulary: React.FC = () => {
                     <Popconfirm
                         placement="leftTop"
                         title={"Xác nhận xóa từ vựng"}
-                        description={"Bạn có chắc chắn muốn xóa từ vựng này ?"}
-                        onConfirm={() => handleDeleteVocab(record.id)}
+                        description={"Bạn có chắc chắn muốn xóa danh sách từ vựng này ?"}
+                        onConfirm={() => handleDeleteListVocab(record.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
                     >
@@ -217,8 +190,8 @@ const AdminVocabulary: React.FC = () => {
     ]
     const handleShowModel = async (id?: number) => {
         if (id) {
-            const res = await getVocabById(id);
-            setDataFix(res.data)
+            const res = listVocab.find((list) => list.id == id)
+            setDataFix(res as IListVocabDetail)
         }
         else {
             setDataFix(null)
@@ -235,7 +208,7 @@ const AdminVocabulary: React.FC = () => {
                 <div
                     style={{
                         background: colorBgContainer,
-                        height: 150,
+                        height: 100,
                         padding: 24,
                         borderRadius: borderRadiusLG,
                         display: 'flex',
@@ -246,53 +219,15 @@ const AdminVocabulary: React.FC = () => {
                         <div>
 
                             <Form.Item
-                                label="Từ"
+                                label="Tên danh sách"
                             >
                                 <Input
-                                    value={search?.word}
-                                    onChange={(e) => setSearch((prev) => ({ ...prev!, word: e.target.value }))}
-                                    placeholder="Nhập từ tìm kiếm"
-                                    style={{ minWidth: 300 }} />
-                            </Form.Item>
-                            <Form.Item
-                                label="Định nghĩa"
-                            >
-                                <Input
-                                    value={search?.meaning}
-                                    onChange={(e) => setSearch((prev) => ({ ...prev!, meaning: e.target.value }))}
-                                    placeholder="Nhập định nghĩa tìm kiếm"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Nhập tên danh sách tìm kiếm"
                                     style={{ minWidth: 300 }} />
                             </Form.Item>
                         </div>
-                        {/* <Form.Item
-                            label="Khóa học"
-                            style={{ minWidth: 400, marginLeft: 20 }}
-                        >
-                            <Select
-                                onChange={(value) => setSearch((prev) => ({ ...prev!, id: value }))}
-                                placeholder="Chọn khóa học">
-                                {dataListCourse.map((course) => {
-                                    return (
-                                        <Select.Option value={course.id}>{course.course_name}</Select.Option>)
-                                })}
-                            </Select>
-                        </Form.Item> */}
-                        <Form.Item
-                            label="Level"
-                            style={{ minWidth: 150, marginLeft: 20 }}
-                        >
-                            <Select onChange={(value) => setSearch((prev) => ({ ...prev!, level: value }))} value={search?.level} allowClear
-                                mode={(search?.meaning == "" || search?.word == "") ? "multiple" : "tags"}
-                                placeholder="Chọn level">
-                                {/* <Option value="0">TOPIK 0</Option> */}
-                                <Option value="1">TOPIK 1</Option>
-                                <Option value="2">TOPIK 2</Option>
-                                <Option value="3">TOPIK 3</Option>
-                                <Option value="4">TOPIK 4</Option>
-                                <Option value="5">TOPIK 5</Option>
-                                <Option value="6">TOPIK 6</Option>
-                            </Select>
-                        </Form.Item>
                     </div>
                     <div>
                         <Button onClick={handleResetSearch}>Làm lại</Button>
@@ -336,8 +271,8 @@ const AdminVocabulary: React.FC = () => {
                     </div>
                 </div>
             </Content>
-            {showModel && <ModalVocab data={dataFix} handelCancel={handelCancel} open={showModel} />}
+            {showModel && <ModalList data={dataFix} open={showModel} handelCancel={handelCancel} />}
         </>
     )
 }
-export default AdminVocabulary
+export default AdminListVocab

@@ -15,7 +15,7 @@ import {
 } from "../../../apis";
 import TextArea from "antd/es/input/TextArea";
 
-function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabulary | null; open: boolean, handelCancel: () => void; listCourse: ICourse[] }) {
+function ModalVocab({ data, open, handelCancel, idList }: { data?: IVocabulary | null; open: boolean, handelCancel: () => void, idList?: number }) {
     type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +76,6 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
     useEffect(() => {
         if (data) {
             setDataVocab(data)
-            setDataVocab((prev) => ({ ...prev, courseId: data.course?.id }))
         }
     }, [])
     const handleSumbit = async () => {
@@ -87,7 +86,13 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
                 // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
                 newVocab = await upImage(fileList[0]) || newVocab; // Nếu upImage trả về null, giữ nguyên userInfo
             }
-            const res = await createNewVocab(newVocab!);
+            let res = null;
+            if (idList) {
+                res = await createNewVocab(newVocab!, idList!);
+            }
+            else {
+                res = await createNewVocab(newVocab!);
+            }
             if (res && res.data) {
                 notification.success({
                     message: "Tạo mới thành công"
@@ -130,11 +135,10 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
             <Form layout="vertical" initialValues={{
                 word_name: data?.word || '',
                 word_meaning: data?.meaning || '',
-                level: String(data?.level) || undefined,
+                level: data?.level && String(data?.level) || undefined,
                 partOfSpeech: data?.partOfSpeech || '',
                 spell: data?.spell || '',
                 example: data?.example || '',
-                course: data?.course?.id || undefined
             }}>
                 <Form.Item
                     style={{ marginBottom: 0 }}
@@ -202,7 +206,7 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
                 </Form.Item>
                 <Collapse style={{ marginBottom: 10, marginTop: 10 }} size="small" items={[{
                     key: '1',
-                    label: 'Thêm ảnh/ví dụ/khóa học',
+                    label: 'Thêm ảnh/ví dụ',
                     children:
                         (<>
                             <Form.Item style={{ marginBottom: 0 }} label="Hình ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -220,7 +224,7 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
                             <Form.Item name={'example'} label="Ví dụ">
                                 <TextArea onChange={(e) => setDataVocab(prevState => ({ ...prevState, example: e.target.value }))} rows={2} />
                             </Form.Item>
-                            <Form.Item
+                            {/* <Form.Item
                                 name={['course']}
                             >
                                 <Select onSelect={(value) => setDataVocab(prevState => ({ ...prevState, courseId: Number(value) }))} placeholder="Chọn khóa học">
@@ -230,7 +234,7 @@ function ModalVocab({ data, open, handelCancel, listCourse }: { data?: IVocabula
                                     })}
                                 </Select>
 
-                            </Form.Item>
+                            </Form.Item> */}
                         </>)
                 }]} />
                 <Form.Item>

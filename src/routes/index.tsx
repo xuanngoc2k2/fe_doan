@@ -27,6 +27,8 @@ import AdminExam from '../pages/Admin/Exam/exam';
 import AdminExamDetail from '../pages/Admin/Exam/create-new-exam'
 import AdminVocabulary from '../pages/Admin/Vocabulary/vocab';
 import AdminNews from '../pages/Admin/News/news';
+import AdminListVocab from '../pages/Admin/ListVocab/list-vocab';
+import AdminListDetail from '../pages/Admin/ListVocab/list-detail';
 interface Route {
   path: string;
   layout?: ComponentType<{
@@ -70,6 +72,8 @@ const privateRoutes: Route[] = [
   { path: '/admin/exam', component: AdminExam, layout: AdminLayout },
   { path: '/admin/exam/:id', component: AdminExamDetail, layout: AdminLayout },
   { path: '/admin/vocabulary', component: AdminVocabulary, layout: AdminLayout },
+  { path: '/admin/listvocab', component: AdminListVocab, layout: AdminLayout },
+  { path: '/admin/listvocab/:id', component: AdminListDetail, layout: AdminLayout },
   { path: '/admin/news', component: AdminNews, layout: AdminLayout },
 ];
 

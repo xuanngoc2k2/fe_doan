@@ -1,11 +1,12 @@
-import { Button, Card, Col, Collapse, Form, Input, message, Modal, Row, Select, Space, Upload } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Button, Card, Col, Collapse, Form, Input, message, Modal, notification, Row, Select, Space, Upload } from "antd";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
     callUploadSingleFile,
+    copyNewList,
     creatNewVocabOfList, deleteVocabOfList, getVocabOfList
 } from "../../apis";
 import { useEffect, useState } from "react";
-import { IListVocabDetail, IVocabulary } from "../../custom/type";
+import { IListVocab, IListVocabDetail, IVocabulary } from "../../custom/type";
 import './vocab-detail.scss'
 import { PlusOutlined } from "@ant-design/icons";
 import CardVocabItem from "../../components/card-vocab-item";
@@ -15,6 +16,7 @@ import { UploadChangeParam } from "antd/es/upload/interface";
 
 function VocabularyDetail() {
     const { idList } = useParams();
+    const navigator = useNavigate();
     const [listVocabDetail, setListVocabDetail] = useState<IListVocabDetail | null>(null);
     const [newVocab, setNewVocab] = useState<IVocabulary | null>(null);
     const [showModal, setShowModal] = useState(false);
@@ -32,6 +34,8 @@ function VocabularyDetail() {
     const handleCancel = () => {
         setNewVocab(null);
         setShowModal(false);
+        setShowModalCopy(false)
+        setCopyList(null);
     }
     const handleOK = async () => {
         if (!newVocab?.word || !newVocab?.meaning || !newVocab?.level || !newVocab?.partOfSpeech || !newVocab?.spell) {
@@ -57,7 +61,7 @@ function VocabularyDetail() {
     }
     useEffect(() => {
         fetch()
-    }, [])
+    }, [Number(idList)])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -88,6 +92,10 @@ function VocabularyDetail() {
         }
     };
     const handelRemove = async (idWord: number) => {
+        if (!listVocabDetail?.isMine) {
+            notification.error({ message: "Bạn không thể xóa từ vựng trong danh sách này" });
+            return
+        }
         try {
             const res = await deleteVocabOfList(Number(idList), idWord);
             if (res) {
@@ -102,9 +110,62 @@ function VocabularyDetail() {
             message.error("Lỗi API")
         }
     }
-
+    const [copyList, setCopyList] = useState<IListVocab | null>();
+    const [showModalCopy, setShowModalCopy] = useState(false);
+    const handleAddWord = () => {
+        if (!listVocabDetail?.isMine) {
+            const confirmCopy = window.confirm("Vì danh sách này không được phép thay đổi, bạn có muốn sao chép danh sách từ vựng này không?");
+            if (confirmCopy) {
+                setShowModalCopy(true);
+                return;
+            }
+        }
+        else {
+            setShowModal(true);
+        }
+    }
+    const handleCopy = async () => {
+        try {
+            const res = await copyNewList(String(idList), copyList?.name, copyList?.description);
+            if (res && res.data) {
+                // console.log(res.data);
+                handleCancel()
+                navigator(`/vocab-detail/${res.data.id}`)
+            }
+        }
+        catch {
+            console.log("Lỗi")
+        }
+    }
     return (
         <>
+            <Modal
+                title="Copy danh sách từ"
+                open={showModalCopy}
+                onCancel={handleCancel}
+                className="custom-modal"
+                footer={false}
+            >
+                <Form layout="vertical">
+                    <Form.Item
+                        label="Tên danh sách từ"
+                        name="listName"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên danh sách từ!' }]}
+                    >
+                        <Input
+                            value={copyList?.name}
+                            onChange={(e) => setCopyList(prevState => ({ ...prevState, name: e.target.value }))}
+                            className="custom-input"
+                            placeholder="Nhập tên danh sách từ"
+                        />
+                    </Form.Item>
+                    <Form.Item label="Mô tả" name="description">
+                        <Input.TextArea value={copyList?.description} onChange={(e) => setCopyList(prev => ({ ...prev, description: e.target.value }))} className="custom-textarea" placeholder="Nhập mô tả (không bắt buộc)" />
+                    </Form.Item>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button type="primary" htmlType="submit" onClick={handleCopy} >Copy</Button>
+                </Form>
+            </Modal>
             <div style={{ minHeight: 600 }}>
                 <div className="vocab-detail-container">
                     <Row>
@@ -135,14 +196,14 @@ function VocabularyDetail() {
                                 </div>
                             </Card>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
-                                <Button onClick={() => setShowModal(true)} className="btn-add-new-word" type='primary'><PlusOutlined /> Thêm từ mới</Button>
+                                <Button onClick={handleAddWord} className="btn-add-new-word" type='primary'><PlusOutlined /> Thêm từ mới</Button>
                                 <Link style={{ width: '100%' }} to={`/flashcards/${idList}`}><Button block className="btn-do-flascards">Luyện tập flascards</Button></Link>
                             </div>
                         </Col>
                     </Row>
                     <Row justify={'center'}>
                         <Col span={12}>
-                            {listVocabDetail?.vocabs.map((vocab) => {
+                            {listVocabDetail?.vocabs && listVocabDetail?.vocabs.map((vocab) => {
                                 return (
                                     <Row>
                                         <CardVocabItem handelRemove={handelRemove} word={vocab.vocab} />

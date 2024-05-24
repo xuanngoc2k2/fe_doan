@@ -1,4 +1,4 @@
-a.card-vocab-list {
+div.card-vocab-list {
     text-decoration: none !important;
     .ant-card {
         border: none;
@@ -13,6 +13,18 @@ a.card-vocab-list {
     width: 160px;
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 0 0 rgba(143, 156, 173, 0.2);
+    .icon-delete {
+        position: absolute;
+        top: 7px;
+        // z-index: 99;
+        cursor: pointer;
+        color: red;
+    }
+    &.false {
+        .ant-card {
+            background-color: #f0f5ff;
+        }
+    }
     &:hover {
         box-shadow:
             0 1px 2px 0 rgba(60, 64, 67, 0.2),

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IGroupQuestion, IQuestion, IResult } from "../../custom/type";
-import { getResultInfo, getResultQuestionDetail } from "../../apis";
+import { backEndUrl, getResultInfo, getResultQuestionDetail } from "../../apis";
 import { Button, Col, Divider, Form, message, Radio, Row } from "antd";
 import './result-detail.scss'
 function ResultDetail() {
@@ -86,7 +86,10 @@ function ResultDetail() {
                                                     <Form.Item name={`${question.id}`}>
                                                         <Radio.Group key={`question-${question.id}`} defaultValue={dv}>
                                                             {question.answers.map(a => {
-                                                                return <Radio className={(a.id === dv) ? isTrue ? 'da-true' : 'da-false' : (a.is_true ? dv == 0 ? 'not-do' : 'need-true' : '')} key={a.id} disabled value={a.id}>{a.answer}</Radio>;
+                                                                return <Radio style={{ display: 'block' }} className={(a.id === dv) ? isTrue ? 'da-true' : 'da-false' : (a.is_true ? dv == 0 ? 'not-do' : 'need-true' : '')} key={a.id} disabled value={a.id}>
+                                                                    {a.isImage ? (
+                                                                        <img width={150} src={`${backEndUrl}/images/answer/${a.answer}`} alt="Answer" />
+                                                                    ) : <>{a.answer}</>}</Radio>;
                                                             })}
                                                         </Radio.Group>
                                                     </Form.Item>

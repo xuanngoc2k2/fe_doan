@@ -19,71 +19,7 @@ import {
     IQuestion,
     // IQuestion
 } from "../custom/type";
-// const listComment = [
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2023',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '4:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '4/9/2024',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '6:00',
-//         comment: 'Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quáDài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá Dài quá',
-//         createAt: '4/7/2024',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '7:15',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/17/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     },
-//     {
-//         commentAt: '2:00',
-//         comment: 'vps là j nó có phải sever k ạ',
-//         createAt: '11/1/2002',
-//         userName: 'Nguyễn Xuân Ngọc',
-//         userImage: 'https://docs.nestjs.com/assets/logo-small.svg'
-//     }
-// ]
+
 function formatTimeFromSeconds(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);

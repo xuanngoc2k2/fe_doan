@@ -128,23 +128,26 @@ export interface IVocabulary {
     meaning?: string;
     partOfSpeech?: string;
     spell?: string;
-    courseId?: number;
     createdAt?: Date;
-    course?: ICourse;
 }
 export interface IListVocab {
+    id: number;
     name: string;
     description?: string;
 }
 export interface IListVocabDetail {
+    id: number;
     name: string;
     description?: string;
     needRemember: number;
+    remembered: number;
     totalWords: number;
     vocabs: [{
         vocab: IVocabulary,
         isRemember: boolean
-    }]
+    }];
+    isMine: boolean;
+    createdAt?: Date
 }
 export interface IQuestionVocab {
     meaning: {

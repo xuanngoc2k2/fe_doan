@@ -170,7 +170,7 @@ function QuestionExam() {
                                                     <Form.Item name={`${question.id}`}>
                                                         <Radio.Group defaultValue={'0'} onChange={() => { handleChecked(numberQuestion) }} key={`question-${question.id}`}>
                                                             {question.answers.map(a => {
-                                                                return <Radio disabled={timeExpired} value={a.id}>{a.isImage ? <img src={`${backEndUrl}/images/question/${a.answer}`} /> : a.answer}</Radio>;
+                                                                return <Radio style={{ display: 'block' }} disabled={timeExpired} value={a.id}>{a.isImage ? <img width={150} src={`${backEndUrl}/images/answer/${a.answer}`} /> : a.answer}</Radio>;
                                                             })}
                                                         </Radio.Group>
                                                     </Form.Item>
