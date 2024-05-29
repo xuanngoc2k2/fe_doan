@@ -8,7 +8,7 @@ import { INews } from "../../../custom/type";
 import {
     backEndUrl,
     callUploadSingleFile,
-    creatNewNews,
+    createNewNews,
     updateNews,
 } from "../../../apis";
 // import ReactQuill from "react-quill";
@@ -100,13 +100,13 @@ function ModalNews({ data, open, handelCancel }: { data?: INews | null; open: bo
     const handleSubmit = async () => {
         if (dataNews?.content != '') {
             if (!data && dataNews?.content) {
-                let newVocab = dataNews; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
+                let newNews = dataNews; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
 
                 if (fileList[0] && fileList[0].originFileObj) {
-                    // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                    newVocab = await upImage(fileList[0]) || newVocab; // Nếu upImage trả về null, giữ nguyên userInfo
+                    newNews = await upImage(fileList[0]) || newNews; // Nếu upImage trả về null, giữ nguyên userInfo
                 }
-                const res = await creatNewNews(newVocab!);
+                console.log(newNews);
+                const res = await createNewNews(newNews!);
                 if (res && res.data) {
                     notification.success({
                         message: "Tạo mới thành công"
@@ -120,12 +120,13 @@ function ModalNews({ data, open, handelCancel }: { data?: INews | null; open: bo
                 }
             }
             else {
-                let dataUpdateVocab = dataNews; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
+                let dataUpdateNews = dataNews; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
                 if (fileList[0] && fileList[0].originFileObj) {
                     // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                    dataUpdateVocab = await upImage(fileList[0]) || dataUpdateVocab; // Nếu upImage trả về null, giữ nguyen userInfo
+                    dataUpdateNews = await upImage(fileList[0]) || dataUpdateNews; // Nếu upImage trả về null, giữ nguyen userInfo
                 }
-                const res = await updateNews(dataUpdateVocab!.id!, dataUpdateVocab!);
+                console.log(dataUpdateNews);
+                const res = await updateNews(dataUpdateNews!.id!, dataUpdateNews!);
                 if (res && res.data) {
                     notification.success({
                         message: "Cập nhật thành công"

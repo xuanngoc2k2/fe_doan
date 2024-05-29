@@ -5,12 +5,13 @@ import { Button, Form, Input, message, notification, Popconfirm, Select, Space, 
 import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
-import { ICourse, IListVocabDetail, IVocabulary } from "../../../custom/type";
+import { ICourse, IListVocab, IListVocabDetail, IVocabulary } from "../../../custom/type";
 import { backEndUrl, callDeleteCourse, deleteList, deleteVocab, getAllListVocab, getAllVocabulary, getCourseDetail, getListCourses, getListVocabWithCourse, getVocabById, searchCourse } from "../../../apis";
 import { ColumnType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import ModalList from "./modal-list";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminListVocab: React.FC = () => {
@@ -141,6 +142,9 @@ const AdminListVocab: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: IListVocabDetail) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {

@@ -9,14 +9,26 @@
 }
 .course-info {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 .course-name {
-    width: 70%;
+    display: flex;
+    width: 100%;
     margin-top: -13px;
+    justify-content: space-between;
+    h2 {
+        width: 65%;
+    }
+}
+.course-description {
+    height: 90px; /* Set the maximum height */
+    overflow: hidden; /* Hide the overflow content */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
 }
 .course-time {
-    font-size: 16px;
+    display: flex;
+    align-items: flex-start;
 }
 .course-progress {
     p {

@@ -1,5 +1,5 @@
 import { Button, Card, Col, Collapse, Form, Input, message, Modal, notification, Row, Select, Space, Upload } from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     callUploadSingleFile,
     copyNewList,
@@ -137,6 +137,13 @@ function VocabularyDetail() {
             console.log("Lỗi")
         }
     }
+    const handleGoToFlashCard = () => {
+        if (listVocabDetail?.totalWords == 0) {
+            notification.info({ message: "Thử thêm 1 từ vựng trước đã !!" })
+            return
+        }
+        navigator(`/flashcards/${idList}`)
+    }
     return (
         <>
             <Modal
@@ -154,13 +161,15 @@ function VocabularyDetail() {
                     >
                         <Input
                             value={copyList?.name}
-                            onChange={(e) => setCopyList(prevState => ({ ...prevState, name: e.target.value }))}
+                            onChange={(e) => setCopyList(prevState => ({ ...prevState!, name: e.target.value }))}
                             className="custom-input"
                             placeholder="Nhập tên danh sách từ"
                         />
                     </Form.Item>
                     <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea value={copyList?.description} onChange={(e) => setCopyList(prev => ({ ...prev, description: e.target.value }))} className="custom-textarea" placeholder="Nhập mô tả (không bắt buộc)" />
+                        <Input.TextArea value={copyList?.description}
+                            onChange={(e) => setCopyList(prev => ({ ...prev!, description: e.target.value }))}
+                            className="custom-textarea" placeholder="Nhập mô tả (không bắt buộc)" />
                     </Form.Item>
                     <Button onClick={handleCancel}>Cancel</Button>
                     <Button type="primary" htmlType="submit" onClick={handleCopy} >Copy</Button>
@@ -197,7 +206,7 @@ function VocabularyDetail() {
                             </Card>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
                                 <Button onClick={handleAddWord} className="btn-add-new-word" type='primary'><PlusOutlined /> Thêm từ mới</Button>
-                                <Link style={{ width: '100%' }} to={`/flashcards/${idList}`}><Button block className="btn-do-flascards">Luyện tập flascards</Button></Link>
+                                <Button onClick={handleGoToFlashCard} block className="btn-do-flascards">Luyện tập flascards</Button>
                             </div>
                         </Col>
                     </Row>

@@ -1,4 +1,4 @@
-import { Card, Progress, ProgressProps } from 'antd';
+import { Card, Progress, ProgressProps, Tag, Tooltip } from 'antd';
 import './styles/card-course.scss';
 import {
     FieldTimeOutlined,
@@ -29,19 +29,19 @@ const CardCourse: React.FC<{ course: ICourse }> = ({ course }) => {
                     <div className='course-info'>
                         <div className='course-name'>
                             <h2>{course.course_name}</h2>
-                            <p>{course.description}</p>
+                            <div className='course-time'>
+                                <Tag color='geekblue' style={{ display: 'flex', marginInlineEnd: 0 }}><FieldTimeOutlined style={{ color: '#1677ff', fontSize: 20 }} /> <p style={{ fontSize: 14, fontWeight: 500, margin: 3 }}>{course.totalTime}</p></Tag>
+                                {/* <p><UsergroupAddOutlined style={{ color: '#1677ff', fontSize: 20 }} /> 888888</p> */}
+                            </div>
                         </div>
-                        <div className='course-time'>
-                            <p><FieldTimeOutlined style={{ color: '#1677ff', fontSize: 20 }} /> {course.time} Hours</p>
-                            {/* <p><UsergroupAddOutlined style={{ color: '#1677ff', fontSize: 20 }} /> 888888</p> */}
-                        </div>
+                        <Tooltip placement='bottom' title={course.description}><p className='course-description'>{course.description}</p></Tooltip>
                     </div>
                     <div className='course-progress'>
                         <Progress strokeColor={twoColors} percent={course.progress || 0} showInfo={false} />
                         <p>{course.progress || 0}% Hoàn thành</p>
                     </div>
                     <div className='course-people'>
-                        <TeamOutlined /> <span>{course.countUser}</span>
+                        <TeamOutlined /> <span>{course.totalUsers} tham gia</span>
                     </div>
                     {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
                 </Card>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateNewQuestion, IAnswer, IGroupQuestion, IQuestion } from "../../../custom/type";
@@ -8,6 +9,7 @@ import { CloseOutlined, DeleteOutlined, EditOutlined, MinusOutlined, PlusOutline
 import { Option } from "antd/es/mentions";
 import ModalAnswer from "./modal-answer";
 import './question.scss';
+import { UploadChangeParam } from "antd/es/upload";
 
 const QuestionDetail: React.FC = () => {
     const { id } = useParams();
@@ -21,6 +23,8 @@ const QuestionDetail: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [fileAudio, setFileAudio] = useState<UploadFile>();
     const [fileImage, setFileImage] = useState<UploadFile | null>();
+    const [fileListImageQuestion, setFileListImageQuestion] = useState<{ newFile: UploadFile; index: number }[] | []>([]);
+    // const [fileListImageAnswer, setFileListImageAnswer] = useState<{ newFile: UploadFile; index: number }[] | []>([]);
     const [dataEditAnswer, setDataEditAnswer] = useState<IAnswer | null>();
     const [form] = Form.useForm();
     const {
@@ -75,6 +79,23 @@ const QuestionDetail: React.FC = () => {
         }
         return null; // Trả về null nếu có lỗi xảy ra
     };
+
+    const upLoadFileImageQuestion = async (file: UploadFile, index: number) => {
+        const uploadedFile = file.originFileObj as File;
+        if (uploadedFile != null) {
+            try {
+                const res = await callUploadSingleFile(uploadedFile, 'question');
+                const question = dataQuestion[index];
+                const questionUpdate = { ...(question || {}), image: res.fileName } as IQuestion;
+                return questionUpdate; // Trả về userInfo đã được cập nhật
+            } catch (error) {
+                message.error("Lỗi");
+            } finally {
+                // setUploading(false); // Đặt lại trạng thái uploading
+            }
+        }
+    };
+
     const onChangeUpload: UploadProps['onChange'] = ({ file: newFile }) => {
         newFile.status = 'done';
         setFileImage(newFile);
@@ -83,6 +104,26 @@ const QuestionDetail: React.FC = () => {
         newFile.status = 'done';
         setFileAudio(newFile);
     };
+    const handleOnChangeImageQuestion = (index: number, newFile: UploadFile<any>, e: UploadChangeParam<UploadFile<any>>) => {
+        newFile.status = 'done';
+        setFileListImageQuestion((prev: any) => {
+            if (e.fileList.length) {
+                // Kiểm tra xem newFile đã tồn tại trong mảng prev chưa
+                const existingIndex = prev.findIndex((item: any) => item.newFile.originFileObj === newFile.originFileObj);
+                if (existingIndex !== -1) {
+                    // Nếu newFile đã tồn tại, cập nhật thông tin
+                    const updatedList = [...prev];
+                    updatedList[existingIndex] = { newFile, index };
+                    return updatedList;
+                } else {
+                    // Nếu newFile chưa tồn tại, thêm mới
+                    return [...prev, { newFile, index }];
+                }
+            } else {
+                return prev.filter((item: any) => item.index !== index);
+            }
+        });
+    }
     const fetch = async () => {
         try {
             const res = await getAllGroupQuestion();
@@ -111,6 +152,21 @@ const QuestionDetail: React.FC = () => {
         fetch();
     }, [id, groupQuestion?.id])
     const handleSubmit = async () => {
+        // console.log(fileListImageQuestion);
+        let data = dataQuestion;
+        if (fileListImageQuestion.length) {
+            for (const file of fileListImageQuestion) {
+                const question = await upLoadFileImageQuestion(file.newFile, file.index) as IQuestion;
+                data = data.map((d, index) => {
+                    if (index === file.index) {
+                        return { ...d, image: question.image }
+                    }
+                    else {
+                        return d as IQuestion;
+                    }
+                })
+            }
+        }
         if (dataQuestion && groupQuestion?.content != '') {
             try {
                 let newGr = groupQuestion;
@@ -120,7 +176,8 @@ const QuestionDetail: React.FC = () => {
                 if (fileImage) {
                     newGr = await upLoadFile(fileImage);
                 }
-                const res = await createNewQuestion(dataQuestion, newGr!)
+                console.log(data);
+                const res = await createNewQuestion(data as IQuestion[], newGr!)
                 if (res && res.data) {
                     notification.success({
                         message: "Tạo mới câu hỏi thành công"
@@ -129,6 +186,7 @@ const QuestionDetail: React.FC = () => {
                     setGroupQuestion(null);
                     fetch();
                     form.resetFields();
+                    setDataListGroupQuestion([]);
                 }
                 else {
                     notification.error({
@@ -184,8 +242,17 @@ const QuestionDetail: React.FC = () => {
     }
     const handleUpdateGroup = async () => {
         try {
+
             if (groupQuestion?.id && groupQuestion) {
-                const res = await updateGroupQuestion(groupQuestion!.id, groupQuestion!);
+                let newGr = groupQuestion;
+                if (fileAudio) {
+                    newGr = await upLoadFile(fileAudio, true) as IGroupQuestion;
+                }
+                if (fileImage) {
+                    newGr = await upLoadFile(fileImage) as IGroupQuestion;
+                }
+                console.log(newGr);
+                const res = await updateGroupQuestion(newGr!.id, newGr!);
                 if (res && res.data) {
                     notification.success({ message: "Update thành công" })
                 }
@@ -268,6 +335,27 @@ const QuestionDetail: React.FC = () => {
     }
     const [form2] = Form.useForm();
     const [editQ, setEditQ] = useState(false);
+    const [fileImageEdit, setFileImageEdit] = useState<UploadFile | null>();
+    const onChangeUploadImageEdit: UploadProps['onChange'] = ({ file: newFile }) => {
+        newFile.status = 'done';
+        setFileImageEdit(newFile);
+    };
+    const upLoadFileImageEdit = async (file: UploadFile) => {
+        const uploadedFile = file.originFileObj as File;
+        if (uploadedFile != null) {
+            try {
+                const res = await callUploadSingleFile(uploadedFile, 'question');
+                const questionInfo = { ...(question || {}), image: res.fileName } as IQuestion;
+                setQuestion(questionInfo); // Cập nhật userInfo.image
+                return questionInfo; // Trả về userInfo đã được cập nhật
+            } catch (error) {
+                message.error("Lỗi");
+            } finally {
+                // setUploading(false); // Đặt lại trạng thái uploading
+            }
+        }
+        return null; // Trả về null nếu có lỗi xảy ra
+    };
     const handleSetEditQuestion = () => {
         form2.setFieldValue('question-edit', question?.question)
         form2.setFieldValue('level', String(question?.level))
@@ -276,7 +364,12 @@ const QuestionDetail: React.FC = () => {
     }
     const handleEditQuestion = async () => {
         if (question?.id) {
-            const res = await updateQuestion(question?.id, question);
+            let questionUpdate = question;
+            if (fileImageEdit) {
+                questionUpdate = await upLoadFileImageEdit(fileImageEdit) as IQuestion;
+            }
+            console.log(questionUpdate)
+            const res = await updateQuestion(question?.id, questionUpdate);
             if (res && res.data) {
                 notification.success({ message: "Cập nhật câu hỏi thành công" });
                 setEditQ(false)
@@ -347,7 +440,7 @@ const QuestionDetail: React.FC = () => {
                                         </Select>}
                                 </Form.Item>
                                 <div style={{ fontSize: 20, marginLeft: 10, marginRight: 10, display: 'flex', height: 32 }}>
-                                    {groupQuestion && <EditOutlined style={{ marginRight: 10 }} onClick={() => { setEditGr(true) }} />}
+                                    {groupQuestion?.id && <EditOutlined style={{ marginRight: 10 }} onClick={() => { setEditGr(true) }} />}
                                     <RedoOutlined onClick={handleReset} />
                                 </div>
                                 <Button onClick={handleAddNew} style={{ marginRight: 20, width: '15%' }} icon={<PlusOutlined />} type="primary">Thêm mới nhóm câu hỏi</Button>
@@ -373,24 +466,31 @@ const QuestionDetail: React.FC = () => {
                                 </Form.Item>
                                 {(groupQuestion?.type == "Listening" ||
                                     form.getFieldValue('type_question') == "Listening") &&
-                                    <Form.Item
-                                        getValueFromEvent={normFile}
-                                        style={{ marginLeft: 20 }}
-                                        rules={[{ required: true, message: 'File nghe không được để trống!' }]}
-                                        label="File nghe"
-                                        name={'audio'}
-                                    >
-                                        <Upload
-                                            onChange={onChangeUploadAudio}
-                                            disabled={(!addNew && editGr)}
-                                            name="audio"
-                                            maxCount={1}
+                                    <div>
+                                        <Form.Item
+                                            getValueFromEvent={normFile}
+                                            style={{ marginLeft: 20 }}
+                                            rules={[{ required: true, message: 'File nghe không được để trống!' }]}
+                                            label="File nghe"
+                                            name={'audio'}
                                         >
-                                            <Button type="primary">
-                                                <div><PlusOutlined /> Upload</div>
-                                            </Button>
-                                        </Upload>
-                                    </Form.Item>
+                                            {(editGr || addNew) && <Upload
+                                                onChange={onChangeUploadAudio}
+                                                disabled={!(addNew || editGr)}
+                                                name="audio"
+                                                maxCount={1}
+                                            >
+                                                <Button type="primary">
+                                                    <div><PlusOutlined /> Upload</div>
+                                                </Button>
+                                            </Upload>}
+                                        </Form.Item>
+
+                                        {groupQuestion?.audio &&
+                                            <audio controls>
+                                                <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
+                                            </audio>}
+                                    </div>
                                 }
                             </div>
                             {(groupQuestion || addNew) && <Form.Item label="Hình ảnh" valuePropName="fileList"
@@ -427,13 +527,13 @@ const QuestionDetail: React.FC = () => {
                                     }}
                                     rows={1} />
                             </Form.Item>
-                            {editGr && <Button onClick={handleUpdateGroup}
+                            {editGr && groupQuestion?.id && <Button onClick={handleUpdateGroup}
                                 style={{ marginBottom: 20 }}>Lưu</Button>}
                             {dataQuestion.map((question, index) => {
                                 return (
                                     <div style={{ position: 'relative', padding: 10, border: '1px solid #ccc', borderRadius: 10, marginBottom: 20 }}>
                                         <MinusOutlined onClick={() => {
-                                            if (index == 0) {
+                                            if (index == 0 && dataQuestion.length == 1) {
                                                 notification.error({
                                                     message: "Không thể xóa hết câu hỏi"
                                                 })
@@ -463,6 +563,26 @@ const QuestionDetail: React.FC = () => {
                                                         return updatedQuestions;
                                                     });
                                                 }} />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name={`question-image-${index}`}
+                                            label="Hình ảnh"
+                                        >
+                                            <Upload
+                                                name="question-image"
+                                                maxCount={1}
+                                                listType="picture-card"
+                                                onChange={(e) => {
+                                                    // handleChangeUploadImageQuestion(e);
+                                                    handleOnChangeImageQuestion(index, e.file, e);
+                                                }}
+                                                onPreview={onPreview}
+                                            >
+                                                <button style={{ border: 0, background: 'none' }} type="button">
+                                                    <PlusOutlined />
+                                                    <div style={{ marginTop: 8 }}>Upload</div>
+                                                </button>
+                                            </Upload>
                                         </Form.Item>
                                         <div style={{ display: 'flex' }}>
                                             <Form.Item
@@ -531,52 +651,6 @@ const QuestionDetail: React.FC = () => {
                                             </Form.Item>
                                         </div>
                                         <div >
-                                            {/* {question?.answers.map((answer) => {
-                                                return (
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        padding: 10,
-                                                        paddingLeft: 30,
-                                                        margin: 5,
-                                                        justifyContent: 'space-between',
-                                                        border: '1px solid #ccc',
-                                                        borderColor: answer.is_true ? '#b7eb8f' : '#ccc',
-                                                        backgroundColor: answer.is_true ? '#f6ffed' : '',
-                                                        color: answer.is_true ? '#389e0d' : ''
-                                                    }}>
-                                                        {answer.isImage ? <img width={150} src={backEndUrl + '/images/question/' + answer.answer} /> : <h3>{answer.answer}</h3>}
-                                                        <div style={{ width: '10%', justifyContent: 'flex-end', display: 'flex' }}>
-                                                            <Space>
-                                                                <EditOutlined
-                                                                    style={{
-                                                                        fontSize: 20,
-                                                                        color: '#ffa500',
-                                                                    }}
-                                                                    onClick={() => {
-                                                                    }}
-                                                                />
-                                                                <Popconfirm
-                                                                    placement="leftTop"
-                                                                    title={"Xác nhận xóa bài học"}
-                                                                    description={"Bạn có chắc chắn muốn xóa bài học này ?"}
-                                                                    // onConfirm={() => handleDeleteLesson(record.id)}
-                                                                    okText="Xác nhận"
-                                                                    cancelText="Hủy"
-                                                                >
-                                                                    <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                                                        <DeleteOutlined
-                                                                            style={{
-                                                                                fontSize: 20,
-                                                                                color: '#ff4d4f',
-                                                                            }}
-                                                                        />
-                                                                    </span>
-                                                                </Popconfirm>
-                                                            </Space>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })} */}
                                             {question.answers.length >= 1 && form.getFieldValue(`type_question_${index}`) == "multiple-choice" ?
                                                 <Form.Item
                                                 >
@@ -697,7 +771,7 @@ const QuestionDetail: React.FC = () => {
                         <div>
                             {question?.group_question?.type === 'Listening' ?
                                 <>
-                                    <p>※{question.group_question.content}</p>
+                                    <p>{question.group_question.content}</p>
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <audio controls>
                                             <source src={`${backEndUrl}/audio/${question.group_question.audio}`} />
@@ -705,8 +779,8 @@ const QuestionDetail: React.FC = () => {
                                     </div>
                                 </> :
                                 <>
-                                    <h3>※{question?.group_question?.description}</h3>
-                                    <p>※{question?.group_question?.content}</p>
+                                    <h3>{question?.group_question?.description}</h3>
+                                    <p>{question?.group_question?.content}</p>
                                 </>}
                             {question?.group_question?.image && <img src={`${backEndUrl}/images/question/${question?.group_question?.image}`} alt='question' />}
                         </div>
@@ -751,7 +825,11 @@ const QuestionDetail: React.FC = () => {
                                                 name={['score']}
                                                 noStyle
                                             >
-                                                <Input value={question?.score} onChange={(e) => setQuestion((prev) => ({ ...prev!, score: Number(e.target.value) }))} type="number" placeholder="Nhập điểm" />
+                                                <Input
+                                                    value={question?.score}
+                                                    onChange={(e) => setQuestion((prev) => ({ ...prev!, score: Number(e.target.value) }))}
+                                                    type="number"
+                                                    suffix={'점'} />
                                             </Form.Item>
                                         </Space.Compact>
                                         <h3 style={{ display: editQ ? 'none' : '' }}> {question?.question} (TOPIK {question?.level}) [{question?.score} 점]</h3>
@@ -762,11 +840,31 @@ const QuestionDetail: React.FC = () => {
                                             }}
                                             onClick={handleSetEditQuestion} />
                                     </div>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        {question?.image && <img width={500} src={`${backEndUrl}/images/question/${question.image}`} />}
+                                        {editQ &&
+                                            <Form.Item
+                                                style={{ marginLeft: 20 }}
+                                                name={`question-image`}
+                                            >
+                                                <Upload
+                                                    name="question-image"
+                                                    listType="picture-card"
+                                                    maxCount={1}
+                                                    onChange={onChangeUploadImageEdit}
+                                                    onPreview={onPreview}
+                                                >
+                                                    <button style={{ border: 0, background: 'none' }} type="button">
+                                                        <PlusOutlined />
+                                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                                    </button>
+                                                </Upload>
+                                            </Form.Item>}
+                                    </div>
                                     <div >
-
                                         <Radio.Group
                                             style={{ width: '100%' }}
-                                            defaultValue={
+                                            value={
                                                 question?.answers.find((a) => a.is_true)?.id
                                             }
                                         >

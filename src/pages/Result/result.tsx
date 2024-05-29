@@ -1,10 +1,11 @@
 import { BarChartOutlined } from "@ant-design/icons";
-import { Col, message, Pagination, Row } from "antd";
+import { Col, message, Pagination, Row, Tag } from "antd";
 import './result.scss';
 import { useEffect, useState } from "react";
 import { getListResult } from "../../apis";
 import { IResult } from "../../custom/type";
 import { Link } from "react-router-dom";
+import dayjs from 'dayjs';
 
 function Result() {
     const [listResult, setListResult] = useState<IResult[]>([])
@@ -48,13 +49,16 @@ function Result() {
                         <Col span={10} offset={4}>
                             <div className='result-container'>
                                 <div className="result-score">
-                                    <p className={result.exam.type === 'TOPIK I' ? result.score > 80 ? "green" : "red" : result.score > 120 ? "green" : "red"}>{result.score}</p>
+                                    <p className={result.totalScore ? result.score / result.totalScore >= 0.4 ? "green" : "red" : "green"}>{result.score}</p>
                                 </div>
                                 <div className="result-info">
                                     <div className="result-info-test">
                                         <h1>{result.exam.exam_name}</h1>
-                                        <p>Thời gian thi: {result.createdAt}</p>
-                                        <p>Lần thi: {result.count}</p>
+                                        <p>Thời gian thi: <b>{dayjs(result.createdAt).format('DD/MM/YYYY')}</b></p>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <Tag color="cyan">Lần thi: <b>{result.count}</b></Tag>
+                                            <Tag color="red">Điểm tối đa: <b>{result.totalScore}</b></Tag>
+                                        </div>
                                     </div>
                                     <div className="result-view-detail">
                                         <Link to={`/result-detail/${result.id}`} style={{ color: 'white' }}><p>CHI TIẾT</p></Link>
@@ -75,7 +79,7 @@ function Result() {
                     />
                 </Col>
             </Row>
-        </div>);
+        </div >);
 }
 
 export default Result;

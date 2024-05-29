@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Checkbox, Form, Input, Modal, notification, Select, Tag, theme, Tooltip } from "antd";
+import { Button, Checkbox, Empty, Form, Input, Modal, notification, Select, Tag, theme, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { IVocabulary } from "../../../custom/type";
 import {
@@ -65,7 +65,7 @@ function ModalListVocab({ open, handelCancel, idList }: { open: boolean, handelC
             width: 100,
             title: (
                 <div>
-                    Chọn <Tooltip title="Chọn tất cả"><Checkbox checked={selectAll} onChange={(e) => handleSelectAll(e.target.checked)}>
+                    <Tooltip title="Chọn tất cả"><Checkbox checked={selectAll} onChange={(e) => handleSelectAll(e.target.checked)}>
                     </Checkbox></Tooltip>
                 </div>
             ),
@@ -131,7 +131,11 @@ function ModalListVocab({ open, handelCancel, idList }: { open: boolean, handelC
             title: 'Hình ảnh',
             dataIndex: 'image',
             render: (image: string) => {
-                return <img width={100} src={backEndUrl + '/images/vocabulary/' + image} />
+                return image ? (
+                    <img width={100} src={`${backEndUrl}/images/vocabulary/${image}`} />
+                ) : (
+                    <Empty style={{ width: 100 }} />
+                );
             }
         },
         {

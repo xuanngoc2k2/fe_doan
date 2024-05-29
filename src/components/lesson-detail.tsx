@@ -87,6 +87,25 @@ function LessonDetail() {
     const [listComment, setListComment] = useState<IComment[] | []>([]);
     const [totalWatchedTime, setTotalWatchedTime] = useState(0);
     const navigator = useNavigate();
+    useEffect(() => {
+        const fetchDK = async () => {
+            try {
+                const res = await startCourse(Number(courseId));
+                if (res && res.data) {
+                    if (res.data.already == true) {
+                        console.log("111");
+                    }
+                    else {
+                        notification.success({ message: "Đăng kí học thành công" });
+                    }
+                }
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+        fetchDK();
+    }, [])
     const fetch = async () => {
         try {
             const res = await getCourseDetail(Number(courseId));
@@ -98,20 +117,6 @@ function LessonDetail() {
                     if (les.id === Number(lessonId)) {
                         if (index == 0) {
                             setLesson(les);
-                            try {
-                                const res = await startCourse(Number(courseId));
-                                if (res && res.data) {
-                                    if (res.data.already == true) {
-                                        console.log();
-                                    }
-                                    else {
-                                        message.success("Đăng kí học thành công");
-                                    }
-                                }
-                            }
-                            catch (error) {
-                                console.log(error)
-                            }
                             if (les.isQuestion) {
                                 const resq = await getDetailQuestionLesson(les.questionId);
                                 if (resq && resq.data) {

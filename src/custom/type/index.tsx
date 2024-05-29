@@ -9,12 +9,14 @@ export interface ICourse {
     description: string,
     image: string,
     progress?: number,
-    time?: number,
-    countUser?: number,
+    totalTime?: string,
+    // countUser?: number,
     id: number
     level_required: number,
     lessons?: ILesson[],
-    createdAt?: Date
+    createdAt?: Date,
+    totalUsers?: number,
+    started: boolean;
 }
 export interface ILesson {
     id: number,
@@ -69,6 +71,7 @@ export interface IQuestion {
     createdAt?: Date;
     level?: number;
     group_question?: IGroupQuestion;
+    image?: string;
 }
 export const CreateNewQuestion = {
     score: 0,
@@ -76,6 +79,7 @@ export const CreateNewQuestion = {
     question: '',
     answers: [] as IAnswer[],
     level: 0,
+    image: ''
 }
 export const CreateNewGroupQuestion = {
     content: '',
@@ -113,7 +117,8 @@ export interface IResult {
         id: number,
         exam_name: string,
         type: string
-    }
+    },
+    totalScore?: number,
 }
 export interface ISubmitExam {
     examId: number;

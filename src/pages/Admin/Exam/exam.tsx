@@ -8,6 +8,7 @@ import { deleteExam, getListExams, searchExam } from "../../../apis";
 import { ColumnType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminExam: React.FC = () => {
@@ -118,11 +119,17 @@ const AdminExam: React.FC = () => {
             key: '5',
             title: 'Bắt đầu từ',
             dataIndex: 'startAt',
+            render: (a: IExam) => {
+                return <>{dayjs(a.startAt).format('DD/MM/YYYY')}</>
+            }
         },
         {
             key: '6',
             title: 'Kết thúc vào',
             dataIndex: 'endAt',
+            render: (a: IExam) => {
+                return <>{dayjs(a.endAt).format('DD/MM/YYYY')}</>
+            }
         },
         {
             key: '7',
@@ -131,6 +138,11 @@ const AdminExam: React.FC = () => {
         },
         {
             key: '8',
+            title: 'Điểm',
+            dataIndex: 'totalScore',
+        },
+        {
+            key: '9',
             title: 'Create at',
             dataIndex: 'createdAt',
             sorter: (a: IExam, b: IExam) => {
@@ -141,6 +153,9 @@ const AdminExam: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: IExam) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {

@@ -354,7 +354,7 @@ export const updateAnswer = async (id: number, answerU: type.IAnswer) => {
     return { data };
 }
 export const addAnswer = async (answer: type.IAnswer, questionId: number) => {
-    const { data } = await axios.post(`${backEndUrl}/answer`, { ...answer, questionId, is_true: false });
+    const { data } = await axios.post(`${backEndUrl}/answer`, { ...answer, questionId });
     return { data };
 }
 export const deleteAnswer = async (id: number) => {
@@ -485,7 +485,7 @@ export const searchNews = async (search: string) => {
     const { data } = await axios.post(`${backEndUrl}/news/search`, { search });
     return { data };
 }
-export const creatNewNews = async (news: type.INews) => {
+export const createNewNews = async (news: type.INews) => {
     const { data } = await axios.post(`${backEndUrl}/news`, { ...news });
     return { data };
 }

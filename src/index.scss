@@ -72,3 +72,9 @@
     padding-bottom: 23px;
     line-height: 0;
 }
+.ant-empty-image {
+    height: 50px !important;
+    svg {
+        height: 50px !important;
+    }
+}

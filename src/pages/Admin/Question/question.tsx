@@ -10,6 +10,7 @@ import { backEndUrl, deleteLesson, deleteQuestion, getAllGroupQuestion, getAllQu
 import { ColumnType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminQuestion: React.FC = () => {
@@ -157,6 +158,9 @@ const AdminQuestion: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: IQuestion) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {
@@ -280,7 +284,7 @@ const AdminQuestion: React.FC = () => {
                                         setPage(page);
                                         setPageSize(pageSize);
                                     },
-                                    // showSizeChanger: true,
+                                    showSizeChanger: false,
                                     showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
                                 }}
                             >

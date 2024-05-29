@@ -122,13 +122,13 @@ function Vocabulary() {
                     >
                         <Input
                             value={newList?.name}
-                            onChange={(e) => setNewList(prevState => ({ ...prevState, name: e.target.value }))}
+                            onChange={(e) => setNewList(prevState => ({ ...prevState!, name: e.target.value }))}
                             className="custom-input"
                             placeholder="Nhập tên danh sách từ"
                         />
                     </Form.Item>
                     <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea value={newList?.description} onChange={(e) => setNewList(prev => ({ ...prev, description: e.target.value }))} className="custom-textarea" placeholder="Nhập mô tả (không bắt buộc)" />
+                        <Input.TextArea value={newList?.description} onChange={(e) => setNewList(prev => ({ ...prev!, description: e.target.value }))} className="custom-textarea" placeholder="Nhập mô tả (không bắt buộc)" />
                     </Form.Item>
                 </Form>
             </Modal>

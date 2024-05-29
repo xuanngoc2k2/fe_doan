@@ -1,70 +1,84 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useParams } from "react-router-dom";
-import { Button, Collapse, Form, GetProp, Input, notification, Popconfirm, Radio, Select, Space, theme, Upload, UploadFile, UploadProps } from "antd";
+import { Button, Collapse, Form, GetProp, Input, notification, Popconfirm, Radio, Select, Space, Tag, theme, Upload, UploadFile, UploadProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
 // import { callUploadAudio, callUploadSingleFile } from "../../../apis";
-import { CreateNewGroupQuestion, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
+import { CreateNewGroupQuestion, IAnswer, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
 import { DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-import { adminGetListQuestionExam, backEndUrl, createNewExam, getAllGroupQuestion, getAllQuestionByGroupQuestion, getExamById, getListQuestionOfExam, updateExam } from "../../../apis";
+import { adminGetListQuestionExam, backEndUrl, createNewExam, getAllGroupQuestion, getAllQuestionByGroupQuestion, getAnswer, getExamById, getListQuestionOfExam, updateExam } from "../../../apis";
 import { DatePicker } from 'antd';
 import type { DatePickerProps, GetProps } from 'antd';
 import dayjs from 'dayjs';
+import ModalAnswer from "../Question/modal-answer";
+
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 const { RangePicker } = DatePicker;
 
 const AdminExamDetail: React.FC = () => {
     type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+    const [dataEditAnswer, setDataEditAnswer] = useState<IAnswer | null>();
     const [fileListAudio, setFileListAudio] = useState<UploadFile[]>();
     const [fileListImage, setFileListImage] = useState<UploadFile[] | []>();
     const [dataListGroupQuestion, setDataListGroupQuestion] = useState<IGroupQuestion[] | []>([]);
     const [addNew, setAddNew] = useState<boolean[]>([false]);
     const [groupQuestions, setGroupQuestions] = useState<IGroupQuestion[]>([{ ...CreateNewGroupQuestion } as IGroupQuestion]);
+    const [open, setOpen] = useState(false);
     const [exam, setExam] = useState<IExam | null>();
     const { id } = useParams();
     const [form] = Form.useForm();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const res = await getAllGroupQuestion();
-                if (res && res.data) {
-                    setDataListGroupQuestion(res.data);
-                }
-                if (id != 'create-new' && id != '' && !isNaN(Number(id))) {
-                    const resExam = await adminGetListQuestionExam(Number(id)!);
-                    if (resExam && resExam.data) {
-                        setExam(resExam.data)
-                        setGroupQuestions(resExam.data.examGrquestions)
-                        form.setFieldValue('exam_name', resExam.data.exam_name)
-                        form.setFieldValue('exam_duration', resExam.data.duration)
-                        form.setFieldValue('exam_type', resExam.data.type)
-                        form.setFieldValue('exam_desc', resExam.data.description)
-                        form.setFieldValue('group_question-0', resExam.data.examGrquestions[0].content)
-                        form.setFieldValue('type_question_0', resExam.data.examGrquestions[0].type)
-                        form.setFieldValue('des_groupquestion_0', resExam.data.examGrquestions[0].description)
-                        form.setFieldValue('exam_date', [dayjs(resExam.data.startAt), dayjs(res.data.endAt)]);
+    const [score, setScore] = useState<number>(0);
+    const fetch = async () => {
+        try {
+            const res = await getAllGroupQuestion();
+            if (res && res.data) {
+                setDataListGroupQuestion(res.data);
+            }
+            if (id != 'create-new' && id != '' && !isNaN(Number(id))) {
+                const resExam = await adminGetListQuestionExam(Number(id)!);
+                if (resExam && resExam.data) {
+                    setExam(resExam.data)
+                    setGroupQuestions(resExam.data.examGrquestions)
+                    form.setFieldValue('exam_name', resExam.data.exam_name)
+                    form.setFieldValue('exam_duration', resExam.data.duration)
+                    form.setFieldValue('exam_type', resExam.data.type)
+                    form.setFieldValue('exam_desc', resExam.data.description)
+                    form.setFieldValue('group_question-0', resExam.data.examGrquestions[0].content)
+                    form.setFieldValue('type_question_0', resExam.data.examGrquestions[0].type)
+                    form.setFieldValue('des_groupquestion_0', resExam.data.examGrquestions[0].description)
+                    form.setFieldValue('exam_date', [dayjs(resExam.data.startAt), dayjs(res.data.endAt)]);
+                    if (resExam.data.examGrquestions) {
+                        countScore(resExam.data.examGrquestions)
                     }
                 }
-                // else {
-                //     notification.error({
-                //         message: "Đã xảy ra lỗi lấy dữ liệu"
-                //     })
-                // }
-                // }
-            }
-            catch (error) {
-                notification.error({
-                    message: String(error)
-                })
             }
         }
+        catch (error) {
+            notification.error({
+                message: String(error)
+            })
+        }
+    }
+    useEffect(() => {
         fetch();
     }, [id])
+    useEffect(() => {
+        countScore(groupQuestions)
+    }, [groupQuestions])
+    const countScore = (groupQuestions: IGroupQuestion[]) => {
+        setScore(0)
+        groupQuestions.forEach((gr: IGroupQuestion) => {
+            gr.questions.forEach((question: IQuestion) => {
+                setScore((prev) => prev += question.score);
+            });
+        });
+    }
+    // console.log(score);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -95,6 +109,13 @@ const AdminExamDetail: React.FC = () => {
         newFile.status = 'done';
         setFileListAudio([newFile]);
     };
+    const handleCancel = () => {
+        setOpen(false);
+        setDataEditAnswer(null);
+    }
+    const handleSubmitAnswer = (an: IAnswer, isEdit: boolean) => {
+        fetch();
+    }
     // const uploadFile = async (file: UploadFile, audio?: boolean) => {
     //     const uploadedFile = file.originFileObj as File;
     //     if (uploadedFile != null) {
@@ -128,7 +149,6 @@ const AdminExamDetail: React.FC = () => {
             return updatedAddNew;
         });
         form.setFieldValue(`group_question-${indexGr}`, null);
-        console.log(groupQuestions)
     };
     const handleReset = async (idGroup: number) => {
         const res = await getAllQuestionByGroupQuestion(idGroup);
@@ -153,8 +173,9 @@ const AdminExamDetail: React.FC = () => {
         //     return updatedAddNew;
         // });
     }
+    console.log(groupQuestions);
     const handleRemoveGr = (indexGr: number) => {
-        if (indexGr == 0) {
+        if (indexGr == 0 && groupQuestions.length == 1) {
             notification.error({
                 message: "Không thể xóa hết"
             })
@@ -217,6 +238,21 @@ const AdminExamDetail: React.FC = () => {
     const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
         // console.log('onOk: ', value);
     };
+    const handleEditAnswer = async (id: number) => {
+        try {
+            const res = await getAnswer(id);
+            if (res && res.data) {
+                setDataEditAnswer(res.data);
+            }
+            else {
+                setDataEditAnswer(null);
+            }
+        }
+        catch {
+            console.log("lỗi")
+        }
+        setOpen(true)
+    }
     return (
         <Content style={{ padding: '0 48px', marginBottom: 20 }}>
             <div
@@ -307,6 +343,22 @@ const AdminExamDetail: React.FC = () => {
                                 <Select.Option value={`EPS`}>EPS</Select.Option>
                             </Select>
                         </Form.Item>
+                        <Tag color="red" style={
+                            {
+                                marginTop: -20,
+                                marginLeft: 20,
+                                borderRadius: '50%',
+                                width: 70,
+                                height: 70,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }
+                        }>
+                            <b>Điểm</b>
+                            <h3>{score}</h3>
+                        </Tag>
                     </div>
                     <Form.Item
                         name={`exam_desc`}
@@ -406,7 +458,7 @@ const AdminExamDetail: React.FC = () => {
                                         getValueFromEvent={normFile}
                                     >
                                         <div style={{ display: 'flex' }}>
-                                            {groupQuestion?.image && !addNew[indexGr] && <img src={backEndUrl + '/images/question/' + groupQuestion.image} />}
+                                            {groupQuestion?.image && !addNew[indexGr] && <img width={600} src={backEndUrl + '/images/question/' + groupQuestion.image} />}
                                             {addNew[indexGr] && <Upload
                                                 name="image"
                                                 maxCount={1}
@@ -451,9 +503,12 @@ const AdminExamDetail: React.FC = () => {
                                                             <Collapse accordion>
                                                                 <Collapse.Panel
                                                                     key={question?.id}
-                                                                    header={<h3>Câu hỏi: {question?.question}</h3>}
+                                                                    header={<h3>Câu hỏi: {question?.question} <Tag color="cyan">({question.score} 점)</Tag></h3>}
                                                                 >
                                                                     <div>
+                                                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                            {question.image && <img width={500} src={`${backEndUrl}/images/question/${question.image}`} />}
+                                                                        </div>
                                                                         {question?.answers.map((answer, index) => (
                                                                             <div key={index} style={{
                                                                                 display: 'flex',
@@ -475,9 +530,10 @@ const AdminExamDetail: React.FC = () => {
                                                                                                 color: '#ffa500',
                                                                                             }}
                                                                                             onClick={() => {
+                                                                                                handleEditAnswer(answer.id);
                                                                                             }}
                                                                                         />
-                                                                                        <Popconfirm
+                                                                                        {/* <Popconfirm
                                                                                             placement="leftTop"
                                                                                             title={"Xác nhận xóa bài học"}
                                                                                             description={"Bạn có chắc chắn muốn xóa bài học này ?"}
@@ -493,7 +549,7 @@ const AdminExamDetail: React.FC = () => {
                                                                                                     }}
                                                                                                 />
                                                                                             </span>
-                                                                                        </Popconfirm>
+                                                                                        </Popconfirm> */}
                                                                                     </Space>
                                                                                 </div>
                                                                             </div>
@@ -517,6 +573,9 @@ const AdminExamDetail: React.FC = () => {
                     </div>
                 </Form>
             </div>
+            {open && <ModalAnswer
+                handleSubmitAnswer={handleSubmitAnswer}
+                data={dataEditAnswer} open={open} handleCancel={handleCancel} />}
         </Content >
     );
 }

@@ -8,7 +8,9 @@ import { useEffect, useState } from "react";
 import { ICourse } from "../../../custom/type";
 import { backEndUrl, callDeleteCourse, getCourseDetail, getCourseWithLessons, getListCourses, searchCourse } from "../../../apis";
 import ModalCourse from "./modal-course";
+import { render } from "react-dom";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminCourse: React.FC = () => {
@@ -159,6 +161,9 @@ const AdminCourse: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: ICourse) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {

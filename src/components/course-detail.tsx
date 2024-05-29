@@ -1,11 +1,12 @@
-import { Button, Card, message, Tooltip } from "antd";
+import { Button, Card, message, Tag, Tooltip } from "antd";
 // import { useParams } from "react-router-dom";
 import './styles/course-detail.scss'
 import ListLesson from "./list-lesson";
 import { useNavigate, useParams } from "react-router-dom";
-import { backEndUrl, getCourseDetail, startCourse } from "../apis";
+import { backEndUrl, getCourseDetail } from "../apis";
 import { useEffect, useState } from "react";
 import { ICourse } from "../custom/type";
+import { FieldTimeOutlined } from "@ant-design/icons";
 
 function CourseDetail() {
     const { id } = useParams();
@@ -48,15 +49,6 @@ function CourseDetail() {
         return lastLesson;
     }
     const handleStartCourse = async () => {
-        try {
-            const res = await startCourse(Number(id));
-            if (res && res.data) {
-                message.success("Đăng kí học thành công");
-            }
-        }
-        catch (error) {
-            console.log(error)
-        }
         nav(`/lesson/${id}/${lastLesson()}`);
     }
     return (
@@ -71,7 +63,8 @@ function CourseDetail() {
                             <img src={`${backEndUrl}/images/course/${dataCourse.image}`} />
                             <p>{dataCourse.description.length > 120 ? <Tooltip placement="bottomRight" title={dataCourse.description}>{truncateDescription(dataCourse.description, 120)}</Tooltip> : dataCourse.description}</p>
                         </div>
-                        <Button type="primary" onClick={handleStartCourse}>{(lastLesson() == 1) ? "Bắt đầu" : "Tiếp tục"}</Button>
+                        <Button type="primary" onClick={handleStartCourse}>{!dataCourse.started ? "Bắt đầu" : "Tiếp tục"}</Button>
+                        <Tag className="course-totalTime" color='geekblue' style={{ display: 'flex', marginInlineEnd: 0 }}><FieldTimeOutlined style={{ color: '#1677ff', fontSize: 20 }} /> <p style={{ fontSize: 14, fontWeight: 500, margin: 3 }}>{dataCourse.totalTime}</p></Tag>
                     </Card>
                 </div>
             }</>

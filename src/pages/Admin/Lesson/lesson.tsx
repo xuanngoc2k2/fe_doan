@@ -10,6 +10,7 @@ import { backEndUrl, callDeleteCourse, deleteLesson, getCourseDetail, getLesson,
 import { ColumnType } from "antd/es/table";
 import ModalLesson from "./modal-lesson";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminLesson: React.FC = () => {
@@ -122,7 +123,7 @@ const AdminLesson: React.FC = () => {
         },
         {
             key: '4',
-            title: 'Content',
+            title: 'Thumbnail',
             dataIndex: 'thumbnail',
             render: (_: any, record: ILesson) => (
                 <a href={`${backEndUrl}/video/${record.content}`} target="_blank">
@@ -171,6 +172,9 @@ const AdminLesson: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: ILesson) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {

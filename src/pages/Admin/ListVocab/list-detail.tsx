@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, notification, Popconfirm, Select, Space, Table, Tag, theme } from "antd"
+import { Button, Empty, Form, Input, message, notification, Popconfirm, Select, Space, Table, Tag, theme } from "antd"
 import { Content } from "antd/es/layout/layout";
 import { Option } from "antd/es/mentions";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import ModalVocab from "../Vocabulary/modal-vocab";
 import { useParams } from "react-router-dom";
 import ModalListVocab from "./modal-list-vocab";
 // import { ActionType } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 
 const AdminListDetail: React.FC = () => {
@@ -154,7 +155,11 @@ const AdminListDetail: React.FC = () => {
             title: 'Hình ảnh',
             dataIndex: 'image',
             render: (image: string) => {
-                return <img width={100} src={backEndUrl + '/images/vocabulary/' + image} />
+                return image ? (
+                    <img width={100} src={`${backEndUrl}/images/vocabulary/${image}`} />
+                ) : (
+                    <Empty style={{ width: 100 }} />
+                );
             }
         },
         {
@@ -177,6 +182,9 @@ const AdminListDetail: React.FC = () => {
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: IVocabulary) => {
+                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
             }
         },
         {

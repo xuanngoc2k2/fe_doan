@@ -11,11 +11,16 @@
     background-color: rgba(128, 128, 128, 0.1);
     box-shadow: 0 20px 40px #047ecf7b;
     border: 1px solid #ccc;
-
+    position: relative;
     .ant-card-head {
         font-size: 20px;
         font-weight: 700;
         border-bottom: 2px solid #ccc;
+    }
+    .course-totalTime {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
     }
 }
 .course-detail-lesson {
