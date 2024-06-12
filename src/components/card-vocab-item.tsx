@@ -45,7 +45,7 @@ function CardVocabItem({ word, handelRemove }: { word: IVocabulary, handelRemove
     return (<>
         <div className='vocab-info'>
             <div className='vocab-detail'>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="vocabulary" style={{ display: 'flex', alignItems: 'center' }}>
                     <h1 className='vocab-title'>{word.word}</h1>
                     <p className='vocab-pronunciation'>[{word.spell}] </p>
                     <PlayCircleOutlined onClick={handleClick} style={{ fontSize: 20, marginLeft: 10, color: '#4096ff', cursor: 'pointer' }} />

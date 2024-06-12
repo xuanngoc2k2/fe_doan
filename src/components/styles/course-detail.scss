@@ -56,3 +56,20 @@
         margin-top: 10px;
     }
 }
+
+@media (max-width: 1280px) {
+    .course-detail {
+        flex-direction: column !important;
+        align-items: center !important;
+
+        .course-detail-lesson,
+        .course-detail-demo {
+            width: 80%;
+            max-height: fit-content;
+        }
+        .course-detail-demo img {
+            height: 400px;
+            object-fit: cover;
+        }
+    }
+}

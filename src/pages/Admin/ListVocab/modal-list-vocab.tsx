@@ -10,6 +10,7 @@ import {
 } from "../../../apis";
 import Table, { ColumnType } from "antd/es/table";
 import { Option } from "antd/es/mentions";
+import dayjs from 'dayjs';
 
 function ModalListVocab({ open, handelCancel, idList }: { open: boolean, handelCancel: () => void, idList?: number }) {
     const [page, setPage] = useState(1);
@@ -148,7 +149,8 @@ function ModalListVocab({ open, handelCancel, idList }: { open: boolean, handelC
         },
         {
             key: '7',
-            title: 'Create at',
+            width: 110,
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             sorter: (a: IVocabulary, b: IVocabulary) => {
                 if (a.createdAt! < b.createdAt!) {
@@ -158,6 +160,10 @@ function ModalListVocab({ open, handelCancel, idList }: { open: boolean, handelC
                     return 1;
                 }
                 return 0;
+            },
+            render: (a: string) => {
+                console.log(a);
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         }
     ]

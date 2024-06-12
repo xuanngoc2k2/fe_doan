@@ -1,0 +1,18 @@
+@media (max-width: 760px) {
+    .question-vocab-ans {
+        width: 90% !important;
+        padding: 3px !important;
+        // height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .flashcard-list-container .question-btn {
+        font-size: 16px !important;
+        div:nth-child(2) {
+            span {
+                margin-left: 3px !important;
+            }
+        }
+    }
+}

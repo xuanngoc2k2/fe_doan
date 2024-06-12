@@ -137,7 +137,7 @@ function FlashcardList() {
     };
     return (<div className="flashcard-list-container">
         <Row>
-            <Col span={8} offset={4}>
+            <Col md={{ span: 10, offset: 4 }} xs={{ span: 18, offset: 2 }} >
                 <div className="home-title">{listVocabDetail?.name}</div>
             </Col>
         </Row>

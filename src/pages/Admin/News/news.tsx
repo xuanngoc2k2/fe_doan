@@ -122,8 +122,9 @@ const AdminNews: React.FC = () => {
         },
         {
             key: '4',
-            title: 'Create at',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
+            width: 110,
             sorter: (a: INews, b: INews) => {
                 if (a.createdAt! < b.createdAt!) {
                     return -1;
@@ -133,8 +134,8 @@ const AdminNews: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: INews) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

@@ -20,6 +20,7 @@ function ModalVocab({ data, open, handelCancel, idList }: { data?: IVocabulary |
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [dataVocab, setDataVocab] = useState<IVocabulary | undefined>();
+    const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>(
         (data && data.image) ? [
             {
@@ -45,6 +46,13 @@ function ModalVocab({ data, open, handelCancel, idList }: { data?: IVocabulary |
         if (uploadedFile != null) {
             try {
                 setUploading(true);
+                const imageExtensions = /\.(jpg|jpeg|png|gif)$/i;
+                const isImage = imageExtensions.test(uploadedFile.name);
+                if (!isImage) {
+                    notification.error({ message: "Chỉ cho phép upload file hình ảnh dạng ['jpg', 'jpeg', 'png', 'gif']!" });
+                    setUploading(false);
+                    return null;
+                }
                 const res = await callUploadSingleFile(uploadedFile, 'vocabulary');
                 if (res.fileName) {
                     const courseInfo = { ...(dataVocab || {}), image: res.fileName } as ICourse;
@@ -79,50 +87,59 @@ function ModalVocab({ data, open, handelCancel, idList }: { data?: IVocabulary |
         }
     }, [])
     const handleSumbit = async () => {
-        if (!data) {
-            let newVocab = dataVocab; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
-
-            if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                newVocab = await upImage(fileList[0]) || newVocab; // Nếu upImage trả về null, giữ nguyên userInfo
-            }
-            let res = null;
-            if (idList) {
-                res = await createNewVocab(newVocab!, idList!);
-            }
-            else {
-                res = await createNewVocab(newVocab!);
-            }
-            if (res && res.data) {
-                notification.success({
-                    message: "Tạo mới thành công"
-                })
-                handelCancel()
-            }
-            else {
-                notification.error({
-                    message: "Đã xảy ra lỗi thêm"
-                })
-            }
-        }
-        else {
-            let dataUpdateVocab = dataVocab; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
-            if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                dataUpdateVocab = await upImage(fileList[0]) || dataUpdateVocab; // Nếu upImage trả về null, giữ nguyen userInfo
-            }
-            const res = await updateVocab(dataUpdateVocab!.id!, dataUpdateVocab!);
-            if (res && res.data) {
-                notification.success({
-                    message: "Cập nhật thành công"
-                })
-                handelCancel()
+        try {
+            await form.validateFields();
+            if (!data) {
+                let newVocab = dataVocab; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
+                console.log(newVocab);
+                if (newVocab) {
+                    if (fileList[0] && fileList[0].originFileObj) {
+                        // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
+                        newVocab = await upImage(fileList[0]) || newVocab; // Nếu upImage trả về null, giữ nguyên userInfo
+                    }
+                    let res = null;
+                    if (idList) {
+                        res = await createNewVocab(newVocab!, idList!);
+                    }
+                    else {
+                        res = await createNewVocab(newVocab!);
+                    }
+                    if (res && res.data) {
+                        notification.success({
+                            message: "Tạo mới thành công"
+                        })
+                        handelCancel()
+                    }
+                    else {
+                        notification.error({
+                            message: "Đã xảy ra lỗi thêm"
+                        })
+                    }
+                }
             }
             else {
-                notification.error({
-                    message: "Đã xảy ra lỗi cập nhật"
-                })
+                let dataUpdateVocab = dataVocab; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
+                if (dataUpdateVocab) {
+                    if (fileList[0] && fileList[0].originFileObj) {
+                        // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
+                        dataUpdateVocab = await upImage(fileList[0]) || dataUpdateVocab; // Nếu upImage trả về null, giữ nguyen userInfo
+                    }
+                    const res = await updateVocab(dataUpdateVocab!.id!, dataUpdateVocab!);
+                    if (res && res.data) {
+                        notification.success({
+                            message: "Cập nhật thành công"
+                        })
+                        handelCancel()
+                    }
+                    else {
+                        notification.error({
+                            message: "Đã xảy ra lỗi cập nhật"
+                        })
+                    }
+                }
             }
+        } catch (errorInfo) {
+            console.error("Failed:", errorInfo);
         }
     }
     return (
@@ -132,14 +149,16 @@ function ModalVocab({ data, open, handelCancel, idList }: { data?: IVocabulary |
             open={open}
             footer={false}
         >
-            <Form layout="vertical" initialValues={{
-                word_name: data?.word || '',
-                word_meaning: data?.meaning || '',
-                level: data?.level && String(data?.level) || undefined,
-                partOfSpeech: data?.partOfSpeech || '',
-                spell: data?.spell || '',
-                example: data?.example || '',
-            }}>
+            <Form
+                form={form}
+                layout="vertical" initialValues={{
+                    word_name: data?.word || '',
+                    word_meaning: data?.meaning || '',
+                    level: data?.level && String(data?.level) || undefined,
+                    partOfSpeech: data?.partOfSpeech || '',
+                    spell: data?.spell || '',
+                    example: data?.example || '',
+                }}>
                 <Form.Item
                     style={{ marginBottom: 0 }}
                     label="Từ mới"

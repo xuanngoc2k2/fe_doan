@@ -26,12 +26,6 @@ function Profile() {
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [dataUpdatePass, setDataUpdatePass] = useState<{ pass: string, newPass: string }>();
-    const handleClick = () => {
-        if (crRef.current) {
-            console.log(crRef.current.innerSlider.state.currentSlide)
-            crRef.current.goTo(isActive == 0 ? 1 : 0)
-        }
-    }
     const fetchUserInfo = async () => {
         try {
             const res = await getInfoUser();
@@ -61,7 +55,6 @@ function Profile() {
             fetchUserInfo();
         }
     }, [userInfo, isLoading]);
-
     const dateFormat = 'DD-MM-YYYY';
     dayjs.extend(customParseFormat);
     // Chuyển đổi định dạng ngày
@@ -110,9 +103,6 @@ function Profile() {
         }
         return null; // Trả về null nếu có lỗi xảy ra
     };
-
-
-
     const handleUpdate = async () => {
         try {
             let updatedUserInfo = userInfo; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
@@ -155,6 +145,23 @@ function Profile() {
 
         } catch {
             message.error("Lỗi")
+
+        } finally {
+            setIsLoading(false); // Kết thúc quá trình loading dữ liệu
+        }
+    }
+    const handleClick = (index: number) => {
+        console.log(index, crRef.current?.innerSlider.state.currentSlide);
+        console.log(crRef.current?.innerSlider.state.currentSlide == index)
+        if (crRef.current?.innerSlider.state.currentSlide == index) {
+            return;
+        }
+        else {
+            console.log(crRef);
+            if (crRef.current) {
+                crRef.current.goTo(index)
+            }
+            setIsActive(index);
         }
     }
     return (
@@ -162,14 +169,13 @@ function Profile() {
             <div className='profile-content'>
                 <div className='profile-btn-option'>
                     <div onClick={() => {
-                        setIsActive(0);
-                        handleClick()
+                        handleClick(0)
                     }}
                         style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
                         className={`btn-option ${isActive == 0 ? 'active' : ''}`}>
                         <p>Thông tin cá nhân</p>
                     </div>
-                    <div onClick={() => { setIsActive(1); handleClick() }}
+                    <div onClick={() => { handleClick(1) }}
                         style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}
                         className={`btn-option ${isActive == 1 ? 'active' : ''}`}>
                         <p>Đổi mật khẩu</p>
@@ -216,7 +222,7 @@ function Profile() {
                                         label="Họ và tên"
                                         rules={[{ required: true, message: 'Họ tên không được để trống!' }]}
                                         name="fullName"
-                                        className="custom-input"
+                                        className="custom-input-info"
                                     >
                                         <Input
                                             size='large'
@@ -229,7 +235,7 @@ function Profile() {
                                     <Form.Item
                                         label="Số điện thoại"
                                         name="phone"
-                                        className="custom-input"
+                                        className="custom-input-info"
                                         rules={[{ required: true, message: 'Số điện thoại không được để trống!' }]}
                                     >
                                         <Input
@@ -240,48 +246,51 @@ function Profile() {
                                             }}
                                         />
                                     </Form.Item>
-                                    <div>
-
-                                    </div>
                                     <Form.Item
                                         label="Email"
                                         name="email"
-                                        className="custom-input"
+                                        className="custom-input-info"
                                     >
                                         <Input
                                             disabled
                                             size='large'
                                         />
                                     </Form.Item>
-                                    <Form.Item
-                                        label="Level"
-                                        name="level"
-                                    >
-                                        <Input
-                                            disabled
-                                            size='large'
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        style={{ marginLeft: 50 }}
-                                        label="Ngày sinh"
-                                        name="birthday"
-                                    >
+                                    <div className='infor-level-date'>
+                                        <Form.Item
+                                            label="Level"
+                                            name="level"
+                                            className='custom-input-info'
+                                        >
+                                            <Input
+                                                disabled
+                                                size='large'
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            style={{ marginLeft: '5%' }}
+                                            label="Ngày sinh"
+                                            name="birthday"
+                                            className='custom-input-info'
+                                        >
 
-                                        <DatePicker
-                                            allowClear={false}
-                                            onChange={(value) => {
-                                                if (value) {
-                                                    setUserInfo((prev: IUser | null) => ({ ...prev!, date_of_birth: value.toDate() }));
-                                                }
-                                            }}
-                                            size='large'
-                                            defaultValue={dayjs(dayjs(userInfo.date_of_birth, { format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }).format('DD-MM-YYYY'), dateFormat)}
-                                            format={dateFormat} />
-                                    </Form.Item>
-                                    <Form.Item style={{ position: 'absolute', bottom: 0, right: 10 }}>
-                                        <Button type="primary" htmlType="submit" onClick={handleUpdate}>Cập nhật</Button>
-                                    </Form.Item>
+                                            <DatePicker
+                                                allowClear={false}
+                                                onChange={(value) => {
+                                                    if (value) {
+                                                        setUserInfo((prev: IUser | null) => ({ ...prev!, date_of_birth: value.toDate() }));
+                                                    }
+                                                }}
+                                                size='large'
+                                                defaultValue={dayjs(dayjs(userInfo.date_of_birth, { format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }).format('DD-MM-YYYY'), dateFormat)}
+                                                format={dateFormat} />
+                                        </Form.Item>
+                                    </div>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Form.Item>
+                                            <Button type="primary" htmlType="submit" onClick={handleUpdate}>Cập nhật</Button>
+                                        </Form.Item>
+                                    </div>
                                 </Form> : <></>}
                             </div>
                         </Card>
@@ -350,9 +359,11 @@ function Profile() {
                                         size='large'
                                     />
                                 </Form.Item>
-                                <Form.Item style={{ position: 'absolute', bottom: 0, right: 10 }}>
-                                    <Button type="primary" htmlType="submit" onClick={handleUpdatePass}>Cập nhật</Button>
-                                </Form.Item>
+                                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Form.Item>
+                                        <Button type="primary" htmlType="submit" onClick={handleUpdatePass}>Cập nhật</Button>
+                                    </Form.Item>
+                                </div>
                             </Form>
                         </Card>
                     </div>

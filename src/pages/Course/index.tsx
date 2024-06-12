@@ -40,13 +40,13 @@ function Course() {
     return (
         <div style={{ marginBottom: 20 }}>
             <Row>
-                <Col span={2} offset={4}>
+                <Col span={10} offset={4}>
                     <div className="home-title">Khóa học</div>
                 </Col>
             </Row>
             <Row className="course-list-item">
                 {currentCourses.map((c) => {
-                    return <Col span={5} className="course-item">
+                    return <Col xs={{ span: 20 }} sm={{ span: 10 }} xl={{ span: 5 }} className="course-item">
                         <CardCourse course={c} />
                     </Col>
                 })}

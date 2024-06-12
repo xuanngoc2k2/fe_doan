@@ -67,7 +67,8 @@ function Register() {
                         </Form.Item>
                         <Form.Item
                             name="email"
-                            rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập email!' },
+                            { type: 'email', message: 'Email không hợp lệ!' },]}
                         >
                             <Input
                                 size="large"
@@ -79,7 +80,9 @@ function Register() {
                         </Form.Item>
                         <Form.Item
                             name="phone_number"
-                            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' },
+                            { pattern: /^\d{10,11}$/, message: 'Số điện thoại không hợp lệ!' },
+                            ]}
                         >
                             <Input
                                 value={user?.phone_number}
@@ -91,7 +94,10 @@ function Register() {
                         </Form.Item>
                         <Form.Item
                             name="username"
-                            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' },
+                            { min: 8, message: 'Tên đăng nhập phải có ít nhất 8 ký tự!' },
+                            { pattern: /^[a-zA-Z0-9_]+$/, message: 'Tên đăng nhập không được chứa ký tự đặc biệt!' },
+                            ]}
                         >
                             <Input
                                 size="large"
@@ -116,7 +122,13 @@ function Register() {
                         </Form.Item>
                         <Form.Item
                             name="password"
-                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' },
+                            { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự!' },
+                            { pattern: /[A-Z]/, message: 'Mật khẩu phải chứa ít nhất một chữ hoa!' },
+                            { pattern: /[a-z]/, message: 'Mật khẩu phải chứa ít nhất một chữ thường!' },
+                            { pattern: /\d/, message: 'Mật khẩu phải chứa ít nhất một chữ số!' },
+                            { pattern: /[@$!%*?&#]/, message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!' },
+                            ]}
                         >
                             <Input.Password
                                 size="large"

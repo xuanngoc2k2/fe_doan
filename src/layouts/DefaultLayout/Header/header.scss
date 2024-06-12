@@ -1,0 +1,31 @@
+.btn-menu {
+    display: none;
+}
+@media (max-width: 450px) {
+    .header-avatar-profile {
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 860px) {
+    .home-menu {
+        display: none !important;
+    }
+    .header-container {
+        justify-content: space-between;
+    }
+    .btn-menu {
+        display: block;
+    }
+    .header-avatar-profile {
+        flex-direction: row !important;
+    }
+    .header-menu {
+        flex-direction: column;
+        border-inline-end: none !important;
+        .menu-submenu {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    }
+}

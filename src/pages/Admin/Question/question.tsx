@@ -148,7 +148,8 @@ const AdminQuestion: React.FC = () => {
         },
         {
             key: '9',
-            title: 'Create at',
+            title: 'Ngày tạo',
+            width: 110,
             dataIndex: 'createdAt',
             sorter: (a: IQuestion, b: IQuestion) => {
                 if (a.createdAt! < b.createdAt!) {
@@ -159,8 +160,8 @@ const AdminQuestion: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: IQuestion) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

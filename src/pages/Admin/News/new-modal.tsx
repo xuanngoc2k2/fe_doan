@@ -54,6 +54,12 @@ function ModalNews({ data, open, handelCancel }: { data?: INews | null; open: bo
         const uploadedFile = file.originFileObj as File;
         if (uploadedFile != null) {
             try {
+                const imageExtensions = /\.(jpg|jpeg|png|gif)$/i;
+                const isImage = imageExtensions.test(uploadedFile.name);
+                if (!isImage) {
+                    notification.error({ message: "Chỉ cho phép upload file hình ảnh dạng ['jpg', 'jpeg', 'png', 'gif']!" });
+                    return null;
+                }
                 const res = await callUploadSingleFile(uploadedFile, 'news');
                 if (res.fileName) {
                     const newInfo = { ...(dataNews || {}), image: res.fileName } as INews;

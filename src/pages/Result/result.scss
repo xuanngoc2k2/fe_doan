@@ -5,7 +5,10 @@
     margin-bottom: 10px;
     padding: 5px;
     .result-score {
-        width: 10%;
+        width: 77px;
+        min-width: 77px;
+        max-height: 77px;
+        height: 77px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -42,6 +45,8 @@
         }
         .result-view-detail {
             width: 20%;
+            min-width: 87px;
+            max-height: 87px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -67,5 +72,23 @@
                 }
             }
         }
+    }
+}
+.col-result {
+    width: 720px;
+    margin-left: 15%;
+}
+@media (max-width: 900px) {
+    .result-container .result-info h1 {
+        font-size: 16px;
+    }
+    .col-result {
+        margin-left: 5%;
+    }
+}
+
+@media (max-width: 600px) {
+    .col-result {
+        margin-left: 0;
     }
 }

@@ -12,3 +12,12 @@
         cursor: pointer;
     }
 }
+
+@media (max-width: 750px) {
+    .vocab-container {
+        width: 80%;
+    }
+    .list-card {
+        justify-content: center !important;
+    }
+}

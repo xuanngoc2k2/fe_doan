@@ -4,7 +4,7 @@ import './styles/lesson-detail.scss'
 // import { Divider } from "antd";
 import { Avatar, Button, Drawer, Input, message, notification, Popconfirm, Space, Tag } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { DeleteOutlined, EditOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, MenuOutlined, PlusOutlined, WechatOutlined } from "@ant-design/icons";
 import AddNode from "./add-note";
 import ReactQuill from "react-quill";
 import {
@@ -78,6 +78,7 @@ function LessonDetail() {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [openCommentDrawer, setOpenCommentDrawer] = useState(false);
     const [openNoteDrawer, setOpenNoteDrawer] = useState(false);
+    const [showMenuList, setshowMenuList] = useState(false);
     const [comment, setComment] = useState('');
     const [showInputComment, setShowInputComment] = useState(false);
     const [listNote, setListNote] = useState<IComment[] | []>([]);
@@ -361,7 +362,7 @@ function LessonDetail() {
     }
     return (
         <>
-            <div className="lesson-detail-container">
+            <div className="lesson-detail-container" style={{ position: 'relative' }}>
                 <div className="lesson-detail-list-lesson">
                     <ListLesson active={Number(lessonId)} courseId={Number(courseId)} lessons={course?.lessons} />
                 </div>
@@ -436,8 +437,8 @@ function LessonDetail() {
                             </div>
                         </div>
                     </div>}
+                <Button className="button-menu-list" onClick={() => setshowMenuList(true)}><MenuOutlined /></Button>
                 {/* Button trao đổi */}
-                <Button className="button-comments" onClick={showDrawerComment}><WechatOutlined /> Trao đổi</Button>
                 <div className="comment-component">
                     {showAddNote && <AddNode handleAddNote={handleAddNote} handelCancel={handelCancel} time={currentTime} />}
                 </div>
@@ -540,8 +541,19 @@ function LessonDetail() {
                         })}
                     </Space>
                 </Drawer>
-                <Button className="button-note" onClick={handleShowNote}><WechatOutlined /> Ghi chú</Button>
+                <Drawer
+                    title=""
+                    placement="left"
+                    width={600}
+                    onClose={() => setshowMenuList(false)}
+                    open={showMenuList}
+                >
+                    <ListLesson active={Number(lessonId)} courseId={Number(courseId)} lessons={course?.lessons} />
+                </Drawer>
             </div >
+            <Button className="button-note" onClick={handleShowNote}><WechatOutlined /> Ghi chú</Button>
+            <Button className="button-comments" onClick={showDrawerComment}><WechatOutlined /> Trao đổi</Button>
+
             {/* <Divider /> */}
         </>);
 }

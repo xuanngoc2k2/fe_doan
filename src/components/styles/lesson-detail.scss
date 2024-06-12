@@ -129,7 +129,8 @@
         margin-left: 10px;
     }
 }
-.button-note {
+.button-note,
+.button-menu-list {
     position: absolute;
     bottom: 15px;
     left: 20px;
@@ -182,5 +183,21 @@
             background-color: #fff1f0;
             color: #cf1322;
         }
+    }
+}
+.button-menu-list {
+    display: none !important;
+}
+@media (max-width: 1024px) {
+    .lesson-detail-list-lesson {
+        display: none;
+    }
+    .lesson-detail-content {
+        width: 100%;
+    }
+    .button-menu-list {
+        display: block !important;
+        top: 0;
+        left: 0;
     }
 }

@@ -16,23 +16,27 @@ function ModalList({ data, open, handelCancel }: { data?: IListVocab | null; ope
     }, []);
     const handleSubmit = async () => {
         if (data) {
-            const res = await updateListVocab(data.id, { name: dataListVocab?.name, description: dataListVocab?.description } as IListVocab);
-            if (res && res.data) {
-                notification.success({ message: "Cập nhật thành công!" })
-                handelCancel();
-            }
-            else {
-                notification.error({ message: "Đã xảy ra lỗi!" })
+            if (dataListVocab?.name.trim() !== '') {
+                const res = await updateListVocab(data.id, { name: dataListVocab?.name, description: dataListVocab?.description } as IListVocab);
+                if (res && res.data) {
+                    notification.success({ message: "Cập nhật thành công!" })
+                    handelCancel();
+                }
+                else {
+                    notification.error({ message: "Đã xảy ra lỗi!" })
+                }
             }
         }
         else {
-            const res = await postNewList(dataListVocab!);
-            if (res && res.data) {
-                notification.success({ message: "Thêm mới thành công!" })
-                handelCancel();
-            }
-            else {
-                notification.error({ message: "Đã xảy ra lỗi!" })
+            if (dataListVocab) {
+                const res = await postNewList(dataListVocab!);
+                if (res && res.data) {
+                    notification.success({ message: "Thêm mới thành công!" })
+                    handelCancel();
+                }
+                else {
+                    notification.error({ message: "Đã xảy ra lỗi!" })
+                }
             }
         }
     }

@@ -29,6 +29,7 @@ import AdminVocabulary from '../pages/Admin/Vocabulary/vocab';
 import AdminNews from '../pages/Admin/News/news';
 import AdminListVocab from '../pages/Admin/ListVocab/list-vocab';
 import AdminListDetail from '../pages/Admin/ListVocab/list-detail';
+import Create_NewQuestion from '../pages/Admin/Question/create-new-question';
 interface Route {
   path: string;
   layout?: ComponentType<{
@@ -44,7 +45,6 @@ const publicRoutes: Route[] = [
   { path: '/course', component: Course },
   { path: '/exams', component: Exam },
   { path: '/vocab', component: Vocabulary },
-  { path: '/vocab-detail/:idList', component: VocabularyDetail },
   { path: '/course/:id', component: CourseDetail },
   { path: '/exams/:typeExam', component: Exams },
   { path: '/exam/:idExam', component: ExamDetail },
@@ -57,6 +57,7 @@ const publicRoutes: Route[] = [
 ];
 const protectedRouter: Route[] = [
   { path: '/flashcards/:idList', component: FlashcardList, },
+  { path: '/vocab-detail/:idList', component: VocabularyDetail },
   { path: '/user', component: Profile, },
   { path: '/result-detail/:resultId', component: ResultDetail, },
   { path: '/result/', component: Result, },
@@ -68,6 +69,7 @@ const privateRoutes: Route[] = [
   { path: '/admin/course', component: AdminCourse, layout: AdminLayout },
   { path: '/admin/question', component: AdminQuestion, layout: AdminLayout },
   { path: '/admin/question/:id', component: QuestionDetail, layout: AdminLayout },
+  { path: '/admin/question/create-new', component: Create_NewQuestion, layout: AdminLayout },
   { path: '/admin/lesson', component: AdminLesson, layout: AdminLayout },
   { path: '/admin/exam', component: AdminExam, layout: AdminLayout },
   { path: '/admin/exam/:id', component: AdminExamDetail, layout: AdminLayout },

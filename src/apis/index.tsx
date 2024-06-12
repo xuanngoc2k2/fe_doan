@@ -109,7 +109,8 @@ export const getAllListVocab = async (search?: string) => {
         return { data }
     }
     else {
-        const { data } = await axios.get(`${backEndUrl}/list-vocab`);
+        const user = await getInfoUser();
+        const { data } = await axios.post(`${backEndUrl}/list-vocab/all`, { user: user.data });
         // const duration = data.data.duration;
         return { data }
     }

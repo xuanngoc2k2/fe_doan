@@ -178,7 +178,7 @@ function VocabularyDetail() {
             <div style={{ minHeight: 600 }}>
                 <div className="vocab-detail-container">
                     <Row>
-                        <Col span={8} offset={4}>
+                        <Col md={{ span: 10, offset: 4 }} xs={{ span: 18, offset: 2 }} >
                             <div className="home-title">{listVocabDetail?.name}</div>
                         </Col>
                     </Row>
@@ -204,7 +204,7 @@ function VocabularyDetail() {
                                     <p>Cần ôn tập</p>
                                 </div>
                             </Card>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
+                            <div className="btn-learn" style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
                                 <Button onClick={handleAddWord} className="btn-add-new-word" type='primary'><PlusOutlined /> Thêm từ mới</Button>
                                 <Button onClick={handleGoToFlashCard} block className="btn-do-flascards">Luyện tập flascards</Button>
                             </div>

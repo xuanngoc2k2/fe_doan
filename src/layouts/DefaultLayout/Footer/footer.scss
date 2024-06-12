@@ -55,3 +55,14 @@
 .footer-divider {
     margin-top: 0px;
 }
+
+@media (max-width: 463px) {
+    .footer-content {
+        flex-direction: column;
+        flex: 0 0 60%;
+    }
+    .footer-logo {
+        margin-left: 20px;
+        width: 30% !important;
+    }
+}

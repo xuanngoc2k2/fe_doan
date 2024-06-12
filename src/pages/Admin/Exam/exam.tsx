@@ -143,7 +143,8 @@ const AdminExam: React.FC = () => {
         },
         {
             key: '9',
-            title: 'Create at',
+            title: 'Ngày tạo',
+            width: 110,
             dataIndex: 'createdAt',
             sorter: (a: IExam, b: IExam) => {
                 if (a.createdAt! < b.createdAt!) {
@@ -154,8 +155,9 @@ const AdminExam: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: IExam) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                console.log(a);
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

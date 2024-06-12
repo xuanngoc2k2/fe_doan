@@ -162,18 +162,11 @@ const AdminVocabulary: React.FC = () => {
                 return <p dangerouslySetInnerHTML={{ __html: example }}></p>
             }
         },
-        // {
-        //     key: '7',
-        //     title: 'List',
-        //     dataIndex: 'course',
-        //     render: (course: ICourse) => {
-        //         return <p>{course ? course.course_name : ''}</p>
-        //     }
-        // },
         {
             key: '8',
-            title: 'Create at',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
+            width: 110,
             sorter: (a: IVocabulary, b: IVocabulary) => {
                 if (a.createdAt! < b.createdAt!) {
                     return -1;
@@ -183,8 +176,8 @@ const AdminVocabulary: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: IVocabulary) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

@@ -49,7 +49,7 @@ export interface IExam {
     createdAt: Date
 }
 export interface IAnswer {
-    id: number;
+    id?: number;
     answer: string;
     is_true?: boolean;
     isImage?: boolean;

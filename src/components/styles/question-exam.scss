@@ -16,6 +16,10 @@
             font-family: 'Nanum Myeongjo', serif;
         }
     }
+    img {
+        width: 500px;
+        max-width: 100%;
+    }
 }
 .list-question-icon {
     position: sticky;
@@ -49,5 +53,14 @@
     }
     button {
         margin: 10px;
+    }
+}
+@media (max-width: 860px) {
+    .question-exam-container {
+        flex-direction: column-reverse;
+    }
+    .list-question-content {
+        margin-left: 10px !important;
+        margin-right: 10px !important;
     }
 }

@@ -172,7 +172,8 @@ const AdminListDetail: React.FC = () => {
         },
         {
             key: '7',
-            title: 'Create at',
+            title: 'Ngày tạo',
+            width: 110,
             dataIndex: 'createdAt',
             sorter: (a: IVocabulary, b: IVocabulary) => {
                 if (a.createdAt! < b.createdAt!) {
@@ -183,8 +184,9 @@ const AdminListDetail: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: IVocabulary) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                console.log(a);
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

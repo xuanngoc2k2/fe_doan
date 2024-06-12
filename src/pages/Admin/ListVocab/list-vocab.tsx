@@ -131,7 +131,7 @@ const AdminListVocab: React.FC = () => {
         },
         {
             key: '5',
-            title: 'Create at',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: (a: IListVocabDetail, b: IListVocabDetail) => {
@@ -143,8 +143,9 @@ const AdminListVocab: React.FC = () => {
                 }
                 return 0;
             },
-            render: (a: IListVocabDetail) => {
-                return <>{dayjs(a.createdAt).format('DD/MM/YYYY')}</>
+            render: (a: string) => {
+                console.log(a);
+                return <>{dayjs(a).format('DD/MM/YYYY')}</>
             }
         },
         {

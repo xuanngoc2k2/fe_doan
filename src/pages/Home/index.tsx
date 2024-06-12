@@ -85,7 +85,7 @@ function Home() {
             {/* {contextHolder} */}
             <div className="home-container">
                 <Row className="home-header">
-                    <Col className="home-carousel" span={10} offset={7}>
+                    <Col className="home-carousel" md={{ span: 10, offset: 7 }} sm={{ span: 24 }}>
                         <Carousel
                             dots={{ "className": "home-carousel-dot" }}
                             style={{ overflow: "hidden", borderRadius: 10 }}
@@ -104,28 +104,25 @@ function Home() {
                 <Row
                     style={{ marginTop: 20 }}
                 >
-                    <Col span={2} offset={4}>
+                    <Col span={10} offset={4}>
                         <div className="home-title">Khóa học</div>
                     </Col>
                 </Row>
-                <Row
-                    style={{ marginLeft: 120 }}
-                >
-                    {listCourse.map((course, index) => {
-                        return <>
-                            <Col style={{ marginBottom: 20 }} span={8} offset={2}>
-                                <CardCourse course={course} key={index} />
-                            </Col>
-                        </>
-                    })}
+                <Row className="home-list-course" style={{ marginLeft: 120 }}>
+                    {listCourse.map((course, index) => (
+                        <Col key={index} style={{ marginBottom: 20 }} lg={{ span: 8, offset: 2 }} md={{ span: 19 }} sm={{ span: 15 }}>
+                            <CardCourse course={course} />
+                        </Col>
+                    ))}
                 </Row>
+
                 <Divider />
                 <Row>
-                    <Col span={2} offset={4}>
+                    <Col span={10} offset={4}>
                         <div className="home-title">Đề thi</div>
                     </Col>
                 </Row>
-                <Row >
+                <Row className="container-home-exam">
                     <Row className="home-exam">
                         {listExam.map((exam, index) => {
                             return <>
@@ -141,7 +138,7 @@ function Home() {
                 </Row>
                 <Divider />
                 <Row>
-                    <Col span={2} offset={4}>
+                    <Col span={10} offset={4}>
                         <div className="home-title">Từ vựng</div>
                     </Col>
                 </Row>

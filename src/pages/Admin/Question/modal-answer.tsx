@@ -84,7 +84,7 @@ function ModalAnswer({
             updateData = { ...updateData, isImage: false } as IAnswer;
         }
         if (data && updateData) {
-            const res = await updateAnswer(updateData.id, updateData);
+            const res = await updateAnswer(updateData.id!, updateData);
             if (res && res.data) {
                 handleSubmitAnswer(updateData, true);
                 handleCancel();

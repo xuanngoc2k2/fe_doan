@@ -45,7 +45,7 @@ function Exams() {
     return (
         <>
             <Row>
-                <Col span={2} offset={4}>
+                <Col span={10} offset={4}>
                     <div className="home-title">Đề thi</div>
                 </Col>
             </Row>

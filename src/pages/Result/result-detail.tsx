@@ -65,6 +65,12 @@ function ResultDetail() {
                             <div key={groupIndex} className='group-question'>
                                 <h3>{groupQuestion.description}</h3>
                                 <p>{groupQuestion.content}</p>
+                                {groupQuestion.audio &&
+                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <audio controls>
+                                            <source src={`${backEndUrl}/audio/${groupQuestion.audio}`} />
+                                        </audio>
+                                    </div>}
                                 {groupQuestion.image && <img width={700} src={`${backEndUrl}/images/question/${groupQuestion.image}`} alt='question' />}
                                 <div className='list-question'>
                                     {groupQuestion.questions.map((question: IQuestion, questionIndex) => {

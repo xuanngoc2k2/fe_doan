@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { deleteList, getAllListVocab, postNewList } from "../../apis";
 import { IListVocab, IListVocabDetail } from "../../custom/type";
 import { useAppSelector } from "../../redux/hook";
+import { useNavigate } from "react-router-dom";
 function Vocabulary() {
     const [showModal, setShowModal] = useState(false);
     const user = useAppSelector((state) => state.account?.user);
     const [newList, setNewList] = useState<IListVocab | null>(null);
     const [listVocabs, setListVocabs] = useState<IListVocabDetail[] | []>([]);
+    const navigator = useNavigate();
     const handleShowModel = () => {
         setShowModal(true);
     }
@@ -44,18 +46,10 @@ function Vocabulary() {
     }
     const fetch = async () => {
         try {
-            // if (user.id != 0) {
             const res = await getAllListVocab();
             if (res.data) {
                 setListVocabs(res.data);
             }
-            // }
-            // else {
-            //     const res = await getListVocabCourses();
-            //     if (res.data) {
-            //         setListVocabs(res.data);
-            //     }
-            // }
         }
         catch {
             alert("Lỗi lấy api")
@@ -88,7 +82,12 @@ function Vocabulary() {
             <div className="vocab-container">
                 <div className="list-card">
                     {/* {user.id != 0 && */}
-                    <div className="create-new-listVocab" onClick={handleShowModel}>
+                    <div className="create-new-listVocab" onClick={() => {
+                        if (user.id == 0) {
+                            navigator('/login');
+                        }
+                        handleShowModel()
+                    }}>
                         <CardVocab />
                     </div>
                     {/* } */}

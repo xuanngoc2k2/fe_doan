@@ -36,12 +36,20 @@ function ModalCourse({ data, open, handelCancel }: { data?: ICourse | null; open
         newFileList.status = 'done';
         setFileList([newFileList]);
     };
+    const [form] = Form.useForm();
 
     const upImage = async (file: UploadFile) => {
         const uploadedFile = file.originFileObj as File;
         if (uploadedFile != null) {
             try {
                 setUploading(true);
+                const imageExtensions = /\.(jpg|jpeg|png|gif)$/i;
+                const isImage = imageExtensions.test(uploadedFile.name);
+                if (!isImage) {
+                    notification.error({ message: "Chỉ cho phép upload file hình ảnh dạng ['jpg', 'jpeg', 'png', 'gif']!" });
+                    setUploading(false);
+                    return null;
+                }
                 const res = await callUploadSingleFile(uploadedFile, 'course');
                 if (res.fileName) {
                     // message.success(`Thành công ${res.fileName}`);
@@ -77,44 +85,47 @@ function ModalCourse({ data, open, handelCancel }: { data?: ICourse | null; open
         }
     }, [])
     const handleSumbit = async () => {
+        await form.validateFields();
         if (!data) {
             let newCourse = dataCourse; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
-
-            if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                newCourse = await upImage(fileList[0]) || newCourse; // Nếu upImage trả về null, giữ nguyên userInfo
-            }
-            const res = await createNewCourse(newCourse!);
-            if (res && res.data) {
-                notification.success({
-                    message: "Tạo mới thành công"
-                })
-                handelCancel()
-            }
-            else {
-                notification.error({
-                    message: "Đã xảy ra lỗi thêm"
-                })
+            if (newCourse) {
+                if (fileList[0] && fileList[0].originFileObj) {
+                    // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
+                    newCourse = await upImage(fileList[0]) || newCourse; // Nếu upImage trả về null, giữ nguyên userInfo
+                }
+                const res = await createNewCourse(newCourse!);
+                if (res && res.data) {
+                    notification.success({
+                        message: "Tạo mới thành công"
+                    })
+                    handelCancel()
+                }
+                else {
+                    notification.error({
+                        message: "Đã xảy ra lỗi thêm"
+                    })
+                }
             }
         }
         else {
-            let dataUpdateCourse = dataCourse; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
-
-            if (fileList[0] && fileList[0].originFileObj) {
-                // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
-                dataUpdateCourse = await upImage(fileList[0]) || dataUpdateCourse; // Nếu upImage trả về null, giữ nguyên userInfo
-            }
-            const res = await updateCourse(dataUpdateCourse!.id, dataUpdateCourse!.course_name, dataUpdateCourse!.description, dataUpdateCourse!.image, Number(dataUpdateCourse!.level_required));
-            if (res && res.data) {
-                notification.success({
-                    message: "Cập nhật thành công"
-                })
-                handelCancel()
-            }
-            else {
-                notification.error({
-                    message: "Đã xảy ra lỗi cập nhật"
-                })
+            let dataUpdateCourse = dataCourse;
+            if (dataUpdateCourse?.course_name.trim() !== '') {
+                if (fileList[0] && fileList[0].originFileObj) {
+                    // Nếu có file ảnh, thực hiện upload ảnh và cập nhật userInfo.image
+                    dataUpdateCourse = await upImage(fileList[0]) || dataUpdateCourse; // Nếu upImage trả về null, giữ nguyên userInfo
+                }
+                const res = await updateCourse(dataUpdateCourse!.id, dataUpdateCourse!.course_name, dataUpdateCourse!.description, dataUpdateCourse!.image, Number(dataUpdateCourse!.level_required));
+                if (res && res.data) {
+                    notification.success({
+                        message: "Cập nhật thành công"
+                    })
+                    handelCancel()
+                }
+                else {
+                    notification.error({
+                        message: "Đã xảy ra lỗi cập nhật"
+                    })
+                }
             }
         }
         console.log(dataCourse)
@@ -127,6 +138,7 @@ function ModalCourse({ data, open, handelCancel }: { data?: ICourse | null; open
             footer={false}
         >
             <Form layout="vertical"
+                form={form}
                 initialValues={{
                     course_name: data?.course_name || '',
                     course_des: data?.description || '',

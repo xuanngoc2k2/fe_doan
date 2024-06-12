@@ -39,14 +39,14 @@ function Result() {
     return (
         <div style={{ minHeight: 600 }}>
             <Row>
-                <Col span={8} offset={4}>
+                <Col md={{ span: 10, offset: 4 }} xs={{ span: 18, offset: 2 }} >
                     <div className="home-title"><BarChartOutlined style={{ fontSize: 35, marginRight: 10 }} />Thống kê kết quả luyện thi</div>
                 </Col>
             </Row>
             <Row>
                 {currentResults.map((result) => {
                     return (<>
-                        <Col span={10} offset={4}>
+                        <Col className="col-result">
                             <div className='result-container'>
                                 <div className="result-score">
                                     <p className={result.totalScore ? result.score / result.totalScore >= 0.4 ? "green" : "red" : "green"}>{result.score}</p>
@@ -70,7 +70,7 @@ function Result() {
                 })}
             </Row>
             <Row>
-                <Col span={24} style={{ textAlign: 'center', margin: 50 }}>
+                <Col span={24} style={{ textAlign: 'center', marginTop: 50, marginBottom: 50 }}>
                     <Pagination
                         current={currentPage}
                         pageSize={pageSize}

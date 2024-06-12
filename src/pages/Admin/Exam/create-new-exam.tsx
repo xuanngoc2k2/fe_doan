@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useParams } from "react-router-dom";
-import { Button, Collapse, Form, GetProp, Input, notification, Popconfirm, Radio, Select, Space, Tag, theme, Upload, UploadFile, UploadProps } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Collapse, Form, Input, notification, Select, Space, Tag, theme } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
-// import { callUploadAudio, callUploadSingleFile } from "../../../apis";
 import { CreateNewGroupQuestion, IAnswer, IExam, IGroupQuestion, IQuestion } from "../../../custom/type";
-import { DeleteOutlined, EditOutlined, MinusOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
+import { EditOutlined, MinusOutlined, RedoOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
-import { adminGetListQuestionExam, backEndUrl, createNewExam, getAllGroupQuestion, getAllQuestionByGroupQuestion, getAnswer, getExamById, getListQuestionOfExam, updateExam } from "../../../apis";
+import { adminGetListQuestionExam, backEndUrl, createNewExam, getAllGroupQuestion, getAllQuestionByGroupQuestion, getAnswer, updateExam } from "../../../apis";
 import { DatePicker } from 'antd';
 import type { DatePickerProps, GetProps } from 'antd';
 import dayjs from 'dayjs';
@@ -18,17 +16,14 @@ type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 const { RangePicker } = DatePicker;
 
 const AdminExamDetail: React.FC = () => {
-    type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
     const [dataEditAnswer, setDataEditAnswer] = useState<IAnswer | null>();
-    const [fileListAudio, setFileListAudio] = useState<UploadFile[]>();
-    const [fileListImage, setFileListImage] = useState<UploadFile[] | []>();
     const [dataListGroupQuestion, setDataListGroupQuestion] = useState<IGroupQuestion[] | []>([]);
-    const [addNew, setAddNew] = useState<boolean[]>([false]);
     const [groupQuestions, setGroupQuestions] = useState<IGroupQuestion[]>([{ ...CreateNewGroupQuestion } as IGroupQuestion]);
     const [open, setOpen] = useState(false);
     const [exam, setExam] = useState<IExam | null>();
     const { id } = useParams();
     const [form] = Form.useForm();
+    const navigator = useNavigate();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -48,10 +43,10 @@ const AdminExamDetail: React.FC = () => {
                     form.setFieldValue('exam_duration', resExam.data.duration)
                     form.setFieldValue('exam_type', resExam.data.type)
                     form.setFieldValue('exam_desc', resExam.data.description)
+                    form.setFieldValue('exam_date', [dayjs(resExam.data.startAt), dayjs(res.data.endAt)]);
                     form.setFieldValue('group_question-0', resExam.data.examGrquestions[0].content)
                     form.setFieldValue('type_question_0', resExam.data.examGrquestions[0].type)
                     form.setFieldValue('des_groupquestion_0', resExam.data.examGrquestions[0].description)
-                    form.setFieldValue('exam_date', [dayjs(resExam.data.startAt), dayjs(res.data.endAt)]);
                     if (resExam.data.examGrquestions) {
                         countScore(resExam.data.examGrquestions)
                     }
@@ -67,9 +62,15 @@ const AdminExamDetail: React.FC = () => {
     useEffect(() => {
         fetch();
     }, [id])
+
     useEffect(() => {
-        countScore(groupQuestions)
-    }, [groupQuestions])
+        console.log(exam);
+        form.resetFields();
+        if (exam) {
+            form.setFieldValue('exam_date', [dayjs(exam?.startAt), dayjs(exam?.endAt)]);
+        }
+    }, [groupQuestions.length])
+
     const countScore = (groupQuestions: IGroupQuestion[]) => {
         setScore(0)
         groupQuestions.forEach((gr: IGroupQuestion) => {
@@ -78,7 +79,6 @@ const AdminExamDetail: React.FC = () => {
             });
         });
     }
-    // console.log(score);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -86,69 +86,19 @@ const AdminExamDetail: React.FC = () => {
         }
         return e?.fileList;
     };
-    const onPreview = async (file: UploadFile) => {
-        let src = file.url as string;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj as FileType);
-                reader.onload = () => resolve(reader.result as string);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
 
-    const onChangeUpload: UploadProps['onChange'] = ({ file: newFile }) => {
-        newFile.status = 'done';
-        setFileListImage([newFile]);
-    };
-    const onChangeUploadAudio: UploadProps['onChange'] = ({ file: newFile }) => {
-        newFile.status = 'done';
-        setFileListAudio([newFile]);
-    };
     const handleCancel = () => {
         setOpen(false);
         setDataEditAnswer(null);
     }
     const handleSubmitAnswer = (an: IAnswer, isEdit: boolean) => {
+        console.log(an, isEdit);
         fetch();
     }
-    // const uploadFile = async (file: UploadFile, audio?: boolean) => {
-    //     const uploadedFile = file.originFileObj as File;
-    //     if (uploadedFile != null) {
-    //         try {
-    //             if (audio) {
-    //                 const res = await callUploadAudio(uploadedFile, 'audio');
-    //                 if (res.fileName && audio) {
-    //                     return res.fileName;
-    //                 }
-    //             }
-    //             else {
-    //                 const res = await callUploadSingleFile(uploadedFile, 'question');
-    //                 return res.fileName;
-    //             }
-    //         } catch (error) {
-    //             message.error("Lỗi");
-    //         }
-    //     }
-    //     return null;
-    // };
     const handleAddGroupQuestion = () => {
         const newGroupQuestion = { ...CreateNewGroupQuestion } as IGroupQuestion
         setGroupQuestions([...groupQuestions, newGroupQuestion]);
-        setAddNew((prev) => ([...prev, false]))
-    };
-    const handleAddNew = (indexGr: number) => {
-        setAddNew((prev) => {
-            const updatedAddNew = prev.map((value, index) => {
-                return index === indexGr ? true : value;
-            });
-            return updatedAddNew;
-        });
-        form.setFieldValue(`group_question-${indexGr}`, null);
+        // form.setFieldValue(`group_question-${groupQuestions.length}`, null);
     };
     const handleReset = async (idGroup: number) => {
         const res = await getAllQuestionByGroupQuestion(idGroup);
@@ -166,14 +116,7 @@ const AdminExamDetail: React.FC = () => {
                 return updatedGroupQuestions;
             });
         }
-        // setAddNew((prev) => {
-        //     const updatedAddNew = prev.map((value, index) => {
-        //         return index === indexGr ? false : value;
-        //     });
-        //     return updatedAddNew;
-        // });
     }
-    console.log(groupQuestions);
     const handleRemoveGr = (indexGr: number) => {
         if (indexGr == 0 && groupQuestions.length == 1) {
             notification.error({
@@ -184,13 +127,9 @@ const AdminExamDetail: React.FC = () => {
         setGroupQuestions((prev) => {
             const updatedQuestions = [...prev];
             updatedQuestions.splice(indexGr, 1);
+            countScore(updatedQuestions);
             return updatedQuestions;
         });
-        setAddNew((prev) => {
-            const updatedAddNew = [...prev];
-            updatedAddNew.splice(indexGr, 1);
-            return updatedAddNew;
-        })
     }
     const handleDeleteQuestion = (indexGr: number, index: number) => {
         setGroupQuestions((prev) => {
@@ -198,10 +137,12 @@ const AdminExamDetail: React.FC = () => {
             const groupQuestions = updatedQuestions[indexGr];
             // Xóa câu hỏi khỏi nhóm câu hỏi
             groupQuestions.questions.splice(index, 1);
+            countScore(updatedQuestions);
             return updatedQuestions;
         })
     }
     const handleSubmit = async () => {
+        await form.validateFields();
         if (id != 'create-new' && id != '' && !isNaN(Number(id)) && exam) {
             const listQuestion: IQuestion[] = groupQuestions.flatMap(groupQuestion => groupQuestion.questions);
             const examData = {
@@ -227,6 +168,7 @@ const AdminExamDetail: React.FC = () => {
                     notification.success({
                         message: "Thêm thành công"
                     })
+                    navigator('/admin/exam')
                 }
                 else {
                     notification.error({ message: "Đã xảy ra lỗi!" })
@@ -235,6 +177,7 @@ const AdminExamDetail: React.FC = () => {
             catch (error) { notification.error({ message: String(error) }) }
         }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
         // console.log('onOk: ', value);
     };
@@ -317,6 +260,7 @@ const AdminExamDetail: React.FC = () => {
                             <RangePicker
                                 showTime={{ format: 'HH:mm' }}
                                 format="YYYY-MM-DD HH:mm"
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 onChange={(value, dateString) => {
                                     setExam((prev) => ({
                                         ...prev!,
@@ -377,44 +321,44 @@ const AdminExamDetail: React.FC = () => {
                                 <MinusOutlined onClick={() => { handleRemoveGr(indexGr) }} />
                                 <div key={indexGr} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Form.Item
-                                        initialValue={groupQuestion.id ? String(groupQuestion.content) : ''}
+                                        initialValue={groupQuestion.id || undefined}
                                         rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                         name={`group_question-${indexGr}`}
                                         label="Nhóm câu hỏi"
                                         style={{ minWidth: 350, width: '90%' }}
                                     >
-                                        {addNew[indexGr] ? <Input
-                                            placeholder="Nhập tên nhóm câu hỏi"
-                                            allowClear />
-                                            :
-                                            <Select
-                                                labelInValue
-                                                value={{ value: groupQuestion.id, label: groupQuestion.content }}
-                                                onChange={(selected) => {
-                                                    setGroupQuestions((prev) => {
-                                                        const selectedGroupQuestion = dataListGroupQuestion.find((group) => group.id === Number(selected.value));
-                                                        if (selectedGroupQuestion) {
-                                                            const updatedGroupQuestions = [...prev];
-                                                            updatedGroupQuestions[indexGr] = selectedGroupQuestion;
-                                                            form.setFieldValue(`type_question_${indexGr}`, updatedGroupQuestions[indexGr].type);
-                                                            form.setFieldValue(`des_groupquestion_${indexGr}`, updatedGroupQuestions[indexGr].description);
-                                                            return updatedGroupQuestions;
-                                                        }
-                                                        return prev;
-                                                    });
-                                                }}
-                                                placeholder="Chọn nhóm câu hỏi"
-                                            >
-                                                {dataListGroupQuestion.map((g) =>
-                                                    !isAlreadySelected(g.id) ? (
-                                                        <Select.Option key={g.id} value={`${g.id}`}>
-                                                            {g.content}
-                                                        </Select.Option>
-                                                    ) : null
-                                                )}
-                                            </Select>
-                                        }
+                                        <Select
+                                            value={groupQuestion.id ? groupQuestion.id : undefined} // Thay đổi giá trị của value
+                                            onChange={(selected) => {
+                                                setGroupQuestions((prev) => {
+                                                    const selectedGroupQuestion = dataListGroupQuestion.find((group) =>
+                                                        group.id === Number(selected));
+                                                    if (selectedGroupQuestion) {
+                                                        const updatedGroupQuestions = [...prev];
+                                                        updatedGroupQuestions[indexGr] = selectedGroupQuestion;
+                                                        countScore(updatedGroupQuestions)
+                                                        form.setFieldValue(`type_question_${indexGr}`, updatedGroupQuestions[indexGr].type);
+                                                        form.setFieldValue(`des_groupquestion_${indexGr}`, updatedGroupQuestions[indexGr].description);
+                                                        return updatedGroupQuestions;
+                                                    }
+                                                    return prev;
+                                                });
+                                            }}
+                                            placeholder="Chọn nhóm câu hỏi"
+                                        >
+                                            {dataListGroupQuestion.map((g) =>
+                                                !isAlreadySelected(g.id) ? (
+                                                    <Select.Option key={g.id} value={g.id}>
+                                                        {g.content}
+                                                    </Select.Option>
+                                                ) : null
+                                            )}
+                                            <Select.Option selected key={groupQuestion.id} value={groupQuestion.id}>
+                                                {groupQuestion.content}
+                                            </Select.Option>
+                                        </Select>
                                     </Form.Item>
+
                                     <div style={{ fontSize: 20, marginLeft: 10, marginRight: 10, display: 'flex', height: 32 }}>
                                         <RedoOutlined onClick={() => handleReset(groupQuestion.id)} />
                                     </div>
@@ -424,11 +368,10 @@ const AdminExamDetail: React.FC = () => {
                                         label="Loại nhóm câu hỏi"
                                         name={`type_question_${indexGr}`}
                                         initialValue={groupQuestion.type ? String(groupQuestion.type) : undefined}
-                                        rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
+                                    // rules={[{ required: true, message: 'Nhóm câu không được để trống!' }]}
                                     >
                                         <Select
-                                            disabled={(!addNew[indexGr])}
-                                            allowClear
+                                            disabled
                                             style={{ maxWidth: 150 }}
                                             placeholder="Chọn loại câu hỏi"
                                         >
@@ -436,12 +379,10 @@ const AdminExamDetail: React.FC = () => {
                                             <Option value={`Listening`}>Listening</Option>
                                         </Select>
                                     </Form.Item>
-                                    {(groupQuestion?.type == "Listening" ||
-                                        form.getFieldValue(`type_question_${indexGr}`) == "Listening") &&
+                                    {groupQuestion?.type == "Listening" &&
                                         <Form.Item
                                             getValueFromEvent={normFile}
                                             style={{ marginLeft: 20 }}
-                                            // rules={[{ required: true, message: 'File nghe không được để trống!' }]}
                                             label="File nghe"
                                             name={'audio'}
                                         >
@@ -452,35 +393,20 @@ const AdminExamDetail: React.FC = () => {
                                     }
                                 </div>
                                 {
-                                    (groupQuestion || addNew[indexGr]) && <Form.Item label="Hình ảnh" valuePropName="fileList"
+                                    (groupQuestion.image) && <Form.Item label="Hình ảnh" valuePropName="fileList"
                                         name={'image'}
-                                        // rules={[{ required: true, message: 'Hình ảnh không được để trống!' }]}
                                         getValueFromEvent={normFile}
                                     >
                                         <div style={{ display: 'flex' }}>
-                                            {groupQuestion?.image && !addNew[indexGr] && <img width={600} src={backEndUrl + '/images/question/' + groupQuestion.image} />}
-                                            {addNew[indexGr] && <Upload
-                                                name="image"
-                                                maxCount={1}
-                                                listType="picture-card"
-                                                // fil={fileImage}
-                                                onChange={onChangeUpload}
-                                                onPreview={onPreview}
-                                            >
-                                                <button style={{ border: 0, background: 'none' }} type="button">
-                                                    <PlusOutlined />
-                                                    <div style={{ marginTop: 8 }}>Upload</div>
-                                                </button>
-                                            </Upload>}
+                                            {groupQuestion?.image && <img width={600} src={backEndUrl + '/images/question/' + groupQuestion.image} />}
                                         </div>
                                     </Form.Item>
                                 }
                                 <Form.Item
                                     name={`des_groupquestion_${indexGr}`}
-                                    // rules={[{ required: true, message: 'Mô tả nhóm câu hỏi không được để trống!' }]}
                                     label="Mô tả">
                                     <Input.TextArea
-                                        disabled={(!addNew[indexGr])}
+                                        disabled
                                         value={groupQuestion?.description}
                                         rows={1} />
                                 </Form.Item>
@@ -530,26 +456,9 @@ const AdminExamDetail: React.FC = () => {
                                                                                                 color: '#ffa500',
                                                                                             }}
                                                                                             onClick={() => {
-                                                                                                handleEditAnswer(answer.id);
+                                                                                                handleEditAnswer(answer.id!);
                                                                                             }}
                                                                                         />
-                                                                                        {/* <Popconfirm
-                                                                                            placement="leftTop"
-                                                                                            title={"Xác nhận xóa bài học"}
-                                                                                            description={"Bạn có chắc chắn muốn xóa bài học này ?"}
-                                                                                            // onConfirm={() => handleDeleteLesson(record.id)}
-                                                                                            okText="Xác nhận"
-                                                                                            cancelText="Hủy"
-                                                                                        >
-                                                                                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                                                                                <DeleteOutlined
-                                                                                                    style={{
-                                                                                                        fontSize: 20,
-                                                                                                        color: '#ff4d4f',
-                                                                                                    }}
-                                                                                                />
-                                                                                            </span>
-                                                                                        </Popconfirm> */}
                                                                                     </Space>
                                                                                 </div>
                                                                             </div>

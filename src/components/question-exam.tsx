@@ -156,7 +156,7 @@ function QuestionExam() {
                                         <h3>{groupQuestion.description}</h3>
                                         <p>{groupQuestion.content}</p>
                                     </>}
-                                {groupQuestion.image && <img width={700} src={`${backEndUrl}/images/question/${groupQuestion.image}`} alt='question' />}
+                                {groupQuestion.image && <img src={`${backEndUrl}/images/question/${groupQuestion.image}`} alt='question' />}
                                 <div className='list-question'>
                                     {groupQuestion.questions.map((question: IQuestion, questionIndex) => {
                                         const numberQuestion = num + questionIndex + 1;
@@ -166,7 +166,7 @@ function QuestionExam() {
                                                     <h3 style={{ marginRight: 5 }}>Câu {numberQuestion}:</h3>
                                                     <p>{question.question}</p>
                                                 </div>
-                                                {question.image && <img width={600} src={`${backEndUrl}/images/question/${question.image}`} alt='question' />}
+                                                {question.image && <img src={`${backEndUrl}/images/question/${question.image}`} alt='question' />}
                                                 {question.answers.length && (
                                                     <Form.Item name={`${question.id}`}>
                                                         <Radio.Group defaultValue={'0'} onChange={() => { handleChecked(numberQuestion) }} key={`question-${question.id}`}>

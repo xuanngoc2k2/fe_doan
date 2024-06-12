@@ -2,6 +2,7 @@ import { Card, Col, Row } from "antd";
 import { IQuestionVocab } from "../custom/type";
 import { useState } from "react";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import './styles/question-vocab.scss';
 
 function QuestionVocab({ word, handelAnswer }: { word: IQuestionVocab, handelAnswer?: (word: IQuestionVocab, answer: string) => void }) {
     const [isSelected, setIsSelected] = useState('');

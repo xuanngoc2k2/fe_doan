@@ -35,3 +35,17 @@
         color: #71869d;
     }
 }
+@media (max-width: 760px) {
+    .btn-learn {
+        flex-direction: column !important;
+        button {
+            margin-right: 0 !important;
+            margin-bottom: 10px;
+        }
+    }
+    .vocab-detail-container {
+        .ant-card-body {
+            flex-direction: column !important;
+        }
+    }
+}

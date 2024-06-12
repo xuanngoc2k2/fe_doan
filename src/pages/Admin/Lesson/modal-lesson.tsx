@@ -27,6 +27,8 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
     const [idGroup, setIdGroup] = useState(0);
     const [form] = Form.useForm();
     const [listQuestion, setListQuestion] = useState<IQuestion[] | []>([]);
+    const [selectedQuestion, setSelectedQuestion] = useState<IQuestion | null>(null);
+
     const [fileListVideo, setFileListVideo] = useState<UploadFile[]>(
         (data && !data?.isQuestion) ? [
             {
@@ -68,6 +70,12 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
             try {
                 setUploading(true);
                 if (content) {
+                    const isMp4 = uploadedFile.name.endsWith('.mp4') || uploadedFile.name.endsWith('.avi') || uploadedFile.name.endsWith('.mov');
+                    if (!isMp4) {
+                        notification.error({ message: "Chỉ cho phép upload file video dạng mp4/avi/mov!" });
+                        setUploading(false);
+                        return null;
+                    }
                     const res = await callUploadVideo(uploadedFile, 'video');
                     if (res.fileName && content) {
                         const lessonInfo = { ...(dataLesson || {}), content: res.fileName } as ILesson;
@@ -77,6 +85,13 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     }
                 }
                 else {
+                    const imageExtensions = /\.(jpg|jpeg|png|gif)$/i;
+                    const isImage = imageExtensions.test(uploadedFile.name);
+                    if (!isImage) {
+                        notification.error({ message: "Chỉ cho phép upload file hình ảnh dạng ['jpg', 'jpeg', 'png', 'gif']!" });
+                        setUploading(false);
+                        return null;
+                    }
                     const res = await callUploadSingleFile(uploadedFile, 'lesson');
                     const lessonInfo = { ...(dataLesson || {}), thumbnail: res.fileName } as ILesson;
                     setDataLesson(lessonInfo);
@@ -146,6 +161,9 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                 if (res && res.data) {
                     setAudio(res.data.audio);
                     setListQuestion(res.data.questions);
+                    const selectedQ = res.data.questions.find((question: IQuestion) => question.id == dataLesson?.questionId);
+                    console.log(selectedQ)
+                    setSelectedQuestion(selectedQ || null);
                 }
                 else {
                     notification.error({
@@ -157,6 +175,8 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
         fetch();
     }, [idGroup])
     const handleSubmit = async () => {
+        await form.validateFields();
+
         if (!data) {
             let newLesson = dataLesson; // Khởi tạo updatedUserInfo bằng userInfo ban đầu
             if (fileList[0] && fileList[0].originFileObj) {
@@ -355,7 +375,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                     </div>
                 )} valuePropName="fileListVideo"
                     name={data ? undefined : 'content'}
-                    rules={[{ required: true, message: 'Video không được để trống!' }]}
+                    rules={[{ required: isVideo, message: 'Video không được để trống!' }]}
                     getValueFromEvent={normFile}
                 >
                     {/* có thể nhúng video */}
@@ -363,6 +383,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                         name="content"
                         maxCount={1}
                         fileList={fileListVideo}
+                        accept="video/*"
                         onChange={onChangeUploadVideo}
                     >
                         <Button type="primary">
@@ -379,6 +400,7 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                 <Select
                                     onChange={(value) => {
                                         setIdGroup(value);
+                                        setSelectedQuestion(null);
                                         form.setFieldValue('content', undefined)
                                     }}
                                     placeholder="Chọn nhóm câu hỏi">
@@ -387,30 +409,36 @@ function ModalLesson({ dataListCourse, data, open, handelCancel }: { dataListCou
                                     )}
                                 </Select>
                             </Form.Item>
-                            {/* {!isVideo} */}
+                            {idGroup != 0 && groupQuestion.find(gr => gr.id == idGroup)?.image && <img width={400} src={`${backEndUrl}/images/question/${groupQuestion.find(gr => gr.id == idGroup)?.image}`} />}
                             {idGroup != 0 &&
-                                <Form.Item
-                                    label="Câu hỏi"
-                                    name={'content'}
-                                    rules={[{ required: true, message: 'Câu hỏi không được để trống!' }]}
-                                >
-                                    <Select
-                                        onChange={(value) => {
-                                            setDataLesson((prev: ILesson | undefined) => {
-                                                if (prev) {
-                                                    return { ...prev, questionId: value };
-                                                }
-                                                return { ...prev!, questionId: value };
-                                            });
-                                        }}
-                                        placeholder="Chọn câu hỏi">
-                                        {listQuestion.map((question) =>
-                                            <Option value={`${question.id}`}>{question.question}</Option>
-                                        )}
-                                    </Select>
-                                </Form.Item>}
+                                <>
+                                    <Form.Item
+                                        label="Câu hỏi"
+                                        name={'content'}
+                                        rules={[{ required: true, message: 'Câu hỏi không được để trống!' }]}
+                                    >
+                                        <Select
+                                            onChange={(value) => {
+                                                const selected = listQuestion.find(question => question.id == value);
+                                                setSelectedQuestion(selected || null);
+                                                setDataLesson((prev: ILesson | undefined) => {
+                                                    if (prev) {
+                                                        return { ...prev, questionId: value };
+                                                    }
+                                                    return { ...prev!, questionId: value };
+                                                });
+                                            }}
+                                            placeholder="Chọn câu hỏi">
+                                            {listQuestion.map((question) =>
+                                                <Option key={`${question.id}`} value={`${question.id}`}>{question.question}</Option>
+                                            )}
+                                        </Select>
+                                    </Form.Item>
+                                    {selectedQuestion?.image && <img width={300} src={`${backEndUrl}/images/question/${selectedQuestion.image}`} />}
+                                </>
+                            }
                         </>}
-                </Form.Item>
+                </Form.Item >
                 <Form.Item label="Hình ảnh minh họa" valuePropName="fileList"
                     name={data ? undefined : 'image'}
                     rules={[{ required: true, message: 'Hình ảnh minh họa không được để trống!' }]}

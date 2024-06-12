@@ -176,3 +176,14 @@
         }
     }
 }
+@media (max-width: 540px) {
+    .flashcard-list-container .flashcard-list-content .ant-carousel {
+        width: 90% !important;
+    }
+    .btn-auto-play {
+        left: 5% !important;
+    }
+    .btn-reset {
+        right: 5% !important;
+    }
+}
