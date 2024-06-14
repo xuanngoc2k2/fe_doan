@@ -1,5 +1,5 @@
 
-# Re![localhost_5173_ (1)](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/9adcd7df-1851-4980-b759-73f051ee7a32)
+![localhost_5173_ (1)](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/9adcd7df-1851-4980-b759-73f051ee7a32)
 ![localhost_5173_course](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/fbe58ab2-8503-4744-892f-2fcad7b5eaf5)
 ![localhost_5173_course_1](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/a0b51a71-77b6-486c-9414-6c9cc673627f)
 ![localhost_5173_exams_1](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/e97bbe13-92d5-4afd-821a-2d72594d7335)
@@ -9,7 +9,7 @@
 ![localhost_5173_vocab](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/a3e7cc5a-ef75-4689-bdd2-5e6286544205)
 ![localhost_5173_exam_questions_12](https://github.com/xuanngoc2k2/fe_doan/assets/92130383/814f883f-a7e3-4418-918c-37ce7ce9f5c2)
 
-act + TypeScript + Vite
+# React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
